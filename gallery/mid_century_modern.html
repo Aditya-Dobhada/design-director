@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — Mid-Century Modern</title>
+  <!-- DESIGN CONTRACT: mid-century-modern -->
+  <!-- NEVER: cold zinc/gray backgrounds, sharp 0px corners, neon synthetic colors, clinical monochrome -->
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #F6F3EB;
+      --surface: #FFFFFF;
+      --surface-warm: #EFE9DC;
+      --surface-dark: #2D221E;
+      --terracotta: #D95D39;
+      --terracotta-hover: #BF4C2A;
+      --olive: #606C38;
+      --mustard: #E0A96D;
+      --teal: #2A6F7F;
+      --walnut: #2D221E;
+      --text: #2D221E;
+      --text-secondary: #5C4D44;
+      --text-muted: #8D7B70;
+      --border: #DCD4C4;
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --shadow-warm: 0 6px 16px rgba(45, 34, 30, 0.08);
+      --font-display: 'Josefin Sans', sans-serif;
+      --font-body: 'Work Sans', sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    nav {
+      background: var(--bg);
+      border-bottom: 2px solid var(--border);
+      height: 64px;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 0.06em;
+      color: var(--terracotta);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-pod {
+      width: 14px;
+      height: 14px;
+      background: var(--olive);
+      border-radius: 50%;
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      font-family: var(--font-display);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--terracotta); }
+    .btn {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 0 20px;
+      height: 38px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-secondary {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: var(--surface-warm); }
+    .btn-primary {
+      background: var(--terracotta);
+      border: 2px solid var(--terracotta);
+      color: #FFFFFF;
+    }
+    .btn-primary:hover { background: var(--terracotta-hover); }
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 48px 32px;
+    }
+    .header {
+      margin-bottom: 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .header h1 {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--walnut);
+    }
+    .header p {
+      color: var(--text-secondary);
+      margin-top: 6px;
+      font-size: 15px;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    .metric-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-warm);
+    }
+    .metric-label {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--olive);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      margin: 10px 0 4px;
+      color: var(--walnut);
+    }
+    .metric-sub {
+      font-size: 13px;
+      color: var(--terracotta);
+      font-weight: 500;
+    }
+    .card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-warm);
+      margin-bottom: 36px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 20px 24px;
+      border-bottom: 2px solid var(--border);
+      background: #FAF7F0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--walnut);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 14px 24px;
+      background: var(--surface-warm);
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text);
+    }
+    tr:last-child td { border-bottom: none; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .badge-olive { background: #E8EDDF; color: var(--olive); }
+    .badge-mustard { background: #FAF0E1; color: #B07830; }
+    footer {
+      border-top: 2px solid var(--border);
+      padding: 28px 32px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">
+      <div class="nav-pod"></div>
+      Aurelia Studio
+    </div>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#holdings">Holdings</a>
+      <a href="#design">Design Reserve</a>
+      <a href="#journal">Journal</a>
+    </div>
+    <div>
+      <button class="btn btn-primary">Allocate Capital</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="header">
+      <div>
+        <h1>Architectural Holdings</h1>
+        <p>Sustainable capital, regenerative design assets, and generational trust.</p>
+      </div>
+      <div>
+        <span class="badge badge-olive">PALM SPRINGS PORTFOLIO</span>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Total Endowment</div>
+        <div class="metric-value">$84,210,400</div>
+        <div class="metric-sub">+4.2% Seasonal Harvest</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Architectural Trust</div>
+        <div class="metric-value">$19,450,000</div>
+        <div class="metric-sub">Historic Preservation Yield</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Stewardship Rating</div>
+        <div class="metric-value">2.84</div>
+        <div class="metric-sub">Equilibrium Achieved</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Curated Environmental Allocations</div>
+        <button class="btn btn-secondary" style="height: 32px; font-size: 12px;">Filter Assets</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Property / Strategic Fund</th>
+            <th>Discipline</th>
+            <th>Allocation</th>
+            <th>Market Valuation</th>
+            <th>Stewardship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Zurich Modernist Estate</strong></td>
+            <td>Private Trust</td>
+            <td>28.4%</td>
+            <td>$23,915,750</td>
+            <td><span class="badge badge-olive">Protected</span></td>
+          </tr>
+          <tr>
+            <td><strong>Nordic Timber Ecological Fund</strong></td>
+            <td>Regenerative Forestry</td>
+            <td>22.1%</td>
+            <td>$18,610,500</td>
+            <td><span class="badge badge-olive">Protected</span></td>
+          </tr>
+          <tr>
+            <td><strong>Clean Silicon Materials Lab</strong></td>
+            <td>Applied Research</td>
+            <td>16.5%</td>
+            <td>$13,894,700</td>
+            <td><span class="badge badge-mustard">Reviewing</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sovereign Alpine Green Bonds</strong></td>
+            <td>Public Works</td>
+            <td>33.0%</td>
+            <td>$27,789,450</td>
+            <td><span class="badge badge-olive">Protected</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    Aurelia Studio &mdash; Rendered in Mid-Century Modern (Contract: 16–24px radius, warm parchment, terracotta and olive palette)
+  </footer>
+</body>
+</html>

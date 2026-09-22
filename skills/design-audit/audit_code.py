@@ -12,8 +12,9 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional
 
 class DesignAuditor:
-    def __init__(self, target_style: str):
+    def __init__(self, target_style: str, modifiers: Optional[List[str]] = None):
         self.target_style = target_style.lower()
+        self.modifiers = [m.lower() for m in (modifiers or [])]
         self.violations: List[Dict[str, Any]] = []
 
     def audit_file(self, file_path: Path):
@@ -37,14 +38,15 @@ class DesignAuditor:
         # 1. Border-Radius Violations
         sharp_radius_styles = [
             "swiss-editorial", "quiet-luxury", "bauhaus",
-            "retro-americana", "japanese-wabi-sabi", "memphis-postmodern"
+            "retro-americana", "japanese-wabi-sabi", "memphis-postmodern",
+            "terminal-cli", "web-brutalism", "art-deco", "high-fashion-editorial"
         ]
         if self.target_style in sharp_radius_styles:
-            # Spec requires 0px (rounded-none). Any rounded-md, rounded-lg, rounded-full, rounded-2xl is a violation (unless full is on an explicit circle medallion for bauhaus/memphis).
+            # Spec requires 0px (rounded-none). Any rounded-md, rounded-lg, rounded-full, rounded-2xl is a violation (unless full is on an explicit circle medallion for bauhaus/memphis/art-deco).
             bad_radii = re.findall(r'\b(rounded-(?:md|lg|xl|2xl|3xl|full))\b', line)
             for br in bad_radii:
                 # Allow rounded-full only if on a tiny circle medallion or icon
-                if br == "rounded-full" and any(k in line for k in ["w-4", "h-4", "w-6", "h-6", "w-8", "h-8", "w-12", "h-12", "circle"]):
+                if br == "rounded-full" and any(k in line for k in ["w-4", "h-4", "w-6", "h-6", "w-8", "h-8", "w-12", "h-12", "circle", "arch"]):
                     continue
                 self.violations.append({
                     "file": str(file_path),
@@ -63,7 +65,7 @@ class DesignAuditor:
                 # (e.g. --radius: 0px). Flagging them is a false positive.
                 if val.startswith('var('):
                     continue
-                if val not in ["0", "0px", "none"] and not ("50%" in val and self.target_style in ["bauhaus", "memphis-postmodern"]):
+                if val not in ["0", "0px", "none"] and not ("50%" in val and self.target_style in ["bauhaus", "memphis-postmodern", "art-deco"]):
                     self.violations.append({
                         "file": str(file_path),
                         "line": line_no,
@@ -74,7 +76,7 @@ class DesignAuditor:
                         "message": f"Spec for '{self.target_style}' requires 0px border-radius. Found '{val}'."
                     })
 
-        elif self.target_style in ["space-age-optimism", "organic-natural", "y2k-frutiger-aero"]:
+        elif self.target_style in ["space-age-optimism", "organic-natural", "y2k-frutiger-aero", "mid-century-modern"]:
             # These styles mandate organic or pod curves (minimum 16px to full pill). rounded-none is a violation on cards/buttons.
             if any(k in line for k in ["card", "panel", "btn", "button", "container"]):
                 sharp_corners = re.findall(r'\b(rounded-none)\b', line)
@@ -87,6 +89,22 @@ class DesignAuditor:
                         "type": "radius_violation",
                         "offending_code": sc,
                         "message": f"Spec for '{self.target_style}' mandates organic/capsule curves. Found '{sc}' on primary container."
+                    })
+
+        elif self.target_style in ["minimal-modern", "dark-minimal"]:
+            # Spec requires restrained, crisp geometry (4-8px radius, e.g. rounded-md, rounded-lg).
+            # Overly bubbly pill containers (rounded-full or rounded-3xl on containers) are forbidden.
+            if any(k in line for k in ["card", "panel", "container", "section"]):
+                bad_radii = re.findall(r'\b(rounded-full|rounded-3xl)\b', line)
+                for br in bad_radii:
+                    self.violations.append({
+                        "file": str(file_path),
+                        "line": line_no,
+                        "layer": "surfaces",
+                        "severity": "WARNING",
+                        "type": "radius_violation",
+                        "offending_code": br,
+                        "message": f"{self.target_style} requires restrained geometry (4-8px). Found excessive container radius '{br}'."
                     })
 
         elif self.target_style in ["neo-brutalism", "maximalist-dopamine"]:
@@ -112,8 +130,9 @@ class DesignAuditor:
 
         zero_blur_styles = [
             "swiss-editorial", "quiet-luxury",
-            "bauhaus", "japanese-wabi-sabi", "memphis-postmodern", "retro-americana"
-            # cyberpunk is EXCLUDED: its spec defines neon glow box-shadows (0 0 Npx rgba(cyan)) as correct idiom
+            "bauhaus", "japanese-wabi-sabi", "memphis-postmodern", "retro-americana",
+            "terminal-cli", "web-brutalism", "art-deco", "high-fashion-editorial"
+            # cyberpunk and vaporwave are EXCLUDED: their specs define neon glow box-shadows (0 0 Npx rgba(cyan))
         ]
         if self.target_style in zero_blur_styles:
             if not is_css_var_definition:
@@ -210,7 +229,7 @@ class DesignAuditor:
                         "message": f"{self.target_style} forbids saturated synthetic accents. Found loud accent '{na}'."
                     })
 
-        elif self.target_style in ["cyberpunk"]:
+        elif self.target_style in ["cyberpunk", "terminal-cli", "dark-minimal"]:
             # Light mode classes are forbidden
             light_bgs = re.findall(r'\b(bg-(?:white|gray-50|slate-50|neutral-50|amber-50))\b', line)
             for lb in light_bgs:
@@ -221,12 +240,11 @@ class DesignAuditor:
                     "severity": "CRITICAL",
                     "type": "color_violation",
                     "offending_code": lb,
-                    "message": f"Cyberpunk requires 100% dark mode / obsidian canvas. Found light background '{lb}'."
+                    "message": f"{self.target_style} requires strict dark/obsidian canvas. Found light background '{lb}'."
                 })
 
-        elif self.target_style in ["space-age-optimism"]:
-            # Pitch dark backgrounds are forbidden — Space Age Optimism is radiant warm white.
-            # Light backgrounds (bg-white, etc.) are CORRECT for this style; never flag them.
+        elif self.target_style in ["space-age-optimism", "mid-century-modern"]:
+            # Pitch dark backgrounds are forbidden — radiant warm white / cream / olive canvas.
             dark_bgs = re.findall(r'\b(bg-(?:black|zinc-950|gray-950|slate-950))\b', line)
             for db in dark_bgs:
                 self.violations.append({
@@ -236,7 +254,7 @@ class DesignAuditor:
                     "severity": "CRITICAL",
                     "type": "color_violation",
                     "offending_code": db,
-                    "message": "Space Age Optimism requires radiant warm white / chrome canvas. Found dark background."
+                    "message": f"{self.target_style} requires radiant warm light canvas. Found pitch dark background."
                 })
 
         # 5. Typography Substitutions
@@ -252,6 +270,20 @@ class DesignAuditor:
                         "type": "font_substitution",
                         "offending_code": line.strip(),
                         "message": "Quiet Luxury mandates high-contrast editorial serif for primary headings. Found generic sans-serif."
+                    })
+
+        # 6. Surface Modifier Auditing
+        if "backdrop-blur" in line or "backdrop-filter" in line:
+            if self.target_style != "y2k-frutiger-aero" and "frosted-glass" not in self.modifiers:
+                if self.target_style in ["terminal-cli", "web-brutalism", "bauhaus", "swiss-editorial", "retro-americana"]:
+                    self.violations.append({
+                        "file": str(file_path),
+                        "line": line_no,
+                        "layer": "surfaces",
+                        "severity": "CRITICAL",
+                        "type": "unauthorized_modifier",
+                        "offending_code": line.strip(),
+                        "message": f"Frosted glass / backdrop-blur detected in '{self.target_style}' without declaring 'frosted-glass' modifier."
                     })
 
     def run_audit(self, target_dir: Path) -> Dict[str, Any]:
@@ -303,12 +335,14 @@ class DesignAuditor:
         }
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: python audit_code.py <style_id> <target_directory_or_file>")
-        sys.exit(1)
+    import argparse
+    parser = argparse.ArgumentParser(description="Design Audit Static Analysis Engine")
+    parser.add_argument("style_id", help="Target design style ID (e.g. minimal-modern)")
+    parser.add_argument("target", help="Target directory or file to audit")
+    parser.add_argument("--modifiers", "-m", help="Comma-separated list of active modifiers (e.g. frosted-glass,subtle-grain)", default="")
+    args = parser.parse_args()
 
-    style = sys.argv[1]
-    target = Path(sys.argv[2])
-    auditor = DesignAuditor(style)
-    report = auditor.run_audit(target)
+    mods = [m.strip() for m in args.modifiers.split(",") if m.strip()]
+    auditor = DesignAuditor(args.style_id, modifiers=mods)
+    report = auditor.run_audit(Path(args.target))
     print(json.dumps(report, indent=2))

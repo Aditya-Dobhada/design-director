@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — Terminal CLI</title>
+  <!-- DESIGN CONTRACT: terminal-cli -->
+  <!-- NEVER: rounded corners, proportional sans/serif, light backgrounds, blurry shadows -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0C0C0C;
+      --surface: #141414;
+      --surface-elevated: #1C1C1C;
+      --border: #262626;
+      --border-bright: #404040;
+      --text: #E6E6E6;
+      --text-muted: #888888;
+      --text-dim: #555555;
+      --phosphor-green: #00FF66;
+      --phosphor-amber: #FFB000;
+      --phosphor-cyan: #00F5FF;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      height: 48px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-weight: 700;
+      color: var(--phosphor-green);
+      letter-spacing: 0.05em;
+    }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 12px;
+      transition: color 0.1s;
+    }
+    .nav-links a:hover { color: var(--phosphor-green); }
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 0 12px;
+      height: 30px;
+      border-radius: 0px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid var(--border-bright);
+      background: var(--surface-elevated);
+      color: var(--text);
+      transition: all 0.1s;
+    }
+    .btn:hover {
+      background: var(--phosphor-green);
+      color: #000000;
+      border-color: var(--phosphor-green);
+    }
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    .header {
+      margin-bottom: 24px;
+      border-bottom: 1px dashed var(--border-bright);
+      padding-bottom: 16px;
+    }
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--phosphor-green);
+      margin-bottom: 4px;
+    }
+    .header p { color: var(--text-muted); }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0px;
+      padding: 16px;
+    }
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .metric-value {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 8px 0 4px;
+      color: var(--text);
+    }
+    .metric-sub {
+      font-size: 11px;
+      color: var(--phosphor-green);
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0px;
+      margin-bottom: 24px;
+    }
+    .panel-header {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-elevated);
+      display: flex;
+      justify-content: space-between;
+      color: var(--phosphor-amber);
+      font-weight: 700;
+      font-size: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th {
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      background: #111111;
+      text-transform: uppercase;
+    }
+    td {
+      padding: 10px 16px;
+      border-bottom: 1px solid #1A1A1A;
+      font-size: 12px;
+    }
+    tr:last-child td { border-bottom: none; }
+    .tag {
+      padding: 2px 6px;
+      border: 1px solid var(--border-bright);
+      font-size: 10px;
+      border-radius: 0px;
+    }
+    .tag-ok { border-color: var(--phosphor-green); color: var(--phosphor-green); }
+    .tag-warn { border-color: var(--phosphor-amber); color: var(--phosphor-amber); }
+    footer {
+      border-top: 1px dashed var(--border);
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">$ aurelia-cli --session active</div>
+    <div class="nav-links">
+      <a href="#ps">[ 1. STATUS ]</a>
+      <a href="#positions">[ 2. LEDGER ]</a>
+      <a href="#logs">[ 3. SYS_LOG ]</a>
+    </div>
+    <div>
+      <button class="btn">EXECUTE_REBALANCE</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="header">
+      <h1>[ AURELIA SYSTEM TELEMETRY // CORE NODE 01 ]</h1>
+      <p>> System check completed: 0 errors, 4 daemon workers active, latency 0.42ms</p>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">NAV.AUM_TOTAL</div>
+        <div class="metric-value">$84,210,400</div>
+        <div class="metric-sub">> DELTA_30D: +4.2%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">SYS.RESERVE_CASH</div>
+        <div class="metric-value">$19,450,000</div>
+        <div class="metric-sub">> SOFR_YIELD: 5.32%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">RISK.SHARPE_RATIO</div>
+        <div class="metric-value">2.84</div>
+        <div class="metric-sub">> ENVELOPE: OPTIMAL</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span>+--- ACTIVE POSITION LEDGER ----------------------------------------+</span>
+        <span>STATUS: ONLINE</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>TICKER / IDENTIFIER</th>
+            <th>ASSET_CLASS</th>
+            <th>WEIGHT</th>
+            <th>MARK_USD</th>
+            <th>STATE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ZURICH-HIGH-YIELD-RE</td>
+            <td>Private Debt</td>
+            <td>28.4%</td>
+            <td>$23,915,750</td>
+            <td><span class="tag tag-ok">ONLINE</span></td>
+          </tr>
+          <tr>
+            <td>NORDIC-CLEAN-INFRA</td>
+            <td>Direct Equity</td>
+            <td>22.1%</td>
+            <td>$18,610,500</td>
+            <td><span class="tag tag-ok">ONLINE</span></td>
+          </tr>
+          <tr>
+            <td>GLOBAL-SEMICONDUCTOR</td>
+            <td>Liquid Equity</td>
+            <td>16.5%</td>
+            <td>$13,894,700</td>
+            <td><span class="tag tag-warn">SYNCING</span></td>
+          </tr>
+          <tr>
+            <td>SOVEREIGN-GREEN-BONDS</td>
+            <td>Fixed Income</td>
+            <td>33.0%</td>
+            <td>$27,789,450</td>
+            <td><span class="tag tag-ok">ONLINE</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    Aurelia CLI Telemetry &mdash; Rendered in Terminal CLI (Contract: 100% monospace, 0px radius, zero blurry shadows)
+  </footer>
+</body>
+</html>

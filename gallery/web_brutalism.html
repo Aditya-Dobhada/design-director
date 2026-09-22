@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — Web Brutalism</title>
+  <!-- DESIGN CONTRACT: web-brutalism -->
+  <!-- NEVER: rounded corners, drop shadows, non-underlined links, floating cards, gradients -->
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #FFFFFF;
+      --text: #000000;
+      --link: #0000EE;
+      --link-visited: #551A8B;
+      --border: #000000;
+      --font: 'Courier New', Courier, monospace;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.4;
+      padding: 24px;
+    }
+    header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+    }
+    .brand {
+      font-size: 24px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    nav {
+      margin-top: 12px;
+      display: flex;
+      gap: 16px;
+    }
+    nav a {
+      color: var(--link);
+      text-decoration: underline;
+      font-weight: bold;
+    }
+    main {
+      max-width: 960px;
+    }
+    h1 {
+      font-size: 20px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    p { margin-bottom: 16px; }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .metric-box {
+      border: 1px solid var(--border);
+      padding: 16px;
+      background: #FFFFFF;
+    }
+    .metric-title {
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+    .metric-val {
+      font-size: 22px;
+      font-weight: bold;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 2px solid var(--border);
+      margin-bottom: 24px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background: #000000;
+      color: #FFFFFF;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    .btn-brutal {
+      display: inline-block;
+      border: 2px solid var(--border);
+      background: #FFFFFF;
+      color: #000000;
+      padding: 6px 14px;
+      font-family: var(--font);
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 12px;
+      border-radius: 0px;
+    }
+    .btn-brutal:hover {
+      background: #000000;
+      color: #FFFFFF;
+    }
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 32px;
+      padding-top: 16px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">AURELIA CAPITAL / INDEX</div>
+    <nav>
+      <a href="#overview">[Overview]</a>
+      <a href="#portfolio">[Portfolio]</a>
+      <a href="#reports">[Quarterly Reports]</a>
+      <a href="#audit">[Audit Log]</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Asset Allocation Status</h1>
+    <p>Raw document view of institutional liquidity and strategic holdings. Updated: September 2026.</p>
+
+    <div class="metrics">
+      <div class="metric-box">
+        <div class="metric-title">PORTFOLIO_NAV</div>
+        <div class="metric-val">$84,210,400</div>
+        <div>DELTA: +4.2%</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-title">LIQUID_RESERVES</div>
+        <div class="metric-val">$19,450,000</div>
+        <div>SOFR: 5.32%</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-title">RISK_SHARPE</div>
+        <div class="metric-val">2.84</div>
+        <div>VAR_99: NOMINAL</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Holding Identifier</th>
+          <th>Asset Class</th>
+          <th>Allocation</th>
+          <th>Valuation (USD)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ZURICH-HIGH-YIELD-RE</td>
+          <td>Private Debt</td>
+          <td>28.4%</td>
+          <td>$23,915,750</td>
+          <td><a href="#view">View Sheet</a></td>
+        </tr>
+        <tr>
+          <td>NORDIC-CLEAN-INFRA</td>
+          <td>Direct Equity</td>
+          <td>22.1%</td>
+          <td>$18,610,500</td>
+          <td><a href="#view">View Sheet</a></td>
+        </tr>
+        <tr>
+          <td>GLOBAL-SEMICONDUCTOR</td>
+          <td>Liquid Equity</td>
+          <td>16.5%</td>
+          <td>$13,894,700</td>
+          <td><a href="#view">View Sheet</a></td>
+        </tr>
+        <tr>
+          <td>SOVEREIGN-GREEN-BONDS</td>
+          <td>Fixed Income</td>
+          <td>33.0%</td>
+          <td>$27,789,450</td>
+          <td><a href="#view">View Sheet</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div>
+      <button class="btn-brutal">Export Raw CSV</button>
+      <button class="btn-brutal" style="margin-left: 8px;">Rebalance Allocation</button>
+    </div>
+  </main>
+
+  <footer>
+    Aurelia Raw Index &mdash; Rendered in Web Brutalism (Contract: 0px radius, monospace/system fonts, unstyled default links, zero drop-shadows)
+  </footer>
+</body>
+</html>

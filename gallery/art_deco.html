@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — Art Deco</title>
+  <!-- DESIGN CONTRACT: art-deco -->
+  <!-- NEVER: rounded corners, casual sans fonts, blue SaaS colors, blurry shadows -->
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;0,6..96,800;1,6..96,400&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0E0E10;
+      --surface: #16161A;
+      --surface-elevated: #202026;
+      --gold: #D4AF37;
+      --gold-bright: #F3E5AB;
+      --gold-deep: #A3702C;
+      --text: #F3E5AB;
+      --text-muted: #C5BA9D;
+      --text-dim: #8E836A;
+      --border-gold: #D4AF37;
+      --font-serif: 'Bodoni Moda', serif;
+      --font-sans: 'Cinzel', serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-serif);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-gold);
+      height: 72px;
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-family: var(--font-sans);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      font-family: var(--font-sans);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .btn-deco {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      border: 1px solid var(--gold);
+      background: transparent;
+      color: var(--gold);
+      cursor: pointer;
+      border-radius: 0px;
+      transition: all 0.25s;
+    }
+    .btn-deco:hover {
+      background: var(--gold);
+      color: #0E0E10;
+    }
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 48px 32px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      padding-bottom: 32px;
+    }
+    .header-kicker {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .header h1 {
+      font-size: 38px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--gold-bright);
+    }
+    .header p {
+      color: var(--text-muted);
+      font-size: 16px;
+      font-style: italic;
+      margin-top: 8px;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border-gold);
+      border-radius: 0px;
+      padding: 24px;
+      text-align: center;
+      position: relative;
+    }
+    .metric-card::after {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      pointer-events: none;
+    }
+    .metric-label {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .metric-value {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--gold-bright);
+      margin: 12px 0 6px;
+    }
+    .metric-sub {
+      font-size: 12px;
+      color: var(--gold);
+      font-style: italic;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border-gold);
+      border-radius: 0px;
+      padding: 32px;
+      position: relative;
+      margin-bottom: 48px;
+    }
+    .panel::after {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      pointer-events: none;
+    }
+    .panel-title {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-gold);
+    }
+    td {
+      padding: 16px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+      font-size: 14px;
+      color: var(--text);
+    }
+    tr:last-child td { border-bottom: none; }
+    .badge-gold {
+      display: inline-block;
+      font-family: var(--font-sans);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      border-radius: 0px;
+    }
+    footer {
+      border-top: 1px solid rgba(212, 175, 55, 0.3);
+      padding: 32px;
+      text-align: center;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">Aurelia &bull; Maison Priv&eacute;e</div>
+    <div class="nav-links">
+      <a href="#patrimoine">Patrimoine</a>
+      <a href="#allocations">Allocations</a>
+      <a href="#tresorerie">Tr&eacute;sorerie</a>
+      <a href="#archives">Archives</a>
+    </div>
+    <div>
+      <button class="btn-deco">Acc&egrave;s Mandat</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="header">
+      <div class="header-kicker">&mdash; &Eacute;tats des Actifs &mdash;</div>
+      <h1>L'Inventaire du Patrimoine</h1>
+      <p>Sovereign wealth conservation, precious metals reserve, and private equity custody.</p>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Valorisation Globale</div>
+        <div class="metric-value">$84,210,400</div>
+        <div class="metric-sub">+4.2% Rendement Annuel</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">R&eacute;serve d'Or &amp; Liquidit&eacute;</div>
+        <div class="metric-value">$19,450,000</div>
+        <div class="metric-sub">Lingots Zurich Certifi&eacute;s</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Ratio de Pr&eacute;servation</div>
+        <div class="metric-value">2.84</div>
+        <div class="metric-sub">Risque Minimis&eacute; AAA</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">&mdash; Mandats Strat&eacute;giques Majeurs &mdash;</div>
+      <table>
+        <thead>
+          <tr>
+            <th>D&eacute;signation du Domaine</th>
+            <th>Cat&eacute;gorie</th>
+            <th>Pond&eacute;ration</th>
+            <th>Estimation March&eacute;</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Domaine Viticole &amp; Foncier Zurich</strong></td>
+            <td>Dette Priv&eacute;e</td>
+            <td>28.4%</td>
+            <td>$23,915,750</td>
+            <td><span class="badge-gold">Actif</span></td>
+          </tr>
+          <tr>
+            <td><strong>Consortium &Eacute;nergie Propre Nordique</strong></td>
+            <td>Capital Direct</td>
+            <td>22.1%</td>
+            <td>$18,610,500</td>
+            <td><span class="badge-gold">Actif</span></td>
+          </tr>
+          <tr>
+            <td><strong>R&eacute;serve Mat&eacute;riaux Strat&eacute;giques</strong></td>
+            <td>Actifs Tangibles</td>
+            <td>16.5%</td>
+            <td>$13,894,700</td>
+            <td><span class="badge-gold">Arbitrage</span></td>
+          </tr>
+          <tr>
+            <td><strong>Obligations Souveraines Europ&eacute;ennes</strong></td>
+            <td>Rente Perp&eacute;tuelle</td>
+            <td>33.0%</td>
+            <td>$27,789,450</td>
+            <td><span class="badge-gold">Actif</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    Aurelia Maison Priv&eacute;e &mdash; Rendered in Art Deco (Contract: 0px radius, gold &amp; caviar palette, geometric symmetry, dual rules)
+  </footer>
+</body>
+</html>

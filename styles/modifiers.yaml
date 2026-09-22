@@ -1,0 +1,157 @@
+version: 1
+description: "Orthogonal Modifiers and Motion specifications for Design Director"
+
+modifiers:
+  # ─── Surface Modifiers ───────────────────────────────────────────────────────
+  surface:
+    - id: frosted-glass
+      name: Frosted Glass
+      description: "Translucent frosted surfaces with backdrop blur and specular hairlines."
+      tokens:
+        css:
+          --surface-glass-bg: "rgba(255, 255, 255, 0.05)"
+          --surface-glass-border: "rgba(255, 255, 255, 0.12)"
+          --surface-glass-blur: "12px"
+        tailwind:
+          backdropBlur:
+            DEFAULT: "12px"
+            md: "12px"
+            lg: "16px"
+      audit_whitelist:
+        tailwind_classes:
+          - "backdrop-blur-*"
+          - "backdrop-filter"
+          - "bg-opacity-*"
+          - "bg-white/*"
+          - "bg-black/*"
+        css_properties:
+          - "backdrop-filter"
+          - "-webkit-backdrop-filter"
+
+    - id: subtle-grain
+      name: Subtle Grain
+      description: "Tactile micro-grain noise overlay providing organic analog depth."
+      tokens:
+        css:
+          --surface-grain-opacity: "0.04"
+          --surface-grain-blend: "overlay"
+      audit_whitelist:
+        css_properties:
+          - "mix-blend-mode"
+          - "filter: url(#noise)"
+
+    - id: crt-scanlines
+      name: CRT Scanlines
+      description: "Simulated cathode-ray tube horizontal scanline lines and phosphor glow."
+      tokens:
+        css:
+          --surface-scanline-height: "2px"
+          --surface-scanline-opacity: "0.03"
+      audit_whitelist:
+        css_properties:
+          - "repeating-linear-gradient"
+
+    - id: fine-paper
+      name: Fine Paper
+      description: "Subtle cotton and linen fiber texture for editorial and craft foundations."
+      tokens:
+        css:
+          --surface-paper-texture: "rgba(0, 0, 0, 0.02)"
+      audit_whitelist:
+        css_properties:
+          - "background-blend-mode"
+
+    - id: chrome-specular
+      name: Chrome Specular
+      description: "Luminous metallic specular highlight gradients along top and left borders."
+      tokens:
+        css:
+          --border-specular-gradient: "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.05) 100%)"
+      audit_whitelist:
+        css_properties:
+          - "border-image"
+
+  # ─── Imagery Modifiers ───────────────────────────────────────────────────────
+  imagery:
+    - id: editorial
+      name: Editorial Photography
+      description: "High-contrast, art-directed photography with deep shadows and architectural lighting."
+      guidelines:
+        aspect_ratios: ["3:4", "16:9", "1:1"]
+        color_treatment: "desaturated or high-contrast duotone"
+
+    - id: technical
+      name: Technical Schematics
+      description: "Monochromatic isometric wireframes, architectural blueprints, and circuit traces."
+      guidelines:
+        stroke_width: "1px"
+        style: "orthographic or isometric vector SVG"
+
+    - id: photographic
+      name: Authentic Documentary
+      description: "Natural daylight, documentary realism, candid perspective without heavy post-processing."
+
+    - id: collage
+      name: Mixed-Media Collage
+      description: "Torn paper textures, archival stamps, photo cutouts, and layered mixed media."
+
+    - id: pixel
+      name: Pixel Art
+      description: "Crisp non-anti-aliased 8-bit and 16-bit pixel illustrations."
+      guidelines:
+        rendering: "image-rendering: pixelated"
+
+    - id: hand-drawn
+      name: Hand-Drawn Linework
+      description: "Imperfect ink brush, graphite pencil strokes, and artisanal sketches."
+
+  # ─── Typography Modifiers ───────────────────────────────────────────────────
+  typography:
+    - id: monospace
+      name: Monospace Accent
+      description: "JetBrains Mono or IBM Plex Mono applied strictly to metrics, keys, and tabular data."
+      fonts: ["JetBrains Mono", "IBM Plex Mono", "Fira Code"]
+
+    - id: display-serif
+      name: Dramatic Display Serif
+      description: "High-contrast Bodoni or Playfair serifs applied to monumental hero headings."
+      fonts: ["Bodoni Moda", "Playfair Display", "Italian Plate 70"]
+
+    - id: condensed
+      name: Ultra-Condensed Sans
+      description: "High-impact condensed grotesque fonts for tight editorial display and section badges."
+      fonts: ["Bebas Neue", "Oswald", "Anton"]
+
+    - id: handwritten
+      name: Handwritten Annotation
+      description: "Casual human annotations, editorial underlines, and personal notes."
+      fonts: ["Caveat", "Reenie Beanie", "Nanum Pen Script"]
+
+  # ─── Motion Modifiers ───────────────────────────────────────────────────────
+  motion:
+    - id: micro-snappy
+      name: Micro-Snappy
+      description: "Instantaneous, high-efficiency transitions calibrated for productivity and developer tools."
+      tokens:
+        duration_ms: 120
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)"
+        css:
+          --transition-fast: "120ms cubic-bezier(0.16, 1, 0.3, 1)"
+
+    - id: fluid-spring
+      name: Fluid Spring
+      description: "Smooth, organic physics-based spring curves for consumer and playful products."
+      tokens:
+        duration_ms: 350
+        easing: "cubic-bezier(0.34, 1.56, 0.64, 1)"
+        css:
+          --transition-spring: "350ms cubic-bezier(0.34, 1.56, 0.64, 1)"
+
+    - id: inert
+      name: Inert / Zero Motion
+      description: "Zero transitions and zero animations for instant terminal feedback and accessibility."
+      tokens:
+        duration_ms: 0
+        easing: "linear"
+        css:
+          --transition-none: "0ms"

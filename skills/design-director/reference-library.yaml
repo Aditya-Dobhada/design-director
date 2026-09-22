@@ -4,6 +4,9 @@ references:
     name: Linear
     category: developer-productivity
     archetype: high-craft-artisan-dark
+    primary_foundation: dark-minimal
+    secondary_influences:
+      - minimal-modern
     mode: strict-dark
     density: high
     spacing: tight-grid-8px
@@ -32,11 +35,11 @@ references:
       traits: [keyboard-first, obsessive-craft, understated, engineer-grade, fast]
       anti_traits: [playful, pastel, bloated, friendly-corporate, round-bubbly]
     mapped_style_layers:
-      layout: swiss-modular-high-density
-      typography: neo-grotesk-mono-accent
-      surfaces: dark-hairline-subtle-depth
-      color: obsidian-violet-accent
-      motion: micro-snappy
+      layout: dark-minimal/layout.md
+      typography: dark-minimal/typography.md
+      surfaces: dark-minimal/tokens.md
+      color: dark-minimal/tokens.md
+      motion: dark-minimal/motion.md
       imagery: isometric-vector-dark
     shift_rules:
       when_requested_more_like:
@@ -54,6 +57,9 @@ references:
     name: Traditional Bank (Chase / Barclays)
     category: legacy-financial-institution
     archetype: risk-averse-corporate
+    primary_foundation: minimal-modern
+    secondary_influences:
+      - swiss-editorial
     mode: light
     density: balanced
     spacing: standard-16px-padding
@@ -99,6 +105,9 @@ references:
     name: Stripe
     category: fintech-infrastructure
     archetype: refined-accessible-precision
+    primary_foundation: minimal-modern
+    secondary_influences:
+      - swiss-editorial
     mode: light-with-deep-dark-accents
     density: balanced
     spacing: geometric-16-24-32px
@@ -127,17 +136,20 @@ references:
       traits: [developer-beloved, polished, luminous, trustworthy, expansive]
       anti_traits: [harsh, messy, noisy, low-contrast, aggressive]
     mapped_style_layers:
-      layout: swiss-asymmetric-spacious
-      typography: neo-grotesk-refined
-      surfaces: layered-subtle-elevation
-      color: luminous-indigo-slate
-      motion: silky-physics
+      layout: minimal-modern/layout.md
+      typography: minimal-modern/typography.md
+      surfaces: minimal-modern/tokens.md
+      color: minimal-modern/tokens.md
+      motion: minimal-modern/motion.md
       imagery: geometric-vector-interactive
 
   - id: apple
     name: Apple
     category: consumer-hardware-software
     archetype: aspirational-minimal-humanist
+    primary_foundation: minimal-modern
+    secondary_influences:
+      - quiet-luxury
     mode: adaptive-light-dark
     density: spacious
     spacing: expansive-whitespace-32-64px
@@ -177,6 +189,10 @@ references:
     name: Vercel
     category: developer-platform
     archetype: monochrome-geometric-purist
+    primary_foundation: dark-minimal
+    secondary_influences:
+      - swiss-editorial
+      - terminal-cli
     mode: dark-first-monochrome
     density: high
     spacing: strict-8px-modular
@@ -216,6 +232,10 @@ references:
     name: Notion
     category: productivity-workspace
     archetype: warm-editorial-paper
+    primary_foundation: minimal-modern
+    secondary_influences:
+      - swiss-editorial
+      - organic-natural
     mode: warm-light
     density: compact
     spacing: typographic-8-16px
@@ -255,6 +275,9 @@ references:
     name: Pitch
     category: presentation-software
     archetype: design-forward-creative-suite
+    primary_foundation: dark-minimal
+    secondary_influences:
+      - minimal-modern
     mode: dark-or-punchy-light
     density: balanced
     spacing: modular-24px
@@ -294,6 +317,10 @@ references:
     name: Bloomberg Terminal
     category: financial-telemetry
     archetype: high-density-information-density
+    primary_foundation: terminal-cli
+    secondary_influences:
+      - retro-tech
+      - web-brutalism
     mode: strict-dark
     density: extreme-high
     spacing: dense-0-4px-grid
@@ -333,6 +360,10 @@ references:
     name: Teenage Engineering
     category: industrial-hardware-audio
     archetype: industrial-retro-tactile-minimal
+    primary_foundation: retro-americana
+    secondary_influences:
+      - bauhaus
+      - minimal-modern
     mode: matte-light-gray-or-warm-concrete
     density: high
     spacing: mechanical-tight-8-12px
@@ -372,6 +403,10 @@ references:
     name: Gumroad
     category: creator-commerce
     archetype: neo-brutalist-playful
+    primary_foundation: web-brutalism
+    secondary_influences:
+      - memphis-postmodern
+      - neo-brutalism
     mode: bright-high-energy-light
     density: balanced
     spacing: chunky-24px
@@ -411,6 +446,9 @@ references:
     name: Craigslist
     category: classifieds-raw-web
     archetype: raw-utilitarian-brutalist
+    primary_foundation: web-brutalism
+    secondary_influences:
+      - neo-brutalism
     mode: plain-light
     density: extreme-high
     spacing: zero-unnecessary-whitespace
@@ -450,6 +488,9 @@ references:
     name: Raycast
     category: desktop-launcher-productivity
     archetype: keyboard-first-command-dark
+    primary_foundation: dark-minimal
+    secondary_influences:
+      - terminal-cli
     mode: strict-dark-translucent
     density: high
     spacing: compact-8-12px
@@ -489,6 +530,9 @@ references:
     name: Retool
     category: internal-tools-platform
     archetype: enterprise-developer-density
+    primary_foundation: minimal-modern
+    secondary_influences:
+      - terminal-cli
     mode: light-or-dark
     density: high
     spacing: 8px-box-padding
@@ -528,6 +572,9 @@ references:
     name: Monzo
     category: modern-fintech-consumer
     archetype: friendly-accessible-neobank
+    primary_foundation: minimal-modern
+    secondary_influences:
+      - memphis-postmodern
     mode: light
     density: balanced
     spacing: generous-16-24px
@@ -567,6 +614,9 @@ references:
     name: Arc Browser
     category: consumer-software-creativity
     archetype: playful-tactile-customizer
+    primary_foundation: minimal-modern
+    secondary_influences:
+      - space-age-optimism
     mode: dynamic-color-theme-dependent
     density: spacious
     spacing: floating-dock-16px
@@ -606,6 +656,10 @@ references:
     name: Balenciaga
     category: avant-garde-luxury-fashion
     archetype: anti-fashion-luxury-brutalist
+    primary_foundation: high-fashion-editorial
+    secondary_influences:
+      - web-brutalism
+      - neo-brutalism
     mode: harsh-white-or-monochrome-void
     density: sparse
     spacing: radical-asymmetric-whitespace
@@ -645,6 +699,10 @@ references:
     name: Aesop
     category: artisanal-luxury-apothecary
     archetype: quiet-luxury-philosophical
+    primary_foundation: quiet-luxury
+    secondary_influences:
+      - organic-natural
+      - japanese-wabi-sabi
     mode: warm-earth-light
     density: spacious
     spacing: expansive-literary-whitespace-48px
@@ -684,6 +742,9 @@ references:
     name: Nike SNKRS
     category: streetwear-hype-commerce
     archetype: high-contrast-streetwear-editorial
+    primary_foundation: neo-brutalism
+    secondary_influences:
+      - high-fashion-editorial
     mode: strict-dark-or-punchy-white
     density: balanced
     spacing: bold-poster-32px
@@ -723,6 +784,9 @@ references:
     name: Figma
     category: design-tool-creative-software
     archetype: neutral-canvas-high-precision
+    primary_foundation: minimal-modern
+    secondary_influences:
+      - swiss-editorial
     mode: system-adaptive
     density: high
     spacing: pixel-grid-4-8px
@@ -762,6 +826,9 @@ references:
     name: Substack
     category: publishing-newsletter
     archetype: clean-editorial-words-first
+    primary_foundation: swiss-editorial
+    secondary_influences:
+      - minimal-modern
     mode: light-paper
     density: spacious
     spacing: typographic-measure-65ch
@@ -801,6 +868,9 @@ references:
     name: GitHub
     category: developer-code-forge
     archetype: pragmatic-developer-utility
+    primary_foundation: minimal-modern
+    secondary_influences:
+      - terminal-cli
     mode: dual-mode-light-dark
     density: high
     spacing: modular-8-16px
@@ -840,6 +910,9 @@ references:
     name: The Verge
     category: modern-tech-culture-journalism
     archetype: hyper-expressive-digital-broadsheet
+    primary_foundation: swiss-editorial
+    secondary_influences:
+      - web-brutalism
     mode: dual-high-voltage
     density: balanced
     spacing: dynamic-asymmetric-24-40px
@@ -879,6 +952,9 @@ references:
     name: Discord
     category: gaming-community-voice
     archetype: gaming-social-playful-dark
+    primary_foundation: dark-minimal
+    secondary_influences:
+      - cyberpunk
     mode: strict-dark-slate
     density: high
     spacing: 8-12px-tight-bubble
@@ -918,6 +994,9 @@ references:
     name: Spotify
     category: digital-streaming-entertainment
     archetype: dark-stage-vibrant-neon
+    primary_foundation: dark-minimal
+    secondary_influences:
+      - cyberpunk
     mode: strict-dark
     density: balanced
     spacing: fluid-card-grid-16-24px
@@ -957,6 +1036,9 @@ references:
     name: Vice / Dazed
     category: youth-subculture-media
     archetype: gritty-subcultural-brutalist
+    primary_foundation: web-brutalism
+    secondary_influences:
+      - high-fashion-editorial
     mode: high-contrast-monochrome-flash
     density: compact
     spacing: asymmetric-raw-12-24px
@@ -996,6 +1078,9 @@ references:
     name: OpenAI ChatGPT
     category: ai-conversational-interface
     archetype: serene-neutral-ai-canvas
+    primary_foundation: minimal-modern
+    secondary_influences:
+      - dark-minimal
     mode: dual-mode-clean
     density: spacious
     spacing: centered-column-24px

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — High Fashion Editorial</title>
+  <!-- DESIGN CONTRACT: high-fashion-editorial -->
+  <!-- NEVER: rounded corners, drop shadows, friendly corporate blue, pastel pills, comic fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;0,6..96,900;1,6..96,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #FFFFFF;
+      --bg-dark: #0A0A0A;
+      --text: #0A0A0A;
+      --text-muted: #555555;
+      --text-dim: #888888;
+      --border: #0A0A0A;
+      --border-hairline: rgba(10, 10, 10, 0.15);
+      --font-display: 'Bodoni Moda', serif;
+      --font-sans: 'Inter', sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    nav {
+      border-bottom: 1px solid var(--border);
+      height: 72px;
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+    .nav-links { display: flex; gap: 40px; }
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .btn-couture {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 12px 28px;
+      border: 1px solid var(--border);
+      background: var(--border);
+      color: #FFFFFF;
+      cursor: pointer;
+      border-radius: 0px;
+      transition: all 0.2s;
+    }
+    .btn-couture:hover {
+      background: #FFFFFF;
+      color: var(--border);
+    }
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 64px 48px;
+    }
+    .hero-editorial {
+      display: grid;
+      grid-template-columns: 55% 45%;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 64px;
+      margin-bottom: 64px;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 72px;
+      line-height: 0.95;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+    }
+    .hero-manifesto {
+      padding-left: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .hero-meta {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+    .hero-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .metrics-editorial {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 64px;
+    }
+    .metric-cell {
+      padding: 32px 24px;
+      border-right: 1px solid var(--border);
+    }
+    .metric-cell:last-child { border-right: none; }
+    .metric-num {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+    .metric-val {
+      font-family: var(--font-display);
+      font-size: 44px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .metric-note {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .lookbook-ledger {
+      margin-bottom: 64px;
+    }
+    .lookbook-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 16px;
+      margin-bottom: 0;
+    }
+    .lookbook-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      font-weight: 500;
+    }
+    td {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border-hairline);
+      font-size: 14px;
+    }
+    tr:last-child td { border-bottom: 1px solid var(--border); }
+    .td-num {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .tag-couture {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      border-radius: 0px;
+    }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 48px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">Aurelia</div>
+    <div class="nav-links">
+      <a href="#collection">Collection</a>
+      <a href="#ledger">Ledger N&deg; 04</a>
+      <a href="#archive">Monograph</a>
+    </div>
+    <div>
+      <button class="btn-couture">Access Folio</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="hero-editorial">
+      <div class="hero-title">
+        High<br>Capital<br>Discipline
+      </div>
+      <div class="hero-manifesto">
+        <div class="hero-meta">Edition 2026 // Private Treasury</div>
+        <p class="hero-text">
+          A definitive study in quantitative austerity and monumental balance. Capital deployment structured not for mass consensus, but for singular institutional permanence.
+        </p>
+      </div>
+    </div>
+
+    <div class="metrics-editorial">
+      <div class="metric-cell">
+        <div class="metric-num">N&deg; 01 &mdash; Valuation</div>
+        <div class="metric-val">$84.2M</div>
+        <div class="metric-note">+4.2% Net Monograph Return</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-num">N&deg; 02 &mdash; Reserve</div>
+        <div class="metric-val">$19.4M</div>
+        <div class="metric-note">Primary Liquidity Allocation</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-num">N&deg; 03 &mdash; Metrics</div>
+        <div class="metric-val">2.84</div>
+        <div class="metric-note">Sharpe Quality Index</div>
+      </div>
+    </div>
+
+    <div class="lookbook-ledger">
+      <div class="lookbook-header">
+        <div class="lookbook-title">Strategic Mandates Index</div>
+        <div style="font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;">Autumn 2026</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Asset / Strategy</th>
+            <th>Discipline</th>
+            <th>Weight</th>
+            <th>Valuation</th>
+            <th>Disposition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Zurich High-Yield Real Estate</strong></td>
+            <td>Private Debt</td>
+            <td>28.4%</td>
+            <td class="td-num">$23,915,750</td>
+            <td><span class="tag-couture">Acquired</span></td>
+          </tr>
+          <tr>
+            <td><strong>Nordic Clean Infrastructure Fund</strong></td>
+            <td>Direct Equity</td>
+            <td>22.1%</td>
+            <td class="td-num">$18,610,500</td>
+            <td><span class="tag-couture">Acquired</span></td>
+          </tr>
+          <tr>
+            <td><strong>Global Semiconductor Index</strong></td>
+            <td>Liquid Equity</td>
+            <td>16.5%</td>
+            <td class="td-num">$13,894,700</td>
+            <td><span class="tag-couture">Arbitrage</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sovereign Green Bonds (EU)</strong></td>
+            <td>Fixed Income</td>
+            <td>33.0%</td>
+            <td class="td-num">$27,789,450</td>
+            <td><span class="tag-couture">Acquired</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    <div>Aurelia Editions &mdash; Paris / Zurich</div>
+    <div>High Fashion Editorial &bull; 0px Radius &bull; Zero Shadows</div>
+  </footer>
+</body>
+</html>

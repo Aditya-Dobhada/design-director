@@ -11,12 +11,14 @@ A verification skill that statically scans frontend source code against a target
 
 Run via CLI inside the project:
 ```bash
-python3 skills/design-audit/audit_code.py <style_id> <target_directory_or_file>
+python3 skills/design-audit/audit_code.py <style_id> <target_directory_or_file> [--modifiers <mod1,mod2>]
 ```
 
 Examples:
 ```bash
 python3 skills/design-audit/audit_code.py quiet-luxury ./src
+python3 skills/design-audit/audit_code.py terminal-cli ./src
+python3 skills/design-audit/audit_code.py dark-minimal ./src --modifiers frosted-glass,subtle-grain
 python3 skills/design-audit/audit_code.py neo-brutalism ./index.html
 ```
 
@@ -25,20 +27,23 @@ python3 skills/design-audit/audit_code.py neo-brutalism ./index.html
 ## What It Checks
 
 1. **Surfaces & Radii:**
-   - Sharp styles (Quiet Luxury, Swiss Editorial, Bauhaus, Cyberpunk): Flags any `rounded-md`, `rounded-lg`, `rounded-full`, or `border-radius > 0px`.
-   - Brutalist styles (Neo-Brutalism, Maximalist): Flags pill utilities (`rounded-full`) on containers.
-   - Organic & Space Age: Flags `rounded-none` where curved pods are required.
+   - **Sharp styles (0px / `rounded-none` required):** `swiss-editorial`, `quiet-luxury`, `bauhaus`, `retro-americana`, `japanese-wabi-sabi`, `memphis-postmodern`, `terminal-cli`, `web-brutalism`, `art-deco`, `high-fashion-editorial`. Flags any `rounded-md`, `rounded-lg`, `rounded-full`, or `border-radius > 0px`.
+   - **Organic & Pod styles:** `space-age-optimism`, `organic-natural`, `y2k-frutiger-aero`, `mid-century-modern`. Flags `rounded-none` where curved pods (16–24px) are required.
+   - **Restrained Minimal styles:** `minimal-modern`, `dark-minimal`. Flags excessive container pill utilities (`rounded-full`, `rounded-3xl` on cards); mandates 4–8px bounded radii.
+   - **Brutalist styles:** `neo-brutalism`, `maximalist-dopamine`. Flags pill utilities (`rounded-full`) on containers; requires chunky 0–8px geometry.
 2. **Shadows & Depth:**
-   - Zero-blur styles (Swiss Editorial, Quiet Luxury, Bauhaus, Wabi-Sabi, Memphis, Retro Americana): Flags blurry drop shadows (`shadow-sm`, `shadow-md`, `shadow-lg`, `box-shadow` with blur > 0).
-   - Neo-Brutalism: Flags blurry shadows; mandates hard solid offset shadows (`4px 4px 0px #000`).
+   - **Zero-blur styles:** `swiss-editorial`, `quiet-luxury`, `bauhaus`, `japanese-wabi-sabi`, `memphis-postmodern`, `retro-americana`, `terminal-cli`, `web-brutalism`, `art-deco`, `high-fashion-editorial`. Flags blurry drop shadows (`shadow-sm`, `shadow-md`, `shadow-lg`, or `box-shadow` with blur > 0).
+   - **Neo-Brutalism & Maximalism:** Flags blurry shadows; mandates hard solid offset shadows (e.g. `4px 4px 0px #000`).
 3. **Borders:**
-   - Neo-Brutalism & Retro Americana: Flags faint 1px borders (`border-gray-200`); mandates 2–4px solid ink strokes.
+   - `neo-brutalism`, `retro-americana`, `maximalist-dopamine`: Flags faint 1px borders (`border-gray-200`); mandates 2–4px solid ink strokes.
 4. **Color & Canvas:**
-   - Quiet Luxury & Wabi-Sabi: Flags cold generic Tailwind grays (`bg-gray-100`, `text-slate-500`) and saturated neon accents.
-   - Cyberpunk: Flags light backgrounds (`bg-white`, `bg-gray-50`).
-   - Space Age Optimism: Flags pitch-black canvases; mandates warm optical white.
-5. **Typography:**
-   - Quiet Luxury: Flags generic sans-serif fallbacks on primary headings where high-contrast editorial serifs (`Cormorant Garamond`) are mandated.
+   - **Quiet Luxury, Wabi-Sabi, Organic Natural:** Flags cold generic Tailwind grays (`bg-gray-100`, `text-slate-500`) and saturated neon accents.
+   - **Strict Dark Canvas (`cyberpunk`, `terminal-cli`, `dark-minimal`):** Flags light backgrounds (`bg-white`, `bg-gray-50`, `bg-slate-50`).
+   - **Radiant Light Canvas (`space-age-optimism`, `mid-century-modern`):** Flags pitch-black canvases (`bg-black`, `bg-zinc-950`).
+5. **Modifiers Whitelist:**
+   - Flags unauthorized `backdrop-blur` or glassmorphism classes in sharp/brutalist styles unless the `frosted-glass` modifier is explicitly declared.
+6. **Typography:**
+   - Flags generic sans-serif fallbacks on primary headings where high-contrast editorial serifs or monospace fonts are mandated.
 
 ---
 

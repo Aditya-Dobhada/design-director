@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — Dark Minimal</title>
+  <!-- DESIGN CONTRACT: dark-minimal -->
+  <!-- NEVER: light backgrounds, rounded-none on cards, thick solid borders, rainbow neon glows -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09090B;
+      --surface: #121215;
+      --surface-elevated: #18181B;
+      --surface-hover: #222226;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.16);
+      --text: #EDEDED;
+      --text-muted: #A1A1AA;
+      --text-dim: #71717A;
+      --accent: #6366F1;
+      --accent-hover: #4F46E5;
+      --accent-subtle: rgba(99, 102, 241, 0.12);
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --shadow-dark: 0 4px 12px 0 rgba(0, 0, 0, 0.7);
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      height: 56px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-pip {
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(99, 102, 241, 0.6);
+    }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.15s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-actions { display: flex; gap: 12px; }
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 0 14px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-secondary {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: var(--surface-hover); border-color: var(--border-hover); }
+    .btn-primary {
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      color: #FFFFFF;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 32px;
+    }
+    .header {
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .header h1 {
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+    .header p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-dark);
+    }
+    .metric-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-family: var(--font-mono);
+    }
+    .metric-value {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 8px 0 4px;
+      color: var(--text);
+    }
+    .metric-sub {
+      font-size: 12px;
+      color: #34D399;
+      font-family: var(--font-mono);
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-dark);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 12px 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono);
+    }
+    td {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 13px;
+      color: var(--text);
+    }
+    .td-num { font-family: var(--font-mono); }
+    tr:last-child td { border-bottom: none; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+    }
+    .badge-active { background: rgba(52, 211, 153, 0.12); color: #34D399; border: 1px solid rgba(52, 211, 153, 0.2); }
+    .badge-pending { background: rgba(245, 158, 11, 0.12); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.2); }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 32px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">
+      <div class="nav-pip"></div>
+      Aurelia Console
+    </div>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#telemetry">Telemetry</a>
+      <a href="#positions">Positions</a>
+      <a href="#keys">API Keys</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-secondary">Filter</button>
+      <button class="btn btn-primary">Deploy Position</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="header">
+      <div>
+        <h1>Telemetry & Positions</h1>
+        <p>Real-time capital routing, quantitative execution, and risk bounds.</p>
+      </div>
+      <div>
+        <span class="badge badge-active">ENV: PRODUCTION</span>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">SYS.ASSETS_VALUED</div>
+        <div class="metric-value td-num">$84,210,400</div>
+        <div class="metric-sub">+4.2% (120ms delta)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">SYS.LIQUIDITY_BUFFER</div>
+        <div class="metric-value td-num">$19,450,000</div>
+        <div class="metric-sub">T-Bills SOFR +18bps</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">SYS.SHARPE_RATIO</div>
+        <div class="metric-value td-num">2.84</div>
+        <div class="metric-sub">Optimal VaR 99.8%</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Active Liquidity Allocations</div>
+        <button class="btn btn-secondary" style="height: 28px; font-size: 11px;">Inspect Logs</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Strategy Identifier</th>
+            <th>Asset Class</th>
+            <th>Allocation</th>
+            <th>Mark Valuation</th>
+            <th>Node Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>zurich-high-yield-re</strong></td>
+            <td>Private Debt</td>
+            <td class="td-num">28.4%</td>
+            <td class="td-num">$23,915,750</td>
+            <td><span class="badge badge-active">SYNCED</span></td>
+          </tr>
+          <tr>
+            <td><strong>nordic-clean-infra</strong></td>
+            <td>Direct Equity</td>
+            <td class="td-num">22.1%</td>
+            <td class="td-num">$18,610,500</td>
+            <td><span class="badge badge-active">SYNCED</span></td>
+          </tr>
+          <tr>
+            <td><strong>global-semiconductor</strong></td>
+            <td>Liquid Equity</td>
+            <td class="td-num">16.5%</td>
+            <td class="td-num">$13,894,700</td>
+            <td><span class="badge badge-pending">BALANCING</span></td>
+          </tr>
+          <tr>
+            <td><strong>sovereign-green-bonds</strong></td>
+            <td>Fixed Income</td>
+            <td class="td-num">33.0%</td>
+            <td class="td-num">$27,789,450</td>
+            <td><span class="badge badge-active">SYNCED</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    Aurelia Telemetry &mdash; Rendered in Dark Minimal (Contract: #09090B canvas, 1px translucent borders, 6–8px radius)
+  </footer>
+</body>
+</html>

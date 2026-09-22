@@ -45,24 +45,42 @@ PRD / README / Codebase Context
 
 ---
 
-## 3. Supported Design Taxonomy (12 Styles)
+## 3. Supported Design Taxonomy (20 Foundations across 7 Families)
 
-Each style is delivered as a consolidated, self-contained specification in [`styles/<style_id>.md`](file:///styles/) with complete tokens, typography, component geometry, and mandatory `NEVER` anti-patterns:
+Each foundation style is delivered as a consolidated, self-contained specification in [`styles/<style_id>.md`](file:///styles/) with complete tokens, typography, component geometry, and mandatory `NEVER` anti-patterns:
 
-| Style ID | Name | Visual Signature | Ideal Domain | Gallery Preview |
-|---|---|---|---|---|
-| `quiet-luxury` | **Quiet Luxury** | Alabaster (`#FBFBF9`), Cormorant Garamond 300, 0px radius, hairline dividers | Private wealth, high-end advisory, luxury | [quiet_luxury.html](file:///gallery/quiet_luxury.html) |
-| `swiss-editorial` | **Swiss / Editorial** | Pure white (`#FFFFFF`), Playfair 600, Swiss red (`#E30613`), 4+8 asymmetric grid | Media, architecture, dense data broadsheets | [swiss_editorial.html](file:///gallery/swiss_editorial.html) |
-| `neo-brutalism` | **Neo-Brutalism** | 3px solid ink borders, 4px solid black offset shadows, Space Grotesk | Creator platforms, dev tools, zines | [neo_brutalism.html](file:///gallery/neo_brutalism.html) |
-| `cyberpunk` | **Cyberpunk** | Obsidian dark (`#050508`), cyan HUD (`#00F5FF`), Rajdhani 700, chamfers | CLI telemetry, terminals, security consoles | [cyberpunk.html](file:///gallery/cyberpunk.html) |
-| `space-age-optimism` | **Space Age Optimism** | Warm optical white (`#FAFAF8`), molded pods (32px), NASA orange (`#FF5C00`) | Edtech, aerospace, optimistic platforms | [space_age_optimism.html](file:///gallery/space_age_optimism.html) |
-| `bauhaus` | **Bauhaus** | Constructivist 8px grid, primary triad (`#E03A3E`/`#FFD100`/`#004B97`), IBM Plex Sans | Engineering, industrial software, tools | [bauhaus.html](file:///gallery/bauhaus.html) |
-| `japanese-wabi-sabi` | **Japanese Wabi-Sabi** | Rice paper (`#FAF7F0`), charcoal ink wash, Mingei craft, Noto Serif JP 300 | Mindfulness, tea/craft, contemplative apps | [japanese_wabi_sabi.html](file:///gallery/japanese_wabi_sabi.html) |
-| `organic-natural` | **Organic Natural** | Bone canvas (`#F5F1E8`), living earth pigments (clay, moss, sap), river-stone pods | Sustainability, climate, botanicals | [organic_natural.html](file:///gallery/organic_natural.html) |
-| `retro-americana` | **Retro Americana** | Cream parchment (`#F9F0DC`), vermilion (`#C8391E`), Saul Bass geometry, slab type | Food, heritage brands, national parks | [retro_americana.html](file:///gallery/retro_americana.html) |
-| `y2k-frutiger-aero` | **Y2K / Frutiger Aero** | Glossy specular glassmorphism, aqua-to-lime gradients, Nunito 800 | Consumer productivity, playful apps | [y2k_frutiger_aero.html](file:///gallery/y2k_frutiger_aero.html) |
-| `memphis-postmodern` | **Memphis Postmodern** | Polka dots, diagonal hatch patterns, geometric squiggles, Syne 800 | Drops, fashion, experimental portfolios | [memphis_postmodern.html](file:///gallery/memphis_postmodern.html) |
-| `maximalist-dopamine` | **Maximalist Dopamine** | Acid yellow (`#FFF500`), colliding neon hues, multi-color drop shadows | Streetwear, music, youth culture | [maximalist_dopamine.html](file:///gallery/maximalist_dopamine.html) |
+| Family | Style ID | Name | Visual Signature | Ideal Domain | Gallery Preview |
+|---|---|---|---|---|---|
+| **Modern** | `minimal-modern` | **Minimal Modern** | High whitespace, neutral slate, 4–8px radius, Sohne/Inter | SaaS, productivity, developer tooling | [minimal_modern.html](file:///gallery/minimal_modern.html) |
+| **Modern** | `dark-minimal` | **Dark Minimal** | Obsidian dark canvas, hairline borders, muted slate, Inter | Developer consoles, terminal tooling, dark SaaS | [dark_minimal.html](file:///gallery/dark_minimal.html) |
+| **Modern** | `swiss-editorial` | **Swiss / Editorial** | Pure white (`#FFFFFF`), Playfair 600, Swiss red (`#E30613`), 4+8 asymmetric grid | Media, architecture, dense data broadsheets | [swiss_editorial.html](file:///gallery/swiss_editorial.html) |
+| **Historical** | `bauhaus` | **Bauhaus** | Constructivist 8px grid, primary triad (`#E03A3E`/`#FFD100`/`#004B97`), IBM Plex Sans | Engineering, industrial software, tools | [bauhaus.html](file:///gallery/bauhaus.html) |
+| **Historical** | `art-deco` | **Art Deco** | Obsidian & rich gold, stepped geometry, hairpin borders, 0px radius | Luxury hospitality, prestige fintech, editorial | [art_deco.html](file:///gallery/art_deco.html) |
+| **Historical** | `mid-century-modern` | **Mid-Century Modern** | Warm olive & mustard, teak brown, organic curved pods (16px) | Architecture, curated retail, lifestyle | [mid_century_modern.html](file:///gallery/mid_century_modern.html) |
+| **Retro** | `retro-americana` | **Retro Americana** | Cream parchment (`#F9F0DC`), vermilion (`#C8391E`), Saul Bass geometry, slab type | Food, heritage brands, national parks | [retro_americana.html](file:///gallery/retro_americana.html) |
+| **Retro** | `terminal-cli` | **Terminal / CLI** | Fixed pitch amber/green phosphor, 0px radius, character cell borders | Devops telemetry, network monitoring, hacking consoles | [terminal_cli.html](file:///gallery/terminal_cli.html) |
+| **Retro** | `y2k-frutiger-aero` | **Y2K / Frutiger Aero** | Glossy specular glassmorphism, aqua-to-lime gradients, Nunito 800 | Consumer productivity, playful apps | [y2k_frutiger_aero.html](file:///gallery/y2k_frutiger_aero.html) |
+| **Futuristic** | `cyberpunk` | **Cyberpunk** | Obsidian dark (`#050508`), cyan HUD (`#00F5FF`), Rajdhani 700, chamfers | CLI telemetry, terminals, security consoles | [cyberpunk.html](file:///gallery/cyberpunk.html) |
+| **Futuristic** | `space-age-optimism` | **Space Age Optimism** | Warm optical white (`#FAFAF8`), molded pods (32px), NASA orange (`#FF5C00`) | Edtech, aerospace, optimistic platforms | [space_age_optimism.html](file:///gallery/space_age_optimism.html) |
+| **Organic** | `japanese-wabi-sabi` | **Japanese Wabi-Sabi** | Rice paper (`#FAF7F0`), charcoal ink wash, Mingei craft, Noto Serif JP 300 | Mindfulness, tea/craft, contemplative apps | [japanese_wabi_sabi.html](file:///gallery/japanese_wabi_sabi.html) |
+| **Organic** | `organic-natural` | **Organic Natural** | Bone canvas (`#F5F1E8`), living earth pigments (clay, moss, sap), river-stone pods | Sustainability, climate, botanicals | [organic_natural.html](file:///gallery/organic_natural.html) |
+| **Experimental** | `neo-brutalism` | **Neo-Brutalism** | 3px solid ink borders, 4px solid black offset shadows, Space Grotesk | Creator platforms, dev tools, zines | [neo_brutalism.html](file:///gallery/neo_brutalism.html) |
+| **Experimental** | `web-brutalism` | **Web Brutalism** | Default browser box-model, pure raw HTML typography, unstyled blue links | Web archives, hacker forums, anti-design manifestos | [web_brutalism.html](file:///gallery/web_brutalism.html) |
+| **Experimental** | `memphis-postmodern` | **Memphis Postmodern** | Polka dots, diagonal hatch patterns, geometric squiggles, Syne 800 | Drops, fashion, experimental portfolios | [memphis_postmodern.html](file:///gallery/memphis_postmodern.html) |
+| **Experimental** | `maximalist-dopamine` | **Maximalist Dopamine** | Acid yellow (`#FFF500`), colliding neon hues, multi-color drop shadows | Streetwear, music, youth culture | [maximalist_dopamine.html](file:///gallery/maximalist_dopamine.html) |
+| **Experimental** | `vaporwave` | **Vaporwave** | Sunset purple-pink gradients, wireframe horizons, retro aesthetic | Creative platforms, synthwave, digital audio | [vaporwave.html](file:///gallery/vaporwave.html) |
+| **Luxury** | `quiet-luxury` | **Quiet Luxury** | Alabaster (`#FBFBF9`), Cormorant Garamond 300, 0px radius, hairline dividers | Private wealth, high-end advisory, luxury | [quiet_luxury.html](file:///gallery/quiet_luxury.html) |
+| **Luxury** | `high-fashion-editorial` | **High Fashion Editorial** | Stark runway broadsheet, stark all-caps, razor 0px lines, flash contrast | Haute couture, avant-garde design, high fashion | [high_fashion_editorial.html](file:///gallery/high_fashion_editorial.html) |
+
+---
+
+## 3.1 Modifiers Architecture (`styles/modifiers.yaml`)
+
+Rather than multiplying styles combinatorially, four orthogonal modifier dimensions compose cleanly over any foundation:
+1. **Surface:** `frosted-glass` (specular translucent blur), `subtle-grain` (film grain overlay), `crt-scanlines` (phosphor scanlines), `fine-paper` (tactile fibrous texture).
+2. **Imagery:** `monochrome-photography`, `wireframe-technical`, `duotone-accent`, `candid-flash`.
+3. **Typography:** `monospace-accent`, `extended-caps`, `ink-trap-emphasis`.
+4. **Motion:** `kinetic-pop` (snappy spring), `slow-drift` (ambient cinematic glide), `instant` (zero-latency keystroke).
 
 ---
 

@@ -245,6 +245,30 @@ class TestLevel1AuditOnP2Fixtures(unittest.TestCase):
     def test_maximalist_dopamine_p2(self):
         self._audit_file("maximalist-dopamine", "p2_maximalist_dopamine.html")
 
+    def test_minimal_modern_p2(self):
+        self._audit_file("minimal-modern", "minimal_modern.html")
+
+    def test_dark_minimal_p2(self):
+        self._audit_file("dark-minimal", "dark_minimal.html")
+
+    def test_terminal_cli_p2(self):
+        self._audit_file("terminal-cli", "terminal_cli.html")
+
+    def test_web_brutalism_p2(self):
+        self._audit_file("web-brutalism", "web_brutalism.html")
+
+    def test_art_deco_p2(self):
+        self._audit_file("art-deco", "art_deco.html")
+
+    def test_mid_century_modern_p2(self):
+        self._audit_file("mid-century-modern", "mid_century_modern.html")
+
+    def test_vaporwave_p2(self):
+        self._audit_file("vaporwave", "vaporwave.html")
+
+    def test_high_fashion_editorial_p2(self):
+        self._audit_file("high-fashion-editorial", "high_fashion_editorial.html")
+
 
 if __name__ == "__main__":
     unittest.main()

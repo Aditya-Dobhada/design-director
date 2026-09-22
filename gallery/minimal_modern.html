@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — Minimal Modern</title>
+  <!-- DESIGN CONTRACT: minimal-modern -->
+  <!-- NEVER: rounded-none on cards, rounded-full on containers, 3px ink borders, rainbow gradients -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #FAFAFA;
+      --surface: #FFFFFF;
+      --surface-hover: #F4F4F5;
+      --border: #E4E4E7;
+      --border-subtle: #F4F4F5;
+      --text: #09090B;
+      --text-muted: #71717A;
+      --text-subtle: #A1A1AA;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-subtle: #EFF6FF;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      height: 56px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.15s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-actions { display: flex; gap: 12px; }
+    .btn {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 0 14px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-secondary {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: var(--surface-hover); }
+    .btn-primary {
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      color: #FFFFFF;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 32px;
+    }
+    .header {
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .header h1 {
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+    .header p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .metric-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .metric-value {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 8px 0 4px;
+      color: var(--text);
+    }
+    .metric-sub {
+      font-size: 12px;
+      color: #10B981;
+      font-weight: 500;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 12px 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 13px;
+      color: var(--text);
+    }
+    tr:last-child td { border-bottom: none; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .badge-active { background: #ECFDF5; color: #047857; }
+    .badge-pending { background: #FFFBEB; color: #B45309; }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 32px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-subtle);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">
+      <div class="nav-dot"></div>
+      Aurelia
+    </div>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#treasury">Treasury</a>
+      <a href="#analytics">Analytics</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-secondary">Export</button>
+      <button class="btn btn-primary">New Position</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="header">
+      <div>
+        <h1>Asset Overview</h1>
+        <p>Institutional liquidity, risk metrics, and active allocations.</p>
+      </div>
+      <div>
+        <span class="badge badge-active">Updated Just Now</span>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Total Portfolio Value</div>
+        <div class="metric-value">$84,210,400</div>
+        <div class="metric-sub">+4.2% past 30 days</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Operating Liquidity</div>
+        <div class="metric-value">$19,450,000</div>
+        <div class="metric-sub">+1.8% yield (T-Bills)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Sharpe Ratio</div>
+        <div class="metric-value">2.84</div>
+        <div class="metric-sub">99.8% risk envelope</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Active Strategic Positions</div>
+        <button class="btn btn-secondary" style="height: 28px; font-size: 12px;">Filter</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Asset / Strategy</th>
+            <th>Type</th>
+            <th>Allocation</th>
+            <th>Current Valuation</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Zurich High-Yield Real Estate</strong></td>
+            <td>Private Debt</td>
+            <td>28.4%</td>
+            <td>$23,915,750</td>
+            <td><span class="badge badge-active">Active</span></td>
+          </tr>
+          <tr>
+            <td><strong>Nordic Clean Infrastructure Fund</strong></td>
+            <td>Direct Equity</td>
+            <td>22.1%</td>
+            <td>$18,610,500</td>
+            <td><span class="badge badge-active">Active</span></td>
+          </tr>
+          <tr>
+            <td><strong>Global Semiconductor Index</strong></td>
+            <td>Liquid Equity</td>
+            <td>16.5%</td>
+            <td>$13,894,700</td>
+            <td><span class="badge badge-pending">Rebalancing</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sovereign Green Bonds (EU)</strong></td>
+            <td>Fixed Income</td>
+            <td>33.0%</td>
+            <td>$27,789,450</td>
+            <td><span class="badge badge-active">Active</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    Aurelia Asset Management &mdash; Rendered in Minimal Modern (Contract: 6–8px radius, neutral zinc, ambient elevation)
+  </footer>
+</body>
+</html>

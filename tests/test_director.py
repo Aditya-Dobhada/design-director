@@ -222,25 +222,61 @@ class TestDesignDirector(unittest.TestCase):
         self.assertIn("radius_violation", bau_violation_types)
         self.assertIn("shadow_violation", bau_violation_types)
 
-    def test_all_twelve_styles_taxonomy(self):
-        """Verifies all 12 styles in the taxonomy can generate valid specs and contracts."""
-        self.assertEqual(len(SUPPORTED_STYLES), 12)
+    def test_all_twenty_styles_taxonomy(self):
+        """Verifies all 20 styles in the taxonomy can generate valid specs and contracts."""
+        self.assertEqual(len(SUPPORTED_STYLES), 20)
         expected_styles = {
             "swiss-editorial", "neo-brutalism", "y2k-frutiger-aero", "quiet-luxury",
             "cyberpunk", "retro-americana", "memphis-postmodern", "space-age-optimism",
-            "japanese-wabi-sabi", "bauhaus", "organic-natural", "maximalist-dopamine"
+            "japanese-wabi-sabi", "bauhaus", "organic-natural", "maximalist-dopamine",
+            "minimal-modern", "dark-minimal", "terminal-cli", "web-brutalism",
+            "art-deco", "mid-century-modern", "vaporwave", "high-fashion-editorial"
         }
         self.assertEqual(set(SUPPORTED_STYLES), expected_styles)
 
         for style in SUPPORTED_STYLES:
             spec = create_design_spec(style)
-            contract = generate_implementation_contract(spec, "Build product UI")
+            contract = generate_implementation_contract(spec, f"Build product UI in {style}")
             self.assertIn("HARD IMPLEMENTATION DESIGN CONTRACT", contract)
             self.assertIn(style.upper(), contract)
             self.assertIn("NEVER", contract)
 
+    def test_contract_generation_with_modifiers(self):
+        """Verifies contracts properly incorporate declared orthogonal modifiers."""
+        spec = create_design_spec("dark-minimal")
+        contract = generate_implementation_contract(
+            spec,
+            "Build an observability console",
+            modifiers=["frosted-glass", "micro-snappy"]
+        )
+        self.assertIn("Active Orthogonal Modifiers", contract)
+        self.assertIn("frosted-glass", contract)
+        self.assertIn("micro-snappy", contract)
+        self.assertIn("backdrop-blur", contract)
+
+    def test_ambiguous_prd_multi_defensible_recommendations(self):
+        """Verifies an ambiguous PRD returns diverse defensible recommendations without score ties."""
+        ambiguous_context = """
+        # ArchStudio AI
+        An AI collaboration platform for independent architects and industrial designers.
+        Must support CAD file inspections, client moodboards, and specification drafting.
+        Needs to feel high-craft, precise, and professional, yet inspiring for creative spatial work.
+        """
+        brief = extract_design_brief(ambiguous_context)
+        recs = recommend_styles(brief)
+
+        self.assertTrue(len(recs) >= 2, "Expected at least 2 recommendations for ambiguous PRD")
+        rec_ids = [r["id"] for r in recs]
+        
+        # Verify valid qualitative ratings and honest tradeoffs
+        valid_ratings = {"Strong fit", "Good fit", "Possible"}
+        for r in recs:
+            self.assertIn(r["fit_rating"], valid_ratings)
+            self.assertTrue(len(r["tradeoffs"]) >= 1)
+            self.assertTrue(len(r["reasoning"]) >= 15)
+
     def test_new_styles_refinement(self):
-        """Tests refinement prompts targeting the new families."""
+        """Tests refinement prompts targeting the expanded style families."""
         base_spec = create_design_spec("swiss-editorial")
 
         # Test organic refinement
@@ -264,6 +300,28 @@ class TestDesignDirector(unittest.TestCase):
         # Test maximalist dopamine refinement
         res_max = refine_spec(base_spec, "more maximalist dopamine sticker bomb")
         self.assertIn("maximalist-dopamine", res_max["updated_spec"]["layers"]["surfaces"])
+
+        # Test terminal CLI refinement
+        res_cli = refine_spec(base_spec, "make it look like a terminal CLI console")
+        self.assertIn("terminal-cli", res_cli["updated_spec"]["layers"]["surfaces"])
+        self.assertIn("terminal-cli", res_cli["updated_spec"]["layers"]["color"])
+
+        # Test art deco refinement
+        res_deco = refine_spec(base_spec, "shift towards the Great Gatsby art deco luxury")
+        self.assertIn("art-deco", res_deco["updated_spec"]["layers"]["surfaces"])
+        self.assertIn("art-deco", res_deco["updated_spec"]["layers"]["color"])
+
+        # Test vaporwave refinement
+        res_vapor = refine_spec(base_spec, "give it 80s synthwave vaporwave aesthetics")
+        self.assertIn("vaporwave", res_vapor["updated_spec"]["layers"]["surfaces"])
+
+        # Test high fashion editorial refinement
+        res_fashion = refine_spec(base_spec, "style like balenciaga high-fashion runway editorial")
+        self.assertIn("high-fashion-editorial", res_fashion["updated_spec"]["layers"]["surfaces"])
+
+        # Test mid-century modern refinement
+        res_mcm = refine_spec(base_spec, "bring in mid-century modern eames era vibes")
+        self.assertIn("mid-century-modern", res_mcm["updated_spec"]["layers"]["surfaces"])
 
 if __name__ == "__main__":
     unittest.main()

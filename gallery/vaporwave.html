@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — Vaporwave</title>
+  <!-- DESIGN CONTRACT: vaporwave -->
+  <!-- NEVER: corporate neutral gray, earthy muted tones, flat minimal monochrome, generic modern sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #1F132B;
+      --bg-void: #150B24;
+      --surface: #2A1B3D;
+      --pink: #FF71CE;
+      --cyan: #01CDFE;
+      --purple: #B967FF;
+      --yellow: #FFE373;
+      --mint: #05FFA1;
+      --text: #FFFFFF;
+      --text-muted: #E8D5F5;
+      --text-dim: #9578A8;
+      --radius-sm: 4px;
+      --font-serif: 'Playfair Display', serif;
+      --font-pixel: 'VT323', monospace;
+    }
+    body {
+      background: var(--bg);
+      background-image: linear-gradient(180deg, #150B24 0%, #2A143D 50%, #10061C 100%);
+      color: var(--text);
+      font-family: var(--font-serif);
+      font-size: 15px;
+      line-height: 1.5;
+      min-height: 100vh;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(1, 205, 254, 0.03) 2px, rgba(1, 205, 254, 0.03) 4px);
+      pointer-events: none;
+      z-index: 999;
+    }
+    nav {
+      background: var(--surface);
+      border-bottom: 2px solid var(--pink);
+      box-shadow: 0 0 16px rgba(255, 113, 206, 0.3);
+      height: 60px;
+      padding: 0 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--pink);
+      text-shadow: 2px 2px 0px var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-jp {
+      font-family: var(--font-pixel);
+      font-size: 16px;
+      color: var(--cyan);
+    }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a {
+      font-family: var(--font-pixel);
+      font-size: 18px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--cyan);
+      text-shadow: 0 0 8px var(--cyan);
+    }
+    .btn-vapor {
+      font-family: var(--font-pixel);
+      font-size: 18px;
+      padding: 4px 16px;
+      border-radius: 2px;
+      border: 2px solid var(--pink);
+      background: transparent;
+      color: var(--pink);
+      box-shadow: 2px 2px 0px var(--cyan);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-vapor:hover {
+      background: var(--pink);
+      color: #1F132B;
+      box-shadow: -2px -2px 0px var(--cyan);
+    }
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 40px 32px;
+    }
+    .header {
+      margin-bottom: 36px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 38px;
+      color: var(--text);
+      text-shadow: 3px 3px 0px var(--pink), -2px -2px 0px var(--cyan);
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-family: var(--font-pixel);
+      font-size: 20px;
+      color: var(--yellow);
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--pink);
+      box-shadow: 3px 3px 0px var(--cyan);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+    }
+    .metric-label {
+      font-family: var(--font-pixel);
+      font-size: 16px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .metric-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin: 8px 0;
+      text-shadow: 0 0 10px rgba(255, 113, 206, 0.5);
+    }
+    .metric-sub {
+      font-family: var(--font-pixel);
+      font-size: 15px;
+      color: var(--mint);
+    }
+    .window {
+      background: var(--surface);
+      border: 2px solid var(--cyan);
+      box-shadow: 4px 4px 0px var(--pink);
+      border-radius: var(--radius-sm);
+      margin-bottom: 36px;
+      overflow: hidden;
+    }
+    .window-bar {
+      background: linear-gradient(90deg, var(--cyan) 0%, var(--purple) 100%);
+      padding: 6px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #1F132B;
+      font-family: var(--font-pixel);
+      font-size: 16px;
+      font-weight: bold;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th {
+      font-family: var(--font-pixel);
+      font-size: 16px;
+      color: var(--yellow);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--cyan);
+      text-transform: uppercase;
+    }
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 113, 206, 0.2);
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    tr:last-child td { border-bottom: none; }
+    .badge-v {
+      font-family: var(--font-pixel);
+      font-size: 14px;
+      padding: 2px 8px;
+      border: 1px solid var(--mint);
+      color: var(--mint);
+      background: rgba(5, 255, 161, 0.1);
+    }
+    footer {
+      border-top: 1px solid rgba(255, 113, 206, 0.3);
+      padding: 24px;
+      text-align: center;
+      font-family: var(--font-pixel);
+      font-size: 16px;
+      color: var(--text-dim);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">
+      Aurelia
+      <span class="nav-jp">// アウレリア資本 1995</span>
+    </div>
+    <div class="nav-links">
+      <a href="#vibe">[01. HORIZON]</a>
+      <a href="#assets">[02. ASSET_DREAM]</a>
+      <a href="#statue">[03. MARBLE_VAULT]</a>
+    </div>
+    <div>
+      <button class="btn-vapor">EXECUTE VAPOR</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="header">
+      <h1>AURELIA DREAMS &bull; 資本</h1>
+      <p>ESTABLISHED 1989 &mdash; DIGITAL PARADISE FINANCIAL PROTOCOL</p>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">SYSTEM_NAV // 総資産</div>
+        <div class="metric-value">$84,210,400</div>
+        <div class="metric-sub">&gt; +4.2% VAPOR WAVE HARVEST</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">LIQUID_DREAM // 流動性</div>
+        <div class="metric-value">$19,450,000</div>
+        <div class="metric-sub">&gt; TOKYO REAL ESTATE YIELD</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">PARADISE_INDEX // 指数</div>
+        <div class="metric-value">2.84</div>
+        <div class="metric-sub">&gt; SYNTHWAVE EQUILIBRIUM</div>
+      </div>
+    </div>
+
+    <div class="window">
+      <div class="window-bar">
+        <span>AURELIA_STRATEGY_LEDGER.EXE</span>
+        <span>[ _ ] [ 口 ] [ X ]</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ASSET IDENTIFIER</th>
+            <th>SECTOR</th>
+            <th>WEIGHT</th>
+            <th>MARK VALUE</th>
+            <th>STATUS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Zurich High-Yield Real Estate</strong></td>
+            <td>Private Debt</td>
+            <td>28.4%</td>
+            <td>$23,915,750</td>
+            <td><span class="badge-v">ACTIVE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Nordic Clean Infrastructure</strong></td>
+            <td>Direct Equity</td>
+            <td>22.1%</td>
+            <td>$18,610,500</td>
+            <td><span class="badge-v">ACTIVE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Global Semiconductor Index</strong></td>
+            <td>Liquid Equity</td>
+            <td>16.5%</td>
+            <td>$13,894,700</td>
+            <td><span class="badge-v">REBALANCING</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sovereign Green Bonds (EU)</strong></td>
+            <td>Fixed Income</td>
+            <td>33.0%</td>
+            <td>$27,789,450</td>
+            <td><span class="badge-v">ACTIVE</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    Aurelia Corporation &mdash; Rendered in Vaporwave (Contract: pastel pink/cyan, CRT artifacts, Japanese typography, retro bevels)
+  </footer>
+</body>
+</html>

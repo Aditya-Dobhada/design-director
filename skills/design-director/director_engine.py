@@ -19,6 +19,7 @@ from typing import Dict, List, Any, Optional
 
 REFERENCE_LIBRARY_PATH = Path(__file__).parent / "reference-library.yaml"
 STYLES_DIR = Path(__file__).resolve().parent.parent.parent / "styles"
+MODIFIERS_PATH = STYLES_DIR / "modifiers.yaml"
 
 SUPPORTED_STYLES = [
     "swiss-editorial",
@@ -32,8 +33,24 @@ SUPPORTED_STYLES = [
     "japanese-wabi-sabi",
     "bauhaus",
     "organic-natural",
-    "maximalist-dopamine"
+    "maximalist-dopamine",
+    # 8 New Foundations
+    "minimal-modern",
+    "dark-minimal",
+    "terminal-cli",
+    "web-brutalism",
+    "art-deco",
+    "mid-century-modern",
+    "vaporwave",
+    "high-fashion-editorial"
 ]
+
+def load_modifiers() -> Dict[str, Any]:
+    if not MODIFIERS_PATH.exists():
+        return {}
+    with open(MODIFIERS_PATH, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+        return data.get("modifiers", {})
 
 def load_reference_library() -> List[Dict[str, Any]]:
     if not REFERENCE_LIBRARY_PATH.exists():
@@ -153,7 +170,19 @@ def extract_design_brief(context_text: str) -> Dict[str, Any]:
         premium_accessible = "Refined Professional"
         futuristic_institutional = "Contemporary Modern"
 
-    # ── 8. Luxury / Premium Consumer ─────────────────────────────────────────
+    # ── 8. Architecture / Spatial Design ─────────────────────────────────────
+    elif any(k in text_lower for k in ["architect", "architecture", "interior design", "furniture", "mid-century", "eames", "building"]):
+        product_type = "Architecture & Spatial Design"
+        audience = "Architects, Designers, and Spatial Curators"
+        traits = ["architectural", "geometric", "crafted", "warm"]
+        density = "balanced"
+        info_load = "visual-grid"
+        workflow = "exploratory-browsing"
+        playful_serious = "Balanced"
+        premium_accessible = "Refined Professional"
+        futuristic_institutional = "Contemporary Modern"
+
+    # ── 9. Luxury / Premium Consumer ─────────────────────────────────────────
     # Must come before Creator so "boutique" and "artisanal" don't fall into the
     # Creator bucket (which sets Accessible/Mass Appeal premium positioning).
     elif any(k in text_lower for k in ["luxury", "boutique", "premium", "exclusive", "bespoke", "couture", "artisanal", "high-end", "atelier"]):
@@ -275,12 +304,12 @@ def recommend_styles(brief: Dict[str, Any]) -> List[Dict[str, Any]]:
             ]
         })
         recs.append({
-            "name": "Japanese Wabi-Sabi",
-            "style_id": "japanese-wabi-sabi",
+            "name": "Art Deco",
+            "style_id": "art-deco",
             "fit_rating": "Good fit",
-            "reasoning": "Contemplative rice-paper tones, Mingei craft philosophy, and profound ma (whitespace) communicate timeless permanence, humility, and generational stewardship.",
+            "reasoning": "Geometric symmetry, caviar black canvas, and burnished gold hairlines communicate formal luxury, heritage pedigree, and architectural permanence.",
             "tradeoffs": [
-                "Extreme quietness and organic asymmetry can feel unfamiliar to users expecting traditional financial dashboards."
+                "High visual ornamentation and strict symmetry may feel too ornate for purely utilitarian data tables."
             ]
         })
         recs.append({
@@ -291,6 +320,64 @@ def recommend_styles(brief: Dict[str, Any]) -> List[Dict[str, Any]]:
             "tradeoffs": [
                 "Stark monochrome palette can feel overly sterile or clinical if not softened with an intentional warm accent.",
                 "Demands high typographic discipline in tabular layouts."
+            ]
+        })
+    elif "architecture" in p_type or "spatial" in p_type:
+        recs.append({
+            "name": "Mid-Century Modern",
+            "style_id": "mid-century-modern",
+            "fit_rating": "Strong fit",
+            "reasoning": "Warm architectural parchment, atomic pod curves (16-24px), terracotta and olive palette, and modernist geometric typography celebrate organic materials and structural clarity.",
+            "tradeoffs": [
+                "Warm color blocks and organic radii reduce raw tabular line density.",
+                "Requires high-quality photography and intentional spatial balance."
+            ]
+        })
+        recs.append({
+            "name": "Swiss / Editorial",
+            "style_id": "swiss-editorial",
+            "fit_rating": "Good fit",
+            "reasoning": "International Typographic Style grid precision, asymmetric layouts, and monumental typography treat architectural projects like museum monographs.",
+            "tradeoffs": [
+                "Zero-radius sharp edges and stark monochrome can feel clinical without warm photographic assets."
+            ]
+        })
+        recs.append({
+            "name": "Bauhaus",
+            "style_id": "bauhaus",
+            "fit_rating": "Good fit",
+            "reasoning": "Form strictly follows function: 8px constructivist grid and functional geometric typography mirror modernist architectural heritage.",
+            "tradeoffs": [
+                "Primary color blocks can feel austere or unyielding for softer lifestyle contexts."
+            ]
+        })
+    elif "couture" in p_type or "fashion" in p_type:
+        recs.append({
+            "name": "High Fashion Editorial",
+            "style_id": "high-fashion-editorial",
+            "fit_rating": "Strong fit",
+            "reasoning": "Monumental Bodoni display headlines, micro-grotesque metadata, razor-thin hairlines, and asymmetric runway grids bring high-drama couture sophistication.",
+            "tradeoffs": [
+                "Severe typographic scale contrast requires strict editorial discipline and short, punchy copy.",
+                "Zero drop shadows and knife-edge corners demand immaculate layout composition."
+            ]
+        })
+        recs.append({
+            "name": "Quiet Luxury",
+            "style_id": "quiet-luxury",
+            "fit_rating": "Good fit",
+            "reasoning": "Warm alabaster tones and Cormorant Garamond headings create an understated, discreet, bespoke luxury feeling.",
+            "tradeoffs": [
+                "Generous whitespace limits information density."
+            ]
+        })
+        recs.append({
+            "name": "Art Deco",
+            "style_id": "art-deco",
+            "fit_rating": "Good fit",
+            "reasoning": "Stepped geometry, burnished gold accents, and caviar black surfaces bring 1920s glamour and formal craftsmanship.",
+            "tradeoffs": [
+                "High ornamental presence requires disciplined content pairing."
             ]
         })
     elif "organic" in p_type or "ecological" in p_type:
@@ -324,40 +411,40 @@ def recommend_styles(brief: Dict[str, Any]) -> List[Dict[str, Any]]:
         })
     elif "developer" in p_type or "platform" in p_type or "telemetry" in p_type or density == "high":
         recs.append({
+            "name": "Dark Minimal",
+            "style_id": "dark-minimal",
+            "fit_rating": "Strong fit",
+            "reasoning": "Obsidian canvas (#09090B), hairline translucent borders, 6-8px micro-radii, and a single electric accent create a calm, focused, high-density environment ideal for modern developer tools, AI command surfaces, and telemetry.",
+            "tradeoffs": [
+                "Low-sensory dark canvas requires disciplined contrast checking in bright daylight environments.",
+                "Requires strict micro-typography hierarchy to prevent dense data from blurring together."
+            ]
+        })
+        recs.append({
+            "name": "Terminal CLI",
+            "style_id": "terminal-cli",
+            "fit_rating": "Good fit",
+            "reasoning": "100% monospace typography, amber/emerald phosphors on black, ASCII box-drawing borders, and zero-blur elevation deliver authentic Unix command-line utility and keyboard-first speed.",
+            "tradeoffs": [
+                "Complete absence of proportional typography or rounded corners can feel stark or intimidating to non-technical users."
+            ]
+        })
+        recs.append({
             "name": "Cyberpunk",
             "style_id": "cyberpunk",
-            "fit_rating": "Strong fit",
-            "reasoning": "Obsidian canvas, monospace telemetry, and neon HUD brackets provide an immersive, high-density environment ideal for monitoring streams, terminals, and complex technical metrics.",
+            "fit_rating": "Good fit",
+            "reasoning": "Obsidian canvas, monospace telemetry, and neon HUD brackets provide an immersive, high-voltage environment ideal for real-time monitoring streams.",
             "tradeoffs": [
-                "Dark-only aesthetic makes daylight readability challenging.",
                 "High sensory intensity is unsuitable for calm documentation or administrative configuration flows."
             ]
         })
         recs.append({
             "name": "Bauhaus",
             "style_id": "bauhaus",
-            "fit_rating": "Good fit",
-            "reasoning": "Form strictly follows function: rigorous constructivist 8px grid, primary triad accents, Herbert Bayer functional type, and zero extraneous ornament.",
+            "fit_rating": "Possible",
+            "reasoning": "Form strictly follows function: rigorous constructivist 8px grid, primary triad accents, and zero extraneous ornament.",
             "tradeoffs": [
-                "Radical functionalism and stark primary color blocks can feel rigid or austere for consumer audiences."
-            ]
-        })
-        recs.append({
-            "name": "Space Age Optimism",
-            "style_id": "space-age-optimism",
-            "fit_rating": "Good fit",
-            "reasoning": "Warm white fiberglass pods, NASA mission orange accents, and clean geometric typography bring high technical capability with radiant human optimism.",
-            "tradeoffs": [
-                "Pod curves require generous padding that slightly limits maximum line density compared to monospace terminals."
-            ]
-        })
-        recs.append({
-            "name": "Swiss / Editorial",
-            "style_id": "swiss-editorial",
-            "fit_rating": "Good fit",
-            "reasoning": "Objective typographic hierarchy, tabular data discipline, and modular asymmetric layouts turn dense technical data into an effortless, readable broadsheet.",
-            "tradeoffs": [
-                "Lacks the futuristic, high-octane gaming or hacker excitement of dark telemetry consoles."
+                "Radical functionalism can feel rigid for consumer developer tools."
             ]
         })
     elif "creator" in p_type or "marketplace" in p_type:
@@ -389,19 +476,28 @@ def recommend_styles(brief: Dict[str, Any]) -> List[Dict[str, Any]]:
             ]
         })
         recs.append({
-            "name": "Retro Americana",
-            "style_id": "retro-americana",
+            "name": "Vaporwave",
+            "style_id": "vaporwave",
             "fit_rating": "Possible",
-            "reasoning": "Roadside diner warmth, Saul Bass poster silhouettes, and letterpress ink slabs bring authentic heritage craft.",
+            "reasoning": "Pastel sunset gradients, Windows 95 dialog chrome, and classical Roman statues celebrate retro-digital net art and nostalgia.",
             "tradeoffs": [
-                "Nostalgic 1950s-70s aesthetic may feel dated for bleeding-edge digital art."
+                "Heavy retro-digital styling is polarizing for conventional commercial storefronts."
             ]
         })
     else:
         recs.append({
+            "name": "Minimal Modern",
+            "style_id": "minimal-modern",
+            "fit_rating": "Strong fit",
+            "reasoning": "Clean neutral zinc canvas, 6-8px micro-radii, crisp 1px borders, and disciplined typography (Geist/Inter) elevate standard SaaS workflows with modern restraint and high whitespace clarity.",
+            "tradeoffs": [
+                "Subtle aesthetic requires disciplined typographic hierarchy to avoid feeling generic if content is sparse."
+            ]
+        })
+        recs.append({
             "name": "Swiss / Editorial",
             "style_id": "swiss-editorial",
-            "fit_rating": "Strong fit",
+            "fit_rating": "Good fit",
             "reasoning": "Universal architectural clarity, disciplined modular grids, and timeless typography elevate standard workflows into premium editorial experiences.",
             "tradeoffs": [
                 "Requires high-quality typographic assets and rigorous alignment discipline.",
@@ -409,23 +505,19 @@ def recommend_styles(brief: Dict[str, Any]) -> List[Dict[str, Any]]:
             ]
         })
         recs.append({
-            "name": "Quiet Luxury",
-            "style_id": "quiet-luxury",
-            "fit_rating": "Good fit",
-            "reasoning": "Warm alabaster tones and immaculate serif headings create an immediate sense of craft, calm focus, and premium quality.",
-            "tradeoffs": [
-                "Requires generous whitespace which may not suit compact desktop dashboards."
-            ]
-        })
-        recs.append({
-            "name": "Neo-Brutalism",
-            "style_id": "neo-brutalism",
+            "name": "Dark Minimal",
+            "style_id": "dark-minimal",
             "fit_rating": "Possible",
-            "reasoning": "Brings bold, high-contrast personality that immediately differentiates the product from cookie-cutter SaaS competitors.",
+            "reasoning": "Obsidian canvas and hairline translucent borders provide a sleek, low-sensory alternative for products demanding a dedicated dark theme.",
             "tradeoffs": [
-                "Polarizing aesthetic that may be considered too unconventional for conservative enterprise users."
+                "Dark-only canvas may not suit daytime or print-heavy workflow contexts."
             ]
         })
+    for r in recs:
+        if "id" not in r and "style_id" in r:
+            r["id"] = r["style_id"]
+        if "style_id" not in r and "id" in r:
+            r["style_id"] = r["id"]
     return recs
 
 def create_design_spec(style_id: str, custom_layers: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
@@ -542,6 +634,78 @@ def create_design_spec(style_id: str, custom_layers: Optional[Dict[str, str]] = 
             "motion": "maximalist-dopamine/motion.md",
             "imagery": "sticker-bomb-net-art-collages",
             "components": "maximalist-dopamine/components.md"
+        },
+        "minimal-modern": {
+            "layout": "minimal-modern/layout.md",
+            "typography": "minimal-modern/typography.md",
+            "surfaces": "minimal-modern/tokens.md",
+            "color": "minimal-modern/tokens.md",
+            "motion": "minimal-modern/motion.md",
+            "imagery": "clean-product-ui-screenshots",
+            "components": "minimal-modern/components.md"
+        },
+        "dark-minimal": {
+            "layout": "dark-minimal/layout.md",
+            "typography": "dark-minimal/typography.md",
+            "surfaces": "dark-minimal/tokens.md",
+            "color": "dark-minimal/tokens.md",
+            "motion": "dark-minimal/motion.md",
+            "imagery": "monochrome-isometric-schematics",
+            "components": "dark-minimal/components.md"
+        },
+        "terminal-cli": {
+            "layout": "terminal-cli/layout.md",
+            "typography": "terminal-cli/typography.md",
+            "surfaces": "terminal-cli/tokens.md",
+            "color": "terminal-cli/tokens.md",
+            "motion": "terminal-cli/motion.md",
+            "imagery": "ascii-diagrams-and-telemetry",
+            "components": "terminal-cli/components.md"
+        },
+        "web-brutalism": {
+            "layout": "web-brutalism/layout.md",
+            "typography": "web-brutalism/typography.md",
+            "surfaces": "web-brutalism/tokens.md",
+            "color": "web-brutalism/tokens.md",
+            "motion": "web-brutalism/motion.md",
+            "imagery": "raw-html-tables-and-document-charts",
+            "components": "web-brutalism/components.md"
+        },
+        "art-deco": {
+            "layout": "art-deco/layout.md",
+            "typography": "art-deco/typography.md",
+            "surfaces": "art-deco/tokens.md",
+            "color": "art-deco/tokens.md",
+            "motion": "art-deco/motion.md",
+            "imagery": "stepped-geometric-and-gold-foil",
+            "components": "art-deco/components.md"
+        },
+        "mid-century-modern": {
+            "layout": "mid-century-modern/layout.md",
+            "typography": "mid-century-modern/typography.md",
+            "surfaces": "mid-century-modern/tokens.md",
+            "color": "mid-century-modern/tokens.md",
+            "motion": "mid-century-modern/motion.md",
+            "imagery": "architectural-photography-and-fiberglass-pods",
+            "components": "mid-century-modern/components.md"
+        },
+        "vaporwave": {
+            "layout": "vaporwave/layout.md",
+            "typography": "vaporwave/typography.md",
+            "surfaces": "vaporwave/tokens.md",
+            "color": "vaporwave/tokens.md",
+            "motion": "vaporwave/motion.md",
+            "imagery": "classical-marble-and-pastel-synth-grid",
+            "components": "vaporwave/components.md"
+        },
+        "high-fashion-editorial": {
+            "layout": "high-fashion-editorial/layout.md",
+            "typography": "high-fashion-editorial/typography.md",
+            "surfaces": "high-fashion-editorial/tokens.md",
+            "color": "high-fashion-editorial/tokens.md",
+            "motion": "high-fashion-editorial/motion.md",
+            "imagery": "monumental-couture-photography",
+            "components": "high-fashion-editorial/components.md"
         }
     }
 
@@ -590,11 +754,19 @@ def _resolve_layers_from_reference(ref: Dict[str, Any], direction: str) -> Dict[
     motion_char = motion.get("character", "")
     motion_ms = motion.get("duration_ms", 200)
 
+    # ── Foundation seeding ───────────────────────────────────────────────────
+    prim = ref.get("primary_foundation")
+    if direction == "more_like" and prim:
+        overrides["color"] = f"{prim}/tokens.md"
+        overrides["surfaces"] = f"{prim}/tokens.md"
+        overrides["motion"] = f"{prim}/motion.md"
+        return overrides
+
     # ── Mode / canvas ────────────────────────────────────────────────────────
     if direction == "more_like":
         if "dark" in mode or "obsidian" in palette_type:
-            overrides["color"] = "cyberpunk/tokens.md"
-            overrides["surfaces"] = "cyberpunk/tokens.md"
+            overrides["color"] = "dark-minimal/tokens.md"
+            overrides["surfaces"] = "dark-minimal/tokens.md"
         elif "warm" in mode or "warm" in palette_type or "earth" in palette_type or "linen" in palette_type:
             overrides["color"] = "quiet-luxury/tokens.md"
             overrides["surfaces"] = "quiet-luxury/tokens.md"
@@ -609,7 +781,8 @@ def _resolve_layers_from_reference(ref: Dict[str, Any], direction: str) -> Dict[
             overrides["surfaces"] = "y2k-frutiger-aero/tokens.md"
     else:  # less_like: invert the dominant signal
         if "dark" in mode:
-            overrides["color"] = "swiss-editorial/tokens.md"
+            overrides["color"] = "minimal-modern/tokens.md"
+            overrides["surfaces"] = "minimal-modern/tokens.md"
         if "saturated" in palette_type or "neon" in palette_type:
             overrides["color"] = "quiet-luxury/tokens.md"
             overrides["surfaces"] = "quiet-luxury/tokens.md"
@@ -619,60 +792,25 @@ def _resolve_layers_from_reference(ref: Dict[str, Any], direction: str) -> Dict[
         if "heavy" in borders or "thick" in borders or "3px" in borders or "4px" in borders:
             overrides["surfaces"] = "neo-brutalism/tokens.md"
         elif "hairline" in borders or "0.5px" in borders or "subtle" in borders:
-            if "dark" in mode:
-                overrides["surfaces"] = "cyberpunk/tokens.md"
-            else:
-                overrides["surfaces"] = "swiss-editorial/tokens.md"
+            overrides["surfaces"] = "dark-minimal/tokens.md" if "dark" in mode else "swiss-editorial/tokens.md"
         elif "none" in borders or "zero" in borders or "flat" in borders:
             overrides["surfaces"] = "swiss-editorial/tokens.md"
         if "hard" in shadows and "offset" in shadows:
             overrides["surfaces"] = "neo-brutalism/tokens.md"
 
-    # ── Typography ───────────────────────────────────────────────────────────
-    if direction == "more_like":
         typography = ref.get("typography", {})
         heading = typography.get("heading_font", "").lower()
-        tracking = typography.get("tracking", "")
         if any(k in heading for k in ["garamond", "serif", "canela", "fraunces", "suisse works"]):
             overrides["typography"] = "quiet-luxury/typography.md"
         elif any(k in heading for k in ["slab", "condensed", "rockwell", "alfa"]):
             overrides["typography"] = "retro-americana/typography.md"
         elif any(k in heading for k in ["mono", "consolas", "courier", "fixed"]):
-            overrides["typography"] = "cyberpunk/typography.md"
-        elif any(k in heading for k in ["playfair", "editorial"]):
-            overrides["typography"] = "swiss-editorial/typography.md"
-        elif any(k in heading for k in ["ibm plex", "geometric sans", "bayer"]):
-            overrides["typography"] = "bauhaus/typography.md"
+            overrides["typography"] = "terminal-cli/typography.md"
 
-    # ── Motion ───────────────────────────────────────────────────────────────
-    if direction == "more_like":
         if motion_ms <= 120 or any(k in motion_char for k in ["snappy", "instant", "immediate", "fast"]):
             overrides["motion"] = "swiss-editorial/motion.md"
         elif motion_ms >= 400 or any(k in motion_char for k in ["slow", "contemplative", "cinematic"]):
             overrides["motion"] = "quiet-luxury/motion.md"
-        elif any(k in motion_char for k in ["bounce", "spring", "fluid"]):
-            overrides["motion"] = "y2k-frutiger-aero/motion.md"
-        elif any(k in motion_char for k in ["mechanical", "click", "toggle"]):
-            overrides["motion"] = "neo-brutalism/motion.md"
-
-    # ── Shift-rule overrides (explicit YAML shift_rules take priority) ────────
-    sr_mode = shift_rules.get("mode", "")
-    sr_borders = shift_rules.get("borders", "")
-    sr_typography = shift_rules.get("typography", "")
-    sr_motion = shift_rules.get("motion", "")
-    if "dark" in sr_mode:
-        overrides["color"] = "cyberpunk/tokens.md"
-        overrides["surfaces"] = "cyberpunk/tokens.md"
-    if "light" in sr_mode or "warm" in sr_mode:
-        overrides["color"] = "swiss-editorial/tokens.md"
-    if "heavy" in sr_borders or "solid" in sr_borders:
-        overrides["surfaces"] = "neo-brutalism/tokens.md"
-    if "hairline" in sr_borders or "hairline" in sr_borders:
-        overrides["surfaces"] = "cyberpunk/tokens.md" if "dark" in sr_mode else "swiss-editorial/tokens.md"
-    if "serif" in sr_typography:
-        overrides["typography"] = "quiet-luxury/typography.md"
-    if "snappy" in sr_motion or "fast" in sr_motion:
-        overrides["motion"] = "swiss-editorial/motion.md"
 
     return overrides
 
@@ -792,6 +930,95 @@ def refine_spec(current_spec: Dict[str, Any], critique: str) -> Dict[str, Any]:
             "typography": "Humanist oldstyle serif hierarchy with warm reading proportions.",
         })
 
+    elif any(k in critique_lower for k in ["minimal modern", "clean modern", "notion"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "minimal-modern/tokens.md",
+            "color": "minimal-modern/tokens.md",
+            "typography": "minimal-modern/typography.md",
+            "motion": "minimal-modern/motion.md",
+        }, reasons={
+            "surfaces": "Minimal Modern shift: 6-8px micro-radii and crisp 1px neutral borders.",
+            "color": "Pristine neutral zinc canvas (#FAFAFA / #FFFFFF) with single functional accent.",
+            "typography": "Geist/Inter clean grotesque typographic hierarchy with tight tracking.",
+            "motion": "Micro-snappy 120ms transitions.",
+        })
+    elif any(k in critique_lower for k in ["dark minimal", "raycast", "linear"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "dark-minimal/tokens.md",
+            "color": "dark-minimal/tokens.md",
+            "typography": "dark-minimal/typography.md",
+            "motion": "dark-minimal/motion.md",
+        }, reasons={
+            "surfaces": "Dark Minimal shift: obsidian canvas, translucent 1px hairlines, and 6-8px micro-radii.",
+            "color": "Obsidian deep charcoal (#09090B) with single electric violet/indigo accent.",
+            "typography": "Geist Mono metadata readouts and clean sans labels.",
+            "motion": "Micro-snappy 120ms transitions.",
+        })
+    elif any(k in critique_lower for k in ["terminal", "tui", "cli", "ascii"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "terminal-cli/tokens.md",
+            "color": "terminal-cli/tokens.md",
+            "typography": "terminal-cli/typography.md",
+            "motion": "terminal-cli/motion.md",
+        }, reasons={
+            "surfaces": "Terminal CLI shift: 0px radius, pitch black canvas, and ASCII box-drawing borders.",
+            "color": "Phosphor monochrome: amber/emerald on black canvas.",
+            "typography": "100% Monospace typography (JetBrains Mono/IBM Plex Mono).",
+            "motion": "Inert 0ms instant feedback.",
+        })
+    elif any(k in critique_lower for k in ["web brutalism", "raw web", "raw html"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "web-brutalism/tokens.md",
+            "color": "web-brutalism/tokens.md",
+            "typography": "web-brutalism/typography.md",
+            "components": "web-brutalism/components.md",
+        }, reasons={
+            "surfaces": "Web Brutalism shift: raw document HTML, 0px radius, and standard table borders.",
+            "color": "Stark black/white contrast with default browser blue links (#0000EE).",
+            "typography": "Courier monospace and default browser typography with underlined links.",
+            "components": "Unstyled default browser controls.",
+        })
+    elif any(k in critique_lower for k in ["art deco", "gatsby"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "art-deco/tokens.md",
+            "color": "art-deco/tokens.md",
+            "typography": "art-deco/typography.md",
+        }, reasons={
+            "surfaces": "Art Deco shift: stepped geometric symmetry, dual gold hairlines, and 0px radius.",
+            "color": "Caviar black (#0E0E10) and burnished gold (#D4AF37) luxury metallics.",
+            "typography": "Dramatic Bodoni/Cinzel geometric serifs with wide tracking.",
+        })
+    elif any(k in critique_lower for k in ["mid century", "eames", "palm springs"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "mid-century-modern/tokens.md",
+            "color": "mid-century-modern/tokens.md",
+            "typography": "mid-century-modern/typography.md",
+        }, reasons={
+            "surfaces": "Mid-Century Modern shift: warm architectural parchment and 16-24px atomic pod curves.",
+            "color": "California modernist palette: terracotta, olive moss, mustard, and walnut.",
+            "typography": "Josefin Sans / Futura geometric modernist typography.",
+        })
+    elif any(k in critique_lower for k in ["vaporwave", "vapor"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "vaporwave/tokens.md",
+            "color": "vaporwave/tokens.md",
+            "typography": "vaporwave/typography.md",
+        }, reasons={
+            "surfaces": "Vaporwave shift: Windows 95 dialog bevels and pastel cyan/pink drop shadows.",
+            "color": "Twilight lavender horizon with pastel pink (#FF71CE) and cyan (#01CDFE) glows.",
+            "typography": "Playfair Display serifs colliding with VT323 pixel typography.",
+        })
+    elif any(k in critique_lower for k in ["high fashion", "runway", "couture", "vogue"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "high-fashion-editorial/tokens.md",
+            "color": "high-fashion-editorial/tokens.md",
+            "typography": "high-fashion-editorial/typography.md",
+        }, reasons={
+            "surfaces": "High Fashion Editorial shift: knife-edge 0px radius, razor hairlines, and zero drop shadows.",
+            "color": "Stark high-contrast monochrome (#0A0A0A / #FFFFFF).",
+            "typography": "Monumental Bodoni display headlines colliding with micro-grotesque metadata.",
+        })
+
     # ── 3. Generic directional keywords ─────────────────────────────────────
     elif "bank" in critique_lower or "corporate" in critique_lower:
         if is_less_like:
@@ -873,10 +1100,15 @@ def _apply_layers(
             "reason": reasons.get(layer, "")
         })
 
-def generate_implementation_contract(spec: Dict[str, Any], product_spec: str, tech_stack: str = "Tailwind CSS + React") -> str:
+def generate_implementation_contract(
+    spec: Dict[str, Any],
+    product_spec: str,
+    tech_stack: str = "Tailwind CSS + React",
+    modifiers: Optional[List[str]] = None
+) -> str:
     """
-    Assembles the Design Spec + Style Pack rules + tech stack into a binding contract
-    for the coding agent.
+    Assembles the Design Spec + Style Pack rules + active modifiers + tech stack
+    into a binding contract for the coding agent.
     """
     primary_style = spec.get("chosen_primary_style", "swiss-editorial")
     layers = spec.get("layers", {})
@@ -884,7 +1116,6 @@ def generate_implementation_contract(spec: Dict[str, Any], product_spec: str, te
     # Load specific style tokens and anti-patterns
     style_file = STYLES_DIR / f"{primary_style}.md"
     style_dir = STYLES_DIR / primary_style
-    skill_md = ""
     anti_patterns = []
     
     if style_file.exists():
@@ -896,10 +1127,22 @@ def generate_implementation_contract(spec: Dict[str, Any], product_spec: str, te
     elif (style_dir / "SKILL.md").exists():
         with open(style_dir / "SKILL.md", "r", encoding="utf-8") as f:
             skill_md = f.read()
-            # Extract anti-patterns section
             if "## Mandatory Anti-Patterns" in skill_md:
                 anti_patterns_block = skill_md.split("## Mandatory Anti-Patterns")[1]
                 anti_patterns = [line.strip() for line in anti_patterns_block.split("\n") if line.strip().startswith("-")]
+
+    # Load modifier specs if specified
+    all_mods = load_modifiers()
+    active_modifier_blocks = []
+    if modifiers:
+        for mod_id in modifiers:
+            # Search across modifier categories
+            for cat, mod_list in all_mods.items():
+                for m in mod_list:
+                    if m.get("id") == mod_id:
+                        m_desc = m.get("description", "")
+                        m_whitelist = m.get("audit_whitelist", {})
+                        active_modifier_blocks.append((mod_id, m.get("name", mod_id), cat, m_desc, m_whitelist))
 
     contract = f"""# HARD IMPLEMENTATION DESIGN CONTRACT
 **Target Style:** {primary_style.upper()}
@@ -915,25 +1158,38 @@ def generate_implementation_contract(spec: Dict[str, Any], product_spec: str, te
 - **Color Palette:** `{layers.get('color')}`
 - **Motion & Transitions:** `{layers.get('motion')}`
 - **Component Geometry:** `{layers.get('components')}`
+"""
 
+    if active_modifier_blocks:
+        contract += "\n---\n\n## 2. Active Orthogonal Modifiers\n"
+        for m_id, m_name, m_cat, m_desc, m_wl in active_modifier_blocks:
+            contract += f"- **[{m_cat.upper()}] {m_name} (`{m_id}`):** {m_desc}\n"
+            if "tailwind_classes" in m_wl:
+                contract += f"  - Whitelisted Utilities: `{'`, `'.join(m_wl['tailwind_classes'])}`\n"
+            if "css_properties" in m_wl:
+                contract += f"  - Whitelisted CSS: `{'`, `'.join(m_wl['css_properties'])}`\n"
+
+    section_num = 3 if active_modifier_blocks else 2
+    contract += f"""
 ---
 
-## 2. Hard Anti-Patterns (BANNED CLASSES & PATTERNS)
+## {section_num}. Hard Anti-Patterns (BANNED CLASSES & PATTERNS)
 The coding agent MUST NOT output any of the following patterns. Doing so triggers an immediate post-implementation audit rejection:
 
 """
     for ap in anti_patterns:
         contract += f"{ap}\n"
 
+    section_num += 1
     contract += f"""
 ---
 
-## 3. Product Specification & Requirements
+## {section_num}. Product Specification & Requirements
 {product_spec.strip()}
 
 ---
 
-## 4. Contract Verification Notice
+## {section_num + 1}. Contract Verification Notice
 Upon code generation, the post-implementation `design-audit` will statically scan all `.html`, `.jsx`, `.tsx`, and `.css` files.
 Deviations in border-radius, shadow blur, font substitutions, or color values will be flagged as audit failures.
 """
