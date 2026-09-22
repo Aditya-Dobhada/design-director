@@ -1,0 +1,1032 @@
+version: 1
+references:
+  - id: linear
+    name: Linear
+    category: developer-productivity
+    archetype: high-craft-artisan-dark
+    mode: strict-dark
+    density: high
+    spacing: tight-grid-8px
+    borders: hairline-subtle-rgba(255,255,255,0.08)
+    shadows: soft-diffuse-ambient-deep
+    typography:
+      heading_font: Inter
+      body_font: Inter
+      scale_ratio: 1.2
+      tracking: tight-display-loose-caps
+      uppercase: metadata-and-keys-only
+      line_height: tight-1.25
+    color:
+      palette_type: obsidian-monochrome-with-violet-accent
+      background: "#08090a"
+      surface: "#111215"
+      text_primary: "#f7f8f8"
+      text_muted: "#8a8f98"
+      accent: "#5e6ad2"
+      contrast: high
+    motion:
+      duration_ms: 120
+      easing: cubic-bezier(0.16, 1, 0.3, 1)
+      character: micro-snappy-instant
+    personality:
+      traits: [keyboard-first, obsessive-craft, understated, engineer-grade, fast]
+      anti_traits: [playful, pastel, bloated, friendly-corporate, round-bubbly]
+    mapped_style_layers:
+      layout: swiss-modular-high-density
+      typography: neo-grotesk-mono-accent
+      surfaces: dark-hairline-subtle-depth
+      color: obsidian-violet-accent
+      motion: micro-snappy
+      imagery: isometric-vector-dark
+    shift_rules:
+      when_requested_more_like:
+        density: increase-to-high
+        mode: shift-to-dark
+        borders: replace-with-hairline-0.5px-translucent
+        shadows: remove-colored-shadows-use-ambient-soft
+        typography: tighten-letter-spacing-use-system-grotesk
+      when_requested_less_like:
+        density: decrease-to-balanced
+        mode: shift-to-light-or-warm
+        borders: increase-visibility-or-remove
+
+  - id: traditional-bank
+    name: Traditional Bank (Chase / Barclays)
+    category: legacy-financial-institution
+    archetype: risk-averse-corporate
+    mode: light
+    density: balanced
+    spacing: standard-16px-padding
+    borders: soft-gray-1px-solid-#d1d5db
+    shadows: generic-card-shadow-0-1px-3px
+    typography:
+      heading_font: System Sans / Open Sans
+      body_font: Open Sans / Arial
+      scale_ratio: 1.25
+      tracking: normal
+      uppercase: none
+      line_height: normal-1.5
+    color:
+      palette_type: institutional-navy-white-gray
+      background: "#ffffff"
+      surface: "#f9fafb"
+      text_primary: "#111827"
+      text_muted: "#6b7280"
+      accent: "#0052cc"
+      contrast: safe-wcag-aa
+    motion:
+      duration_ms: 200
+      easing: ease-in-out
+      character: safe-predictable
+    personality:
+      traits: [institutional, compliance-driven, risk-averse, bureaucratic, safe]
+      anti_traits: [edgy, rebellious, high-craft, experimental, playful]
+    mapped_style_layers:
+      layout: traditional-boxed-container
+      typography: generic-corporate-sans
+      surfaces: rounded-muted-card
+      color: corporate-navy-slate
+      motion: default-standard
+      imagery: generic-stock-photography
+    shift_rules:
+      when_requested_less_like:
+        surfaces: eliminate-gray-1px-borders-and-generic-card-shadows
+        typography: replace-generic-sans-with-distinctive-editorial-or-grotesk
+        color: eliminate-corporate-navy-and-generic-slate-backgrounds
+        layout: break-out-of-standard-boxed-centered-cards
+
+  - id: stripe
+    name: Stripe
+    category: fintech-infrastructure
+    archetype: refined-accessible-precision
+    mode: light-with-deep-dark-accents
+    density: balanced
+    spacing: geometric-16-24-32px
+    borders: hairline-slate-rgba(0,0,0,0.06)
+    shadows: multi-layered-diffuse-ambient
+    typography:
+      heading_font: Sohne / SF Pro Display
+      body_font: Sohne / Inter
+      scale_ratio: 1.25
+      tracking: -0.02em
+      uppercase: small-eyebrows-only
+      line_height: 1.35
+    color:
+      palette_type: luminous-mesh-gradients-over-clean-slate
+      background: "#ffffff"
+      surface: "#f8fafc"
+      text_primary: "#0a2540"
+      text_muted: "#425466"
+      accent: "#635bff"
+      contrast: high
+    motion:
+      duration_ms: 240
+      easing: cubic-bezier(0.2, 0.8, 0.2, 1)
+      character: silky-smooth-physics
+    personality:
+      traits: [developer-beloved, polished, luminous, trustworthy, expansive]
+      anti_traits: [harsh, messy, noisy, low-contrast, aggressive]
+    mapped_style_layers:
+      layout: swiss-asymmetric-spacious
+      typography: neo-grotesk-refined
+      surfaces: layered-subtle-elevation
+      color: luminous-indigo-slate
+      motion: silky-physics
+      imagery: geometric-vector-interactive
+
+  - id: apple
+    name: Apple
+    category: consumer-hardware-software
+    archetype: aspirational-minimal-humanist
+    mode: adaptive-light-dark
+    density: spacious
+    spacing: expansive-whitespace-32-64px
+    borders: imperceptible-rgba(0,0,0,0.04)
+    shadows: soft-feathered-elevation
+    typography:
+      heading_font: SF Pro Display
+      body_font: SF Pro Text
+      scale_ratio: 1.33
+      tracking: tight-hero-normal-body
+      uppercase: none
+      line_height: 1.2
+    color:
+      palette_type: stark-monochrome-retina-photography
+      background: "#000000-or-#ffffff"
+      surface: "#1c1c1e-or-#f5f5f7"
+      text_primary: "#f5f5f7-or-#1d1d1f"
+      text_muted: "#86868b"
+      accent: "#0071e3"
+      contrast: extreme
+    motion:
+      duration_ms: 350
+      easing: cubic-bezier(0.32, 0.72, 0, 1)
+      character: fluid-apple-spring
+    personality:
+      traits: [aspirational, cinematic, effortless, monolithic, premium]
+      anti_traits: [cluttered, technical-data-heavy, rough, brutalist, cheap]
+    mapped_style_layers:
+      layout: full-bleed-monolithic-sections
+      typography: humanist-grotesk-massive-scale
+      surfaces: seamless-translucent-blur
+      color: stark-contrast-monochrome
+      motion: fluid-spring
+      imagery: photorealistic-hardware-cinematic
+
+  - id: vercel
+    name: Vercel
+    category: developer-platform
+    archetype: monochrome-geometric-purist
+    mode: dark-first-monochrome
+    density: high
+    spacing: strict-8px-modular
+    borders: crisp-1px-#333333-or-#eaeaea
+    shadows: zero-shadows-flat-planes
+    typography:
+      heading_font: Geist
+      body_font: Geist
+      scale_ratio: 1.2
+      tracking: tight-tracking
+      uppercase: metadata-and-badges
+      line_height: 1.3
+    color:
+      palette_type: stark-binary-black-and-white
+      background: "#000000"
+      surface: "#0a0a0a"
+      text_primary: "#ededed"
+      text_muted: "#a1a1a1"
+      accent: "#ffffff"
+      contrast: maximum
+    motion:
+      duration_ms: 100
+      easing: linear
+      character: snappy-flat-instant
+    personality:
+      traits: [binary, modern, minimalist, geometric, terminal-inspired]
+      anti_traits: [ornate, warm, nostalgic, bubbly, rounded-soft]
+    mapped_style_layers:
+      layout: swiss-grid-strict-aligned
+      typography: geist-grotesk-mono-pair
+      surfaces: flat-hairline-monochrome
+      color: binary-black-white
+      motion: instantaneous
+      imagery: wireframe-geometric-svg
+
+  - id: notion
+    name: Notion
+    category: productivity-workspace
+    archetype: warm-editorial-paper
+    mode: warm-light
+    density: compact
+    spacing: typographic-8-16px
+    borders: subtle-warm-gray-#e3e2de
+    shadows: flat-or-subtle-1px-sheet
+    typography:
+      heading_font: Lyon Display / Inter
+      body_font: Inter / System Sans
+      scale_ratio: 1.2
+      tracking: normal
+      uppercase: none
+      line_height: 1.5
+    color:
+      palette_type: warm-paper-and-ink
+      background: "#ffffff"
+      surface: "#fbfbfa"
+      text_primary: "#37352f"
+      text_muted: "#787774"
+      accent: "#2eaadc"
+      contrast: soft-ink-contrast
+    motion:
+      duration_ms: 120
+      easing: ease-out
+      character: tactile-paper-feel
+    personality:
+      traits: [literate, thoughtful, flexible, calm, paper-like]
+      anti_traits: [neon, aggressive, gaming, loud, plastic]
+    mapped_style_layers:
+      layout: typographic-document-flow
+      typography: editorial-serif-headings-clean-sans
+      surfaces: warm-paper-sheet
+      color: warm-ink-sepia-neutral
+      motion: quiet-tactile
+      imagery: hand-drawn-linework-duotone
+
+  - id: pitch
+    name: Pitch
+    category: presentation-software
+    archetype: design-forward-creative-suite
+    mode: dark-or-punchy-light
+    density: balanced
+    spacing: modular-24px
+    borders: rounded-subtle-translucent
+    shadows: soft-colored-glow-and-depth
+    typography:
+      heading_font: Pitch Sans / Circular
+      body_font: Inter
+      scale_ratio: 1.3
+      tracking: -0.01em
+      uppercase: none
+      line_height: 1.2
+    color:
+      palette_type: creative-saturated-electric-accents
+      background: "#0c0d0e"
+      surface: "#18191b"
+      text_primary: "#ffffff"
+      text_muted: "#9b9da1"
+      accent: "#ff4d4d"
+      contrast: punchy
+    motion:
+      duration_ms: 220
+      easing: cubic-bezier(0.16, 1, 0.3, 1)
+      character: energetic-creative-spring
+    personality:
+      traits: [creative, modern-artisan, expressive, collaborative, fluid]
+      anti_traits: [drab, enterprise, rigid, bureaucratic, dated]
+    mapped_style_layers:
+      layout: canvas-asymmetric
+      typography: geometric-punchy-sans
+      surfaces: dark-subtle-gloss
+      color: dark-electric-accents
+      motion: creative-spring
+      imagery: 3d-isometric-colorful
+
+  - id: bloomberg-terminal
+    name: Bloomberg Terminal
+    category: financial-telemetry
+    archetype: high-density-information-density
+    mode: strict-dark
+    density: extreme-high
+    spacing: dense-0-4px-grid
+    borders: 1px-solid-#ff9900-or-#333333
+    shadows: none
+    typography:
+      heading_font: Fixed Monospace / Consolas
+      body_font: Monospace
+      scale_ratio: 1.05
+      tracking: monospaced
+      uppercase: all-labels-and-tickers
+      line_height: 1.1
+    color:
+      palette_type: amber-cyan-telemetry-on-black
+      background: "#000000"
+      surface: "#111111"
+      text_primary: "#ff9900"
+      text_muted: "#888888"
+      accent: "#00ffff"
+      contrast: high-contrast-telemetry
+    motion:
+      duration_ms: 0
+      easing: step
+      character: zero-latency-immediate
+    personality:
+      traits: [telemetric, mission-critical, unadorned, dense, authoritative]
+      anti_traits: [decorative, leisurely, friendly, whitespace-heavy, rounded]
+    mapped_style_layers:
+      layout: cyber-dense-telemetry-grid
+      typography: pure-monospace-caps
+      surfaces: border-wireframe-zero-elevation
+      color: terminal-amber-cyan-obsidian
+      motion: instantaneous
+      imagery: data-tables-and-candlesticks-only
+
+  - id: teenage-engineering
+    name: Teenage Engineering
+    category: industrial-hardware-audio
+    archetype: industrial-retro-tactile-minimal
+    mode: matte-light-gray-or-warm-concrete
+    density: high
+    spacing: mechanical-tight-8-12px
+    borders: crisp-hairline-or-molded-groove
+    shadows: hard-shallow-tactile-inset
+    typography:
+      heading_font: Helvetica Neue / Custom Monospace / Dot Matrix
+      body_font: Custom Swiss Sans
+      scale_ratio: 1.15
+      tracking: 0.05em
+      uppercase: all-caps-labels
+      line_height: 1.2
+    color:
+      palette_type: industrial-chassis-gray-with-safety-orange
+      background: "#e5e5e5"
+      surface: "#d4d4d4"
+      text_primary: "#1a1a1a"
+      text_muted: "#666666"
+      accent: "#ff4400"
+      contrast: high-tactile
+    motion:
+      duration_ms: 90
+      easing: linear
+      character: mechanical-toggle-click
+    personality:
+      traits: [tactile, playful-engineering, iconic, physical-analog, industrial]
+      anti_traits: [soft-gradient, generic-bootstrap, glossy-water, luxury-serif]
+    mapped_style_layers:
+      layout: industrial-hardware-panel-grid
+      typography: technical-swiss-dot-matrix
+      surfaces: matte-chassis-beveled-grooves
+      color: concrete-gray-safety-orange
+      motion: mechanical-click
+      imagery: exploded-isometric-schematic
+
+  - id: gumroad
+    name: Gumroad
+    category: creator-commerce
+    archetype: neo-brutalist-playful
+    mode: bright-high-energy-light
+    density: balanced
+    spacing: chunky-24px
+    borders: heavy-black-3px-solid
+    shadows: hard-solid-offset-5px-black
+    typography:
+      heading_font: Space Grotesk / Heavy Display
+      body_font: Inter / System
+      scale_ratio: 1.35
+      tracking: -0.02em
+      uppercase: bold-badges-and-ctas
+      line_height: 1.15
+    color:
+      palette_type: saturated-primary-yellow-pink-black
+      background: "#ff90e8"
+      surface: "#ffffff"
+      text_primary: "#000000"
+      text_muted: "#444444"
+      accent: "#ffc900"
+      contrast: maximal-punch
+    motion:
+      duration_ms: 100
+      easing: ease-out
+      character: snappy-springy-pop
+    personality:
+      traits: [rebellious, creator-first, unpretentious, loud, high-impact]
+      anti_traits: [boring-saas, delicate-luxury, subtle-gray, invisible-buttons]
+    mapped_style_layers:
+      layout: neo-brutalist-asymmetric-cards
+      typography: heavy-display-grotesk
+      surfaces: neo-brutalist-thick-borders-hard-shadows
+      color: high-saturation-pop-palette
+      motion: snappy-tactile-pop
+      imagery: bold-linework-doodles-stickers
+
+  - id: craigslist
+    name: Craigslist
+    category: classifieds-raw-web
+    archetype: raw-utilitarian-brutalist
+    mode: plain-light
+    density: extreme-high
+    spacing: zero-unnecessary-whitespace
+    borders: none-or-1px-dotted
+    shadows: none
+    typography:
+      heading_font: Times New Roman / System Serif
+      body_font: Arial / System Sans
+      scale_ratio: 1.1
+      tracking: normal
+      uppercase: none
+      line_height: 1.3
+    color:
+      palette_type: raw-html-blue-purple-links
+      background: "#ffffff"
+      surface: "#ffffff"
+      text_primary: "#0000ee"
+      text_muted: "#551a8b"
+      accent: "#0000ee"
+      contrast: raw-web
+    motion:
+      duration_ms: 0
+      easing: none
+      character: static-instant
+    personality:
+      traits: [anti-design, pure-utility, permanent, hyper-functional, friction-free]
+      anti_traits: [aesthetic, polished, branding-heavy, modern-saas, animated]
+    mapped_style_layers:
+      layout: raw-html-dense-list
+      typography: default-system-hyperlink-serif
+      surfaces: unstyled-pure-dom
+      color: default-browser-links
+      motion: none
+      imagery: user-uploaded-raw-photos
+
+  - id: raycast
+    name: Raycast
+    category: desktop-launcher-productivity
+    archetype: keyboard-first-command-dark
+    mode: strict-dark-translucent
+    density: high
+    spacing: compact-8-12px
+    borders: hairline-vibrant-subtle-stroke
+    shadows: deep-acrylic-window-shadow
+    typography:
+      heading_font: Inter
+      body_font: Inter
+      scale_ratio: 1.2
+      tracking: tight
+      uppercase: shortcuts-and-hotkeys
+      line_height: 1.25
+    color:
+      palette_type: deep-charcoal-with-crimson-red-accent
+      background: "rgba(20, 20, 22, 0.92)"
+      surface: "#1f1f23"
+      text_primary: "#ffffff"
+      text_muted: "#909096"
+      accent: "#ff6363"
+      contrast: high-crisp
+    motion:
+      duration_ms: 100
+      easing: cubic-bezier(0.16, 1, 0.3, 1)
+      character: instantaneous-keystroke-speed
+    personality:
+      traits: [keystroke-speed, power-user, focused, razor-sharp, distraction-free]
+      anti_traits: [slow-transitions, long-scrolls, marketing-fluff, decorative-bloat]
+    mapped_style_layers:
+      layout: command-palette-split-view
+      typography: neo-grotesk-shortcut-badges
+      surfaces: frosted-acrylic-hairline-stroke
+      color: charcoal-crimson-accent
+      motion: instantaneous
+      imagery: crisp-monochrome-svg-glyphs
+
+  - id: retool
+    name: Retool
+    category: internal-tools-platform
+    archetype: enterprise-developer-density
+    mode: light-or-dark
+    density: high
+    spacing: 8px-box-padding
+    borders: 1px-solid-#e0e0e0
+    shadows: 1px-box-elevation
+    typography:
+      heading_font: Inter
+      body_font: Inter / Roboto
+      scale_ratio: 1.15
+      tracking: normal
+      uppercase: table-headers-only
+      line_height: 1.3
+    color:
+      palette_type: utility-developer-slate-and-blue
+      background: "#f7f7f7"
+      surface: "#ffffff"
+      text_primary: "#262626"
+      text_muted: "#737373"
+      accent: "#2563eb"
+      contrast: standard-wcag
+    motion:
+      duration_ms: 150
+      easing: ease
+      character: functional-predictable
+    personality:
+      traits: [workhorse, utilitarian, dependable, dense-table-friendly, robust]
+      anti_traits: [whimsical, editorial-fashion, artisanal, dreamy]
+    mapped_style_layers:
+      layout: dense-data-grid-dashboard
+      typography: clean-utility-sans
+      surfaces: flat-bordered-card-grid
+      color: utilitarian-slate-blue
+      motion: functional
+      imagery: status-chips-and-tables
+
+  - id: monzo
+    name: Monzo
+    category: modern-fintech-consumer
+    archetype: friendly-accessible-neobank
+    mode: light
+    density: balanced
+    spacing: generous-16-24px
+    borders: soft-translucent-or-none
+    shadows: soft-warm-card-shadow
+    typography:
+      heading_font: Gilroy / Custom Rounded Sans
+      body_font: Inter
+      scale_ratio: 1.25
+      tracking: normal
+      uppercase: none
+      line_height: 1.4
+    color:
+      palette_type: vibrant-hot-coral-and-deep-navy
+      background: "#ffffff"
+      surface: "#f3f6f9"
+      text_primary: "#14233c"
+      text_muted: "#7b8ba0"
+      accent: "#ff365d"
+      contrast: high-friendly
+    motion:
+      duration_ms: 220
+      easing: cubic-bezier(0.34, 1.56, 0.64, 1)
+      character: bouncy-optimistic
+    personality:
+      traits: [human, reassuring, vibrant, approachable, clear]
+      anti_traits: [cold-institution, intimidating-telemetry, dark-hacker, formal-suit]
+    mapped_style_layers:
+      layout: consumer-mobile-first-card-stack
+      typography: rounded-friendly-sans
+      surfaces: pill-radius-soft-elevation
+      color: hot-coral-accessible-navy
+      motion: friendly-spring
+      imagery: friendly-3d-illustrations
+
+  - id: arc-browser
+    name: Arc Browser
+    category: consumer-software-creativity
+    archetype: playful-tactile-customizer
+    mode: dynamic-color-theme-dependent
+    density: spacious
+    spacing: floating-dock-16px
+    borders: thick-soft-translucent-pill
+    shadows: float-depth-elevation
+    typography:
+      heading_font: System Rounded / Whyte Inktrap
+      body_font: System Sans
+      scale_ratio: 1.25
+      tracking: -0.01em
+      uppercase: none
+      line_height: 1.3
+    color:
+      palette_type: dynamic-fluid-gradients-custom-hue
+      background: "var(--arc-palette-background)"
+      surface: "rgba(255,255,255,0.7)"
+      text_primary: "#111111"
+      text_muted: "#666666"
+      accent: "#ff5e3a"
+      contrast: adaptive
+    motion:
+      duration_ms: 280
+      easing: cubic-bezier(0.34, 1.56, 0.64, 1)
+      character: bouncy-playful-fluid
+    personality:
+      traits: [whimsical, deeply-customizable, friendly-futurism, tactile, joyful]
+      anti_traits: [boring-gray, corporate-standard, rigid-columns, static]
+    mapped_style_layers:
+      layout: floating-sidebar-canvas
+      typography: expressive-modern-sans
+      surfaces: frosted-glass-pill-radius
+      color: fluid-gradient-adaptive
+      motion: bouncy-fluid-spring
+      imagery: gradient-grain-textures
+
+  - id: balenciaga
+    name: Balenciaga
+    category: avant-garde-luxury-fashion
+    archetype: anti-fashion-luxury-brutalist
+    mode: harsh-white-or-monochrome-void
+    density: sparse
+    spacing: radical-asymmetric-whitespace
+    borders: none-or-razor-thin-black
+    shadows: zero-shadows-flat
+    typography:
+      heading_font: Helvetica Neue / Stark Grotesk
+      body_font: Courier / Monospace / Grotesk
+      scale_ratio: 1.4
+      tracking: 0.1em-wide-or-crammed
+      uppercase: all-caps-dominant
+      line_height: 1.05
+    color:
+      palette_type: stark-monochrome-harsh-flash
+      background: "#ffffff-or-#000000"
+      surface: "#ffffff"
+      text_primary: "#000000"
+      text_muted: "#333333"
+      accent: "#ff0000"
+      contrast: extreme-stark
+    motion:
+      duration_ms: 0
+      easing: linear
+      character: abrupt-blunt
+    personality:
+      traits: [subversive, radical, elite, indifferent, raw]
+      anti_traits: [friendly, comforting, cheerful, conventional-web, accessible]
+    mapped_style_layers:
+      layout: brutalist-editorial-deconstructed
+      typography: stark-all-caps-grotesk
+      surfaces: flat-void-zero-borders
+      color: harsh-monochrome
+      motion: abrupt-cut
+      imagery: raw-flash-candid-photography
+
+  - id: aesop
+    name: Aesop
+    category: artisanal-luxury-apothecary
+    archetype: quiet-luxury-philosophical
+    mode: warm-earth-light
+    density: spacious
+    spacing: expansive-literary-whitespace-48px
+    borders: whisper-hairline-stone-#e0ded9
+    shadows: none
+    typography:
+      heading_font: Suisse Works / Garamond / Editorial Serif
+      body_font: Optima / Humanist Sans
+      scale_ratio: 1.2
+      tracking: 0.04em
+      uppercase: chapter-headers-and-notes
+      line_height: 1.6
+    color:
+      palette_type: amber-glass-linen-warm-stone
+      background: "#fffef9"
+      surface: "#f6f5ee"
+      text_primary: "#252525"
+      text_muted: "#595959"
+      accent: "#332f21"
+      contrast: serene-literary
+    motion:
+      duration_ms: 450
+      easing: cubic-bezier(0.16, 1, 0.3, 1)
+      character: contemplative-slow
+    personality:
+      traits: [philosophical, tactile, quiet-luxury, literary, sensory, timeless]
+      anti_traits: [neon, rushed, loud, aggressive-sales, plastic]
+    mapped_style_layers:
+      layout: quiet-luxury-asymmetric-columns
+      typography: quiet-luxury-editorial-serif
+      surfaces: linen-warm-stone-zero-radius
+      color: warm-earth-alabaster-charcoal
+      motion: contemplative-slow
+      imagery: architectural-stone-and-still-life
+
+  - id: nike-snkrs
+    name: Nike SNKRS
+    category: streetwear-hype-commerce
+    archetype: high-contrast-streetwear-editorial
+    mode: strict-dark-or-punchy-white
+    density: balanced
+    spacing: bold-poster-32px
+    borders: heavy-cut-lines-or-frameless
+    shadows: hard-ambient
+    typography:
+      heading_font: Futura Condensed / Druk
+      body_font: Helvetica Bold
+      scale_ratio: 1.5
+      tracking: tight-display-wide-meta
+      uppercase: all-caps-hero-statements
+      line_height: 0.95
+    color:
+      palette_type: high-contrast-black-white-volt-crimson
+      background: "#111111"
+      surface: "#1f1f1f"
+      text_primary: "#ffffff"
+      text_muted: "#888888"
+      accent: "#dff200"
+      contrast: ultra-high
+    motion:
+      duration_ms: 180
+      easing: cubic-bezier(0.85, 0, 0.15, 1)
+      character: impact-drop-heavy
+    personality:
+      traits: [hype, athletic, cultural, bold, aggressive-energy]
+      anti_traits: [soft-pastel, delicate-quiet, timid, corporate-neutral]
+    mapped_style_layers:
+      layout: poster-magazine-grid
+      typography: heavy-condensed-impact
+      surfaces: sharp-frameless-cutouts
+      color: obsidian-volt-crimson
+      motion: impact-kinetic
+      imagery: dramatic-product-angles-grain
+
+  - id: figma
+    name: Figma
+    category: design-tool-creative-software
+    archetype: neutral-canvas-high-precision
+    mode: system-adaptive
+    density: high
+    spacing: pixel-grid-4-8px
+    borders: 1px-solid-#e5e5e5-or-#2c2c2c
+    shadows: floating-tool-palette-shadow
+    typography:
+      heading_font: Inter
+      body_font: Inter
+      scale_ratio: 1.15
+      tracking: normal
+      uppercase: none
+      line_height: 1.3
+    color:
+      palette_type: neutral-canvas-color-swatches
+      background: "#ffffff-or-#1e1e1e"
+      surface: "#f5f5f5-or-#2c2c2c"
+      text_primary: "#000000-or-#ffffff"
+      text_muted: "#808080"
+      accent: "#0d99ff"
+      contrast: neutral-precise
+    motion:
+      duration_ms: 140
+      easing: ease-out
+      character: responsive-canvas
+    personality:
+      traits: [canvas-first, collaborative, precise, neutral-frame, artisan]
+      anti_traits: [opinionated-heavy-styling, overwhelming-chrome, loud-decorations]
+    mapped_style_layers:
+      layout: canvas-with-floating-toolbars
+      typography: neutral-system-sans
+      surfaces: sharp-palette-hairline
+      color: neutral-workbench
+      motion: responsive-tool
+      imagery: canvas-rendered-vectors
+
+  - id: substack
+    name: Substack
+    category: publishing-newsletter
+    archetype: clean-editorial-words-first
+    mode: light-paper
+    density: spacious
+    spacing: typographic-measure-65ch
+    borders: hairline-separator-1px-#ebebeb
+    shadows: none
+    typography:
+      heading_font: Editorial Serif / Georgia
+      body_font: Georgia / Merriweather
+      scale_ratio: 1.25
+      tracking: normal
+      uppercase: none
+      line_height: 1.65
+    color:
+      palette_type: reader-monochrome-with-orange-cta
+      background: "#ffffff"
+      surface: "#fafafa"
+      text_primary: "#1a1a1a"
+      text_muted: "#666666"
+      accent: "#ff6719"
+      contrast: book-reading-comfort
+    motion:
+      duration_ms: 180
+      easing: ease
+      character: invisible-reading-flow
+    personality:
+      traits: [literate, author-focused, distraction-free, respectful, organic]
+      anti_traits: [gimmicky, neon, flashing-banners, cluttered-dashboards]
+    mapped_style_layers:
+      layout: editorial-single-column-reading
+      typography: literary-serif-prose
+      surfaces: flat-sheet-zero-elevation
+      color: reading-paper-orange-accent
+      motion: quiet-fade
+      imagery: inline-editorial-illustrations
+
+  - id: github
+    name: GitHub
+    category: developer-code-forge
+    archetype: pragmatic-developer-utility
+    mode: dual-mode-light-dark
+    density: high
+    spacing: modular-8-16px
+    borders: 1px-solid-#d0d7de-or-#30363d
+    shadows: 0-1px-0-subtle
+    typography:
+      heading_font: -apple-system / BlinkMacSystemFont / Inter
+      body_font: -apple-system / Inter
+      scale_ratio: 1.2
+      tracking: normal
+      uppercase: none
+      line_height: 1.45
+    color:
+      palette_type: developer-slate-green-commit-accent
+      background: "#ffffff-or-#0d1117"
+      surface: "#f6f8fa-or-#161b22"
+      text_primary: "#1f2328-or-#e6edf3"
+      text_muted: "#656d76-or-#7d8590"
+      accent: "#1f883d-or-#238636"
+      contrast: high-accessibility
+    motion:
+      duration_ms: 100
+      easing: ease
+      character: utilitarian-immediate
+    personality:
+      traits: [reliable, functional, open, git-native, developer-standard]
+      anti_traits: [over-designed, flashy, esoteric, playful-bubble]
+    mapped_style_layers:
+      layout: repository-grid-sidebar-layout
+      typography: pragmatic-system-sans-mono
+      surfaces: subtle-border-card-lists
+      color: developer-slate-green-commit
+      motion: functional-fast
+      imagery: octicons-and-diff-views
+
+  - id: the-verge
+    name: The Verge
+    category: modern-tech-culture-journalism
+    archetype: hyper-expressive-digital-broadsheet
+    mode: dual-high-voltage
+    density: balanced
+    spacing: dynamic-asymmetric-24-40px
+    borders: razor-black-or-neon-accents
+    shadows: hard-graphic-overlays
+    typography:
+      heading_font: Custom Verge Heavy Serif / Polymorphic Sans
+      body_font: Standard Sans
+      scale_ratio: 1.4
+      tracking: -0.03em
+      uppercase: section-flags-and-eyebrows
+      line_height: 1.05
+    color:
+      palette_type: electric-magenta-lime-black-editorial
+      background: "#ffffff-or-#121212"
+      surface: "#f3f3f3-or-#1c1c1c"
+      text_primary: "#000000-or-#ffffff"
+      text_muted: "#757575"
+      accent: "#e5005a"
+      contrast: high-voltage
+    motion:
+      duration_ms: 160
+      easing: cubic-bezier(0.16, 1, 0.3, 1)
+      character: punchy-editorial-snap
+    personality:
+      traits: [irreverent, bold, high-voltage, journalistic, contemporary]
+      anti_traits: [boring-gray, timid-card, corporate-safe, sleepy]
+    mapped_style_layers:
+      layout: swiss-asymmetric-broadsheet
+      typography: high-contrast-editorial-serif-grotesk
+      surfaces: graphic-dividers-color-blocks
+      color: high-voltage-magenta-black
+      motion: punchy-snap
+      imagery: duotone-conceptual-editorial
+
+  - id: discord
+    name: Discord
+    category: gaming-community-voice
+    archetype: gaming-social-playful-dark
+    mode: strict-dark-slate
+    density: high
+    spacing: 8-12px-tight-bubble
+    borders: none-or-subtle-divider
+    shadows: pop-out-overlay-shadow
+    typography:
+      heading_font: GG Sans / Whitney
+      body_font: GG Sans / Whitney
+      scale_ratio: 1.15
+      tracking: normal
+      uppercase: channel-categories
+      line_height: 1.35
+    color:
+      palette_type: blurple-slate-dark-void
+      background: "#313338"
+      surface: "#2b2d31"
+      text_primary: "#dbdee1"
+      text_muted: "#949ba4"
+      accent: "#5865f2"
+      contrast: cozy-dark
+    motion:
+      duration_ms: 150
+      easing: cubic-bezier(0.2, 0.9, 0.3, 1)
+      character: snappy-springy-bubble
+    personality:
+      traits: [gamer-friendly, cozy, informal, voice-first, community-driven]
+      anti_traits: [stiff-corporate, cold-luxury, high-brow-serif, bureaucratic]
+    mapped_style_layers:
+      layout: multi-sidebar-chat-viewport
+      typography: friendly-community-sans
+      surfaces: rounded-bubble-slate
+      color: blurple-charcoal-void
+      motion: friendly-bubble-spring
+      imagery: custom-emojis-and-avatars
+
+  - id: spotify
+    name: Spotify
+    category: digital-streaming-entertainment
+    archetype: dark-stage-vibrant-neon
+    mode: strict-dark
+    density: balanced
+    spacing: fluid-card-grid-16-24px
+    borders: none
+    shadows: soft-album-glow-drop
+    typography:
+      heading_font: Circular / Spotify Sans
+      body_font: Circular / Spotify Sans
+      scale_ratio: 1.3
+      tracking: -0.02em
+      uppercase: none
+      line_height: 1.2
+    color:
+      palette_type: stage-black-with-neon-green-accent
+      background: "#121212"
+      surface: "#181818"
+      text_primary: "#ffffff"
+      text_muted: "#b3b3b3"
+      accent: "#1ed760"
+      contrast: high-vibrant
+    motion:
+      duration_ms: 200
+      easing: cubic-bezier(0.3, 0, 0, 1)
+      character: smooth-glide
+    personality:
+      traits: [sonic, immersive, stage-like, music-first, vibrant]
+      anti_traits: [light-mode-paper, technical-dense-table, clinical-white]
+    mapped_style_layers:
+      layout: immersive-media-grid
+      typography: circular-geometric-sans
+      surfaces: frameless-elevated-cards
+      color: obsidian-stage-neon-green
+      motion: smooth-stage-glide
+      imagery: saturated-album-art-gradients
+
+  - id: vice-dazed
+    name: Vice / Dazed
+    category: youth-subculture-media
+    archetype: gritty-subcultural-brutalist
+    mode: high-contrast-monochrome-flash
+    density: compact
+    spacing: asymmetric-raw-12-24px
+    borders: 2px-solid-black-or-raw-lines
+    shadows: flat-or-none
+    typography:
+      heading_font: Condensed Bold Grotesk / Druk / Impact
+      body_font: Courier / Monospace
+      scale_ratio: 1.45
+      tracking: tight-display-wide-mono
+      uppercase: headline-yelling
+      line_height: 1.0
+    color:
+      palette_type: stark-newsprint-neon-punk
+      background: "#ffffff-or-#000000"
+      surface: "#f0f0f0"
+      text_primary: "#000000-or-#ffffff"
+      text_muted: "#555555"
+      accent: "#00ff66-or-#ff0055"
+      contrast: abrasive-raw
+    motion:
+      duration_ms: 80
+      easing: steps(2)
+      character: cut-glitch-raw
+    personality:
+      traits: [gritty, unfiltered, underground, punk, journalistic-anti-establishment]
+      anti_traits: [gentle, corporate-friendly, polished-saas, pastel-soft]
+    mapped_style_layers:
+      layout: deconstructed-zine-grid
+      typography: condensed-grotesk-typewriter-mono
+      surfaces: raw-print-hard-borders
+      color: newsprint-neon-punk
+      motion: glitch-cut
+      imagery: 35mm-flash-grain-candid
+
+  - id: openai-chatgpt
+    name: OpenAI ChatGPT
+    category: ai-conversational-interface
+    archetype: serene-neutral-ai-canvas
+    mode: dual-mode-clean
+    density: spacious
+    spacing: centered-column-24px
+    borders: hairline-neutral-rgba(0,0,0,0.08)
+    shadows: soft-floating-pill-shadow
+    typography:
+      heading_font: Söhne / Inter
+      body_font: Söhne / Inter
+      scale_ratio: 1.2
+      tracking: normal
+      uppercase: none
+      line_height: 1.6
+    color:
+      palette_type: clean-neutral-teal-or-monochrome
+      background: "#ffffff-or-#212121"
+      surface: "#f9f9f9-or-#2f2f2f"
+      text_primary: "#0d0d0d-or-#ececec"
+      text_muted: "#707070-or-#b4b4b4"
+      accent: "#10a37f"
+      contrast: soft-clean
+    motion:
+      duration_ms: 160
+      easing: ease-out
+      character: serene-floating-stream
+    personality:
+      traits: [conversational, calm, neutral-vessel, non-intrusive, clear]
+      anti_traits: [loud-commercial, dense-telemetry, chaotic, heavy-borders]
+    mapped_style_layers:
+      layout: centered-stream-column
+      typography: clean-humanist-sohne
+      surfaces: floating-pill-subtle-border
+      color: neutral-slate-teal-stream
+      motion: serene-stream
+      imagery: minimalist-wire-avatars
