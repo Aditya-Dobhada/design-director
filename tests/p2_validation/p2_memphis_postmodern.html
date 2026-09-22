@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — Memphis Postmodern</title>
+  <!-- DESIGN CONTRACT: memphis-postmodern -->
+  <!-- NEVER: muted grays, drop shadows, classical serifs -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --white:    #FFFFFF;
+      --black:    #000000;
+      --yellow:   #FFE500;
+      --red:      #FF2D55;
+      --blue:     #0050FF;
+      --teal:     #00C7B5;
+      --purple:   #7B2FFF;
+    }
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      /* Memphis squiggle pattern */
+      background-image:
+        radial-gradient(circle, var(--black) 1.5px, transparent 1.5px),
+        linear-gradient(45deg, transparent 40%, var(--yellow) 40%, var(--yellow) 60%, transparent 60%);
+      background-size: 28px 28px, 20px 20px;
+      background-position: 0 0, 14px 14px;
+      min-height: 100vh;
+    }
+
+    /* Nav */
+    nav {
+      background: var(--yellow);
+      border-bottom: 3px solid var(--black);
+      padding: 0 40px;
+      height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-wordmark {
+      font-size: 26px; font-weight: 800;
+      color: var(--black);
+      letter-spacing: -0.01em;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-shape {
+      width: 20px; height: 20px;
+      background: var(--red);
+      border: 2px solid var(--black);
+      transform: rotate(15deg);
+    }
+    .nav-links { display: flex; gap: 0; }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 13px; font-weight: 700;
+      color: var(--black);
+      padding: 8px 20px;
+      border: 2px solid transparent;
+      transition: background 0.1s;
+    }
+    .nav-links a:hover { background: var(--black); color: var(--yellow); }
+    .nav-cta {
+      background: var(--red);
+      color: var(--white);
+      border: 3px solid var(--black);
+      border-radius: 0px;
+      padding: 10px 22px;
+      font-size: 13px; font-weight: 800;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      box-shadow: 3px 3px 0px var(--black);
+    }
+
+    /* Hero */
+    .hero {
+      margin: 24px 40px;
+      background: var(--white);
+      border: 3px solid var(--black);
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .hero-left {
+      background: var(--blue);
+      border-right: 3px solid var(--black);
+      padding: 56px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-pattern-circle {
+      position: absolute;
+      bottom: -40px; right: -40px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: var(--teal);
+      border: 4px solid var(--black);
+    }
+    .hero-left h1 {
+      font-size: 58px; font-weight: 800;
+      color: var(--yellow);
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      position: relative; z-index: 1;
+    }
+    .hero-zigzag {
+      width: 80px; height: 16px;
+      margin: 20px 0;
+      background: repeating-linear-gradient(90deg, var(--yellow) 0, var(--yellow) 10px, var(--white) 10px, var(--white) 20px);
+      position: relative; z-index: 1;
+    }
+    .hero-left p {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px; color: rgba(255,255,255,0.85);
+      line-height: 1.6; max-width: 320px;
+      position: relative; z-index: 1;
+    }
+    .hero-right {
+      padding: 48px;
+      background: var(--white);
+    }
+    .memphis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+    .metric-card-mem {
+      border: 3px solid var(--black);
+      padding: 20px;
+    }
+    .metric-card-mem.y { background: var(--yellow); }
+    .metric-card-mem.r { background: var(--red); color: var(--white); }
+    .metric-card-mem.t { background: var(--teal); }
+    .metric-card-mem.w { background: var(--white); }
+    .mc-label { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; margin-bottom: 8px; }
+    .mc-value { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .mc-note { font-size: 11px; font-weight: 700; margin-top: 6px; }
+
+    .btn-mem {
+      background: var(--black);
+      color: var(--yellow);
+      border: 3px solid var(--black);
+      border-radius: 0px;
+      padding: 14px 28px;
+      font-size: 14px; font-weight: 800;
+      cursor: pointer;
+      margin-right: 12px;
+    }
+    .btn-mem-sec {
+      background: transparent;
+      color: var(--black);
+      border: 3px solid var(--black);
+      border-radius: 0px;
+      padding: 14px 28px;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Main */
+    .main { margin: 0 40px 40px; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    .mem-panel { border: 3px solid var(--black); background: var(--white); }
+    .mem-panel-header {
+      background: var(--purple); color: var(--white);
+      padding: 14px 24px; border-bottom: 3px solid var(--black);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .panel-title-mem { font-size: 14px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: #666; padding: 12px 24px; text-align: left; background: #f8f8f8; border-bottom: 2px solid var(--black); }
+    th:not(:first-child) { text-align: right; }
+    td { font-size: 14px; padding: 14px 24px; border-bottom: 2px solid var(--black); font-variant-numeric: tabular-nums; }
+    td:not(:first-child) { text-align: right; }
+    .td-name { font-weight: 700; }
+    .td-class {
+      display: inline-block;
+      border: 2px solid var(--black);
+      border-radius: 0px;
+      padding: 2px 8px;
+      font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .td-class.eq { background: var(--teal); }
+    .td-class.alt { background: var(--yellow); }
+    .td-class.fi { background: #f0f0f0; }
+    .td-pos { color: #007A30; font-weight: 700; }
+    .td-neg { color: var(--red); font-weight: 700; }
+
+    .sidebar { display: flex; flex-direction: column; gap: 16px; }
+    .alloc-item { padding: 14px 20px; border-bottom: 2px solid var(--black); display: flex; justify-content: space-between; align-items: center; }
+    .alloc-item:last-child { border-bottom: none; }
+    .alloc-dot { width: 12px; height: 12px; border: 2px solid var(--black); display: inline-block; margin-right: 8px; }
+    .alloc-label { font-size: 13px; font-weight: 700; }
+    .alloc-pct { font-family: 'Space Mono', monospace; font-size: 18px; font-weight: 700; }
+
+    .msg-item { padding: 14px 20px; border-bottom: 2px solid var(--black); }
+    .msg-item:last-child { border-bottom: none; }
+    .msg-badge { display: inline-block; background: var(--yellow); border: 2px solid var(--black); padding: 2px 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
+    .msg-from { font-size: 13px; font-weight: 700; }
+    .msg-preview { font-family: 'Space Mono', monospace; font-size: 11px; color: #555; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-wordmark"><div class="nav-shape"></div>Aurelia</div>
+    <div class="nav-links">
+      <a href="#">Portfolio</a><a href="#">Holdings</a><a href="#">Reports</a><a href="#">Messages</a>
+    </div>
+    <button class="nav-cta">Schedule</button>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Wealth.<br>Bold.<br>Clear.</h1>
+      <div class="hero-zigzag"></div>
+      <p>Portfolio management for family offices with $25M+ under stewardship. No compromise on precision.</p>
+      <div class="hero-pattern-circle"></div>
+    </div>
+    <div class="hero-right">
+      <div class="memphis-grid">
+        <div class="metric-card-mem y"><div class="mc-label">Total AUM</div><div class="mc-value">$47.3M</div><div class="mc-note">↑ +3.2%</div></div>
+        <div class="metric-card-mem r"><div class="mc-label">YTD Return</div><div class="mc-value">11.8%</div><div class="mc-note">vs 9.1%</div></div>
+        <div class="metric-card-mem t"><div class="mc-label">Distributions</div><div class="mc-value">$1.24M</div></div>
+        <div class="metric-card-mem w"><div class="mc-label">Positions</div><div class="mc-value">18</div><div class="mc-note">+2 new</div></div>
+      </div>
+      <button class="btn-mem">View Portfolio</button>
+      <button class="btn-mem-sec">Download Q3</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="mem-panel">
+      <div class="mem-panel-header"><div class="panel-title-mem">Holdings</div><span style="font-size:11px;opacity:0.8;">Q3 2026</span></div>
+      <table>
+        <thead><tr><th>Instrument</th><th>Class</th><th>Value</th><th>Weight</th><th>Return</th></tr></thead>
+        <tbody>
+          <tr><td class="td-name">Blackstone Real Estate Partners</td><td><span class="td-class alt">Alt</span></td><td>$12,400,000</td><td>26.3%</td><td class="td-pos">+14.2%</td></tr>
+          <tr><td class="td-name">MSCI World Equity Index</td><td><span class="td-class eq">Equity</span></td><td>$9,800,000</td><td>20.8%</td><td class="td-pos">+11.1%</td></tr>
+          <tr><td class="td-name">Pictet Strategic Bond Fund</td><td><span class="td-class fi">Fixed Inc.</span></td><td>$7,200,000</td><td>15.2%</td><td class="td-pos">+4.8%</td></tr>
+          <tr><td class="td-name">KKR Private Equity Fund IV</td><td><span class="td-class alt">Alt</span></td><td>$6,900,000</td><td>14.6%</td><td class="td-neg">−2.3%</td></tr>
+          <tr><td class="td-name">US Treasury Notes 2028</td><td><span class="td-class fi">Fixed Inc.</span></td><td>$5,100,000</td><td>10.8%</td><td class="td-pos">+3.1%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sidebar">
+      <div class="mem-panel">
+        <div class="mem-panel-header" style="background:var(--red);"><div class="panel-title-mem">Allocation</div></div>
+        <div class="alloc-item"><div><span class="alloc-dot" style="background:var(--teal);"></span><span class="alloc-label">Alternatives</span></div><span class="alloc-pct">41%</span></div>
+        <div class="alloc-item"><div><span class="alloc-dot" style="background:var(--yellow);"></span><span class="alloc-label">Equities</span></div><span class="alloc-pct">33%</span></div>
+        <div class="alloc-item"><div><span class="alloc-dot" style="background:#f0f0f0;"></span><span class="alloc-label">Fixed Income</span></div><span class="alloc-pct">26%</span></div>
+      </div>
+      <div class="mem-panel">
+        <div class="mem-panel-header" style="background:var(--teal);"><div class="panel-title-mem">Messages</div></div>
+        <div class="msg-item"><div class="msg-badge">New</div><div class="msg-from">Marcus Chen</div><div class="msg-preview">Q3 brief ready for review…</div></div>
+        <div class="msg-item"><div class="msg-from">Sophie Bergmann</div><div class="msg-preview">KKR Fund V pre-close brief…</div></div>
+        <div class="msg-item"><div class="msg-from">Robert Hale</div><div class="msg-preview">Trust distribution approval…</div></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

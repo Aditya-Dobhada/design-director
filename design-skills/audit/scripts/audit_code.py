@@ -111,8 +111,9 @@ class DesignAuditor:
         is_css_var_definition = bool(re.search(r'--[\w-]*shadow', line))
 
         zero_blur_styles = [
-            "swiss-editorial", "quiet-luxury", "cyberpunk",
+            "swiss-editorial", "quiet-luxury",
             "bauhaus", "japanese-wabi-sabi", "memphis-postmodern", "retro-americana"
+            # cyberpunk is EXCLUDED: its spec defines neon glow box-shadows (0 0 Npx rgba(cyan)) as correct idiom
         ]
         if self.target_style in zero_blur_styles:
             if not is_css_var_definition:
