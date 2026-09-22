@@ -9,11 +9,11 @@ A visual language grounded in the International Typographic Style (Swiss Style) 
 
 ## Core Principles
 
-1. **Information Architecture is the Design:** Structure and typography do 95% of the visual work. Do not use decorative cards or colored backgrounds to create hierarchy where typography and spatial proportion can do it better.
-2. **Extreme Typographic Contrast:** Combine large display scales (36px to 64px+) with compact, highly legible body text (14px to 16px). Pair an authoritative editorial serif or stark neo-grotesk with a disciplined body grotesk.
-3. **Asymmetric Grid Alignment:** Avoid centered, symmetrical card grids. Use asymmetric column splits (e.g. 5-column / 7-column, 4-column / 8-column) with visible structural alignments.
-4. **Ruthless Monochromatic Foundation:** 90% of the surface area is pure white/paper and pure black/ink. Exactly ONE intentional accent color (e.g. Swiss Red `#E30613`, International Klein Blue `#002FA7`, or Forest Noir `#143829`) is permitted for interactive focal points.
-5. **Architectural Hairlines:** Dividers and card borders are either 0px (separated by whitespace alone) or strict 1px solid hairlines (`#000000` or `#E5E5E5`). No blurry box shadows.
+1. **Typography:** `font-family: 'Suisse Int\'l', 'Neue Haas Unica', Helvetica, sans-serif` for all body/UI. Editorial display: `Suisse Works` (serif) or `Playfair Display` at weight 700–900. Scale: 11px caption → 14px body → 22px section → 48px display. Never mix more than 2 type families.
+2. **Color:** Canvas `#FFFFFF` or `#F8F8F6`. Primary `#0A0A0A`. Single accent (one of: vermilion `#E63946`, electric blue `#0052CC`, or warm amber `#F4A261`). No gradients. No Tailwind `bg-gray-*` — use custom CSS values.
+3. **Geometry:** `border-radius: 0px` universally. Hairlines: `1px solid #0A0A0A` or `0.5px solid rgba(0,0,0,0.2)`. No box-shadow blur > 0px. Grid: strict 12-column, 8px baseline.
+4. **Layout:** At least one asymmetric text offset per page section. Column text at 60–70% width max. Large typographic numbers as graphic elements (420px+ at breakpoints).
+5. **Motion:** 150–200ms linear or ease-out transitions. No easing bounce. Page transitions: instant or 100ms fade — never slide.
 
 ## Mandatory Anti-Patterns (Explicit Negative Constraints)
 

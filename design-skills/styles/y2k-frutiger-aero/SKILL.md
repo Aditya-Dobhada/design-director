@@ -9,11 +9,11 @@ A design language celebrating the vibrant, optimistic futurism of the mid-2000s 
 
 ## Core Principles
 
-1. **Luminous Skeuomorphic Depth & Glass:** Surfaces feature glossy highlight reflections on their top hemisphere, subtle inner borders, and soft glowing dropshadows.
-2. **Techno-Organic Palette:** Clear sky cyan (`#00C4FF`), Aero blue (`#0078D7`), vivid lime green (`#76B900`), and clean white translucency.
-3. **Pill & Rounded Organic Geometry:** Buttons and badges use generous border radii (`rounded-full`, 12px to 24px) that feel like polished river stones or glass capsules.
-4. **Frosted Acrylic / Aero Glass:** Backgrounds and cards use translucent layers with backdrop blur (`backdrop-filter: blur(12px)`), paired with crisp 1px white specular border highlights.
-5. **Optimistic, Buoyant Motion:** Transitions feel fluid, aquatic, and lively with gentle spring physics.
+1. **Color:** Sky gradient: `linear-gradient(180deg, #87CEEB 0%, #E0F4FF 100%)`. Aqua accent `#00CFDC`. Gloss overlay: `rgba(255,255,255,0.35)` on all primary surfaces. Warm white base `#FAFEFF`. No dark canvases. No desaturated palettes.
+2. **Surfaces:** Gloss cards: `background: rgba(255,255,255,0.45)`, `backdrop-filter: blur(12px)`, `border: 1px solid rgba(255,255,255,0.6)`, `box-shadow: 0 8px 32px rgba(0,207,220,0.15)`. The glass effect is mandatory on all card components.
+3. **Typography:** `font-family: 'Nunito', 'Varela Round', 'Rounded Mplus 1c', sans-serif` — rounded geometric humanist. Weight 400–700. Avoid sharp grotesque fonts (no Helvetica Neue or Inter). Display size 48px+, tightly letter-spaced `letter-spacing: -0.01em`.
+4. **Geometry:** `border-radius: 16px–24px` on cards. `border-radius: 48px–9999px` on buttons (pill shape). `border-radius: 50%` on avatars and icon containers. Zero sharp corners on interactive surfaces.
+5. **Motion:** Springy `cubic-bezier(0.34, 1.56, 0.64, 1)` at 300–400ms. Hover: scale up `transform: scale(1.03)` with glow shadow. Button click: scale down `transform: scale(0.97)`. Micro-animations on icons: 200ms bounce.
 
 ## Mandatory Anti-Patterns (Explicit Negative Constraints)
 

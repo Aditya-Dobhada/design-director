@@ -9,11 +9,11 @@ A design philosophy grounded in the biophilic turn in contemporary design — or
 
 ## Core Principles
 
-1. **Living System Geometry:** Containers use organic blob shapes, soft irregular curves, and flowing outlines rather than rigid rectangles. Seed pods, river stones, and mycelium networks inspire the visual vocabulary.
-2. **Earth and Plant Pigment Palette:** Raw clay (`#C4956A`), forest moss (`#5D7A52`), bark gray (`#7A7068`), sap green (`#3E5C3A`), bone white (`#F5F1E8`), and ink charcoal (`#2A2824`).
-3. **Botanical Illustration Accents:** Fine-line hand-drawn SVG botanical illustrations (leaf cross-sections, seed structures, root systems) used as decorative borders, watermarks, or illustrative content.
-4. **Tactile Material Warmth:** Surfaces carry subtle grain or pressed-paper texture (implemented as SVG filter noise or CSS noise-gradient). The digital surface should feel like it could be touched.
-5. **No Industrial Precision:** Slightly irregular alignments, imperfect SVG line weights, and organic scale variation are desirable character.
+1. **Color:** Earth palette: clay `#C4714F`, moss `#5C7A4E`, sap green `#3D5C2E`, bone white `#F5F0E8`, warm linen `#EDE6D6`, deep charcoal `#2A2622`. No bright saturated hues. Never neon. Palette max 4 colors per composition.
+2. **Geometry:** `border-radius: 16px–32px` (river-stone curves) on cards. `border-radius: 48px–9999px` on pills and tags. Organic blob shapes as background SVG fills. No sharp corners on primary content containers.
+3. **Typography:** `font-family: 'Lora', 'Fraunces', 'Libre Baskerville', serif` for headings at weight 400–600. Body: `font-family: 'DM Sans', 'Plus Jakarta Sans', sans-serif` at weight 300–400. Slightly warm `line-height: 1.7–1.8`.
+4. **Surfaces:** Off-white linen cards `#EDE6D6` with `box-shadow: 0 2px 12px rgba(42,38,34,0.08)` (soft, warm-tinted shadow). No cold blue-gray shadows. Card borders: none or `1px solid rgba(196,113,79,0.2)` (clay-translucent).
+5. **Motion:** `cubic-bezier(0.34, 1.56, 0.64, 1)` (gentle organic spring) at 350–450ms. Hover: warm shadow lift `box-shadow: 0 8px 32px rgba(42,38,34,0.16)`. No linear/mechanical easing. No hard clicks.
 
 ## Mandatory Anti-Patterns (Explicit Negative Constraints)
 

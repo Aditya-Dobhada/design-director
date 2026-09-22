@@ -225,7 +225,8 @@ class DesignAuditor:
                 })
 
         elif self.target_style in ["space-age-optimism"]:
-            # Pitch dark backgrounds forbidden — space age is radiant warm white
+            # Pitch dark backgrounds are forbidden — Space Age Optimism is radiant warm white.
+            # Light backgrounds (bg-white, etc.) are CORRECT for this style; never flag them.
             dark_bgs = re.findall(r'\b(bg-(?:black|zinc-950|gray-950|slate-950))\b', line)
             for db in dark_bgs:
                 self.violations.append({
@@ -236,18 +237,6 @@ class DesignAuditor:
                     "type": "color_violation",
                     "offending_code": db,
                     "message": "Space Age Optimism requires radiant warm white / chrome canvas. Found dark background."
-                })
-            # Light mode classes are forbidden
-            light_bgs = re.findall(r'\b(bg-(?:white|gray-50|slate-50|neutral-50|amber-50))\b', line)
-            for lb in light_bgs:
-                self.violations.append({
-                    "file": str(file_path),
-                    "line": line_no,
-                    "layer": "color",
-                    "severity": "CRITICAL",
-                    "type": "color_violation",
-                    "offending_code": lb,
-                    "message": f"Cyberpunk requires 100% dark mode / obsidian canvas. Found light background '{lb}'."
                 })
 
         # 5. Typography Substitutions

@@ -1,0 +1,15 @@
+{
+  "name": "design-director",
+  "version": "1.0.0",
+  "description": "Multi-agent design system director: design briefs, 12 style packs, layered specs, and post-implementation audits.",
+  "type": "module",
+  "scripts": {
+    "test:unit": "python3 -m unittest discover -s tests -p 'test_director.py' -v",
+    "test:e2e:pipeline": "python3 -m pytest tests/e2e/test_pipeline_e2e.py -v",
+    "test:e2e:browser": "playwright test tests/e2e/browser_dom_audit.spec.js",
+    "test": "npm run test:unit && npm run test:e2e:pipeline"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}

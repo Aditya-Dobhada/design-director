@@ -9,11 +9,11 @@ A visual language drawn from 1950s–1970s American commercial vernacular: roads
 
 ## Core Principles
 
-1. **Print Register & Halftone Craft:** Surfaces carry subtle halftone dot textures, slight grain, and imperfect off-register layering. The imperfection is the character — not a bug.
-2. **High-Contrast Geometric Composition:** Saul Bass-style bold shapes, flat silhouettes, stark geometric crops. Zero photographic realism.
-3. **Slab Serif Dominance:** Fat slab serifs (`Rockwell`, `Zilla Slab`, `Playfair Display Heavy`) paired with condensed display sans (`Oswald`, `Barlow Condensed`).
-4. **Warm Incandescent Palette:** Vermilion red (`#C8391E`), Amber yellow (`#E8A126`), Cream parchment (`#F9F0DC`), Diner teal (`#2A7F7F`), Carbon ink (`#1C1410`). No cold blues, no neons, no pastels.
-5. **Thick Ink Press Borders:** 3px–5px solid borders in deep Ink Carbon, sometimes with deliberate slight misregistration for analog warmth.
+1. **Color:** Vermilion `#CC3311`, neon amber `#FFB300`, parchment `#F5E6C8`, carbon `#1A1208`, cream `#FFF8E7`. No digital-clean colors. All values reference vintage ink press printing — slight warmth, slight desaturation.
+2. **Typography:** Display: `font-family: 'Alfa Slab One', 'Playfair Display Black', serif` at weight 900. Headline: `'Oswald', 'Barlow Condensed'` at weight 700, uppercase. Body: `'Source Serif Pro', 'Lora'` at weight 400. No sans-serif display headings — always slab or condensed serif for headers.
+3. **Borders:** `border: 3px solid #1A1208` on cards and containers. `border: 2px solid #CC3311` as decorative rule between sections. No `border-gray-*` — all borders are ink-dark or vermilion. No box-shadow blur — only `box-shadow: 3px 3px 0px #1A1208` offset.
+4. **Geometry:** `border-radius: 0px` on cards, containers, and form inputs. Buttons: `border-radius: 4px` max. Stamp badges: `border-radius: 50%` only. Never rounded-lg or rounded-xl on primary containers.
+5. **Texture:** SVG halftone dot pattern at 8% opacity on primary background sections. Worn paper grain on hero areas via CSS `filter: contrast(1.05) brightness(0.98)`. No photographic textures from stock.
 
 ## Mandatory Anti-Patterns (Explicit Negative Constraints)
 

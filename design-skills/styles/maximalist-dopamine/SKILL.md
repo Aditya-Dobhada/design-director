@@ -9,11 +9,11 @@ A design language rooted in hyper-sensory digital culture, early 2000s net art, 
 
 ## Core Principles
 
-1. **More is More (Visual Noise as Signal):** The interface embraces saturation, sticker badges, overlapping text layers, and bold graphic flourishes. Empty whitespace is treated as unfulfilled real estate.
-2. **Chromatic Collision:** Neon Lime (`#00FF66`), Hot Magenta (`#FF007F`), Hyper Cyan (`#00E5FF`), Electric Acid Yellow (`#FFF500`), and Royal Purple (`#7A00FF`) colliding directly on solid black or candy pastel canvases.
-3. **Sticker-Bomb Layering:** Elements feature rotated badges (`transform: rotate(-6deg)` or `rotate(8deg)`), layered sticker tags, marquee banners, and graphic stamp icons overlapping card borders.
-4. **Typographic Anarchy:** Deliberate collisions of oversized bold display grotesks, heavy serifs, and high-energy monospace tags within the same viewport.
-5. **Tactile High-Impact Interactivity:** Punchy button presses, high-saturation hover swaps, rotating badges, and vibrant multi-colored offset drop shadows.
+1. **Color:** Candy neon multi-palette: Yellow `#FFDE03`, Magenta `#FF0090`, Cyan `#00E5FF`, Lime `#AAFF00`. Used simultaneously as competing fills. Background is either pure black `#000000` or pure white `#FFFFFF`. 3+ colors active per viewport.
+2. **Shadows:** Multi-layer offset shadows on all primary elements: `box-shadow: 4px 4px 0px #FF0090, 8px 8px 0px #00E5FF`. Each shadow a different accent color. No blurred shadows — solid offset only. Shadow colors rotate across cards.
+3. **Typography:** `font-family: 'Boogaloo', 'Fredoka One', 'Luckiest Guy', sans-serif` for display at 900 weight where available. Stacked, oversized text at 80px–160px on hero sections. Body: `'Space Grotesk'` weight 500. All-caps `.uppercase` on primary labels and CTAs.
+4. **Geometry:** Layered border on cards: `border: 3px solid #000000`, then multi-color offset shadow. `border-radius: 0px` on main cards (sticker-like flatness). `border-radius: 50%` on badge elements. Rotation: `transform: rotate(-2deg)` to `rotate(3deg)` on sticker elements.
+5. **Density:** Pack the viewport. Every section has competing visual weight. No empty whitespace — fill with color, pattern, or sticker elements. Navigation: bold, thick, full-bleed color bar.
 
 ## Mandatory Anti-Patterns (Explicit Negative Constraints)
 

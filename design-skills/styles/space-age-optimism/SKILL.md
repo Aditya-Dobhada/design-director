@@ -9,11 +9,11 @@ A visual language celebrating the luminous technological optimism of the 1960s: 
 
 ## Core Principles
 
-1. **Warm White as Foundation:** Surfaces are not cold stark white but warm optical white (`#FAFAF8`) and warm chrome — evoking anodized aluminum, molded fiberglass, and glazed ceramic.
-2. **Single High-Contrast Accent:** NASA Mission Orange (`#FF5C00`), Atomic Age Red (`#E82528`), or Console Green (`#00B87C`) — exactly one accent burns against the white/gray foundation.
-3. **Organic Pod Geometry:** Oval, capsule, elliptical, and parabolic shapes. Rounded containers with generous 20px–40px border radii evoking molded plastic and fiberglass.
-4. **Clean Technical Typography:** Geometric sans of the era: `Futura`, `ITC Avant Garde Gothic`. Precise, confident, forward-facing.
-5. **Minimal Structural Lines:** Fine 1px chrome-gray division lines instead of heavy borders. Depth comes from subtle warm drop shadows (small, diffuse, warm-tinted).
+1. **Canvas:** Warm optical white `#FAFAF8` body background. Never dark canvas — this is radiant, daylit design. Section alternates: warm white `#FAFAF8` and soft warm gray `#F0EDE8`.
+2. **Color:** Dominant white base with single Mission Orange accent `#E8521A` (or NASA blue `#1B4FBF`). Chrome metallic: `#C0C0C0` / `#A8A8A8` for borders and structural lines. No neon. No pastels.
+3. **Geometry (Pods):** Primary containers: `border-radius: 24px–40px`. Buttons: `border-radius: 48px` (capsule). Icon containers: `border-radius: 50%`. No sharp corners on interactive surfaces. Hard-edged geometric shapes only as decorative background elements.
+4. **Typography:** `font-family: 'Euclid Circular', 'DM Sans', 'Neue Haas Grotesk', sans-serif` — clean geometric humanist sans. Weight 400–600 for body, 700–800 for display. No slab serifs, no condensed display fonts, no italics.
+5. **Motion:** Smooth `cubic-bezier(0.25, 0.46, 0.45, 0.94)` at 250–350ms. Hover: lift with `transform: translateY(-2px)` and `box-shadow: 0 8px 24px rgba(0,0,0,0.12)`. No hard mechanical clicks. No bounce.
 
 ## Mandatory Anti-Patterns (Explicit Negative Constraints)
 

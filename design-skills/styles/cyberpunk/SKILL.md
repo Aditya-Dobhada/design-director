@@ -9,11 +9,11 @@ A tactical, high-voltage visual system derived from military telemetry, hacker c
 
 ## Core Principles
 
-1. **Obsidian Void Canvas:** 100% dark mode. Deep carbon, midnight obsidian, and pitch-black backgrounds (`#08090C`, `#0E1017`) create a backdrop where neon accents burn with intense luminescence.
-2. **High-Voltage Triad Accents:** Electric Neon Cyan (`#00F0FF`), Tactical Hazard Yellow/Amber (`#FFB800`), and Acid Neon Magenta (`#FF0055`).
-3. **Chamfered & Clipped Geometry:** Diagonal 45-degree cut corners (`clip-path: polygon(...)`), angled tabs, and notched card headers replace generic rectangular boxes.
-4. **Data Telemetry & Monospace Dominance:** Technical monospaced typography, tabular numbers, bracketed system prefixes (`[SYS_INIT]`, `// TELEMETRY_ACTIVE`), and coordinate stamps.
-5. **HUD Overlays & Framing:** Fine crosshair marks (`+`), corner registration brackets (`┌ ┐`), and subtle scanline grid overlays.
+1. **Canvas:** Body background `#080A0E` (obsidian). Card surfaces `#0F1117`. Never any `bg-white`, `bg-gray-50`, or light canvas — this is 100% dark mode.
+2. **Color:** Single neon accent: `#39FF14` (acid green), `#00F5FF` (electric cyan), or `#FF0090` (magenta). Accent used for borders, active states, and glow only — never as a fill background. Secondary text: `#A0A8B0`. Never warm hues (amber, orange) except error states.
+3. **Typography:** `font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace` for all data readouts, metrics, and terminal text. UI labels: `IBM Plex Mono` or `Space Mono`. Proportional sans only for body prose. Never Helvetica or Inter.
+4. **Borders:** `1px solid rgba(57,255,20,0.25)` (accent-translucent) on card edges. HUD brackets: CSS `::before`/`::after` corner marks, 8px long, 1px thick, accent color. No solid black borders.
+5. **Glow:** Accent glow: `box-shadow: 0 0 8px rgba(57,255,20,0.4), 0 0 24px rgba(57,255,20,0.15)` on focused/active interactive elements. Never on static text or decorative elements.
 
 ## Mandatory Anti-Patterns (Explicit Negative Constraints)
 

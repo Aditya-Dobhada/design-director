@@ -9,11 +9,11 @@ A design philosophy drawn from the Japanese aesthetics of wabi (understated simp
 
 ## Core Principles
 
-1. **Imperfection as Intention:** Asymmetry, slight irregularity, and organic incompleteness are design moves — not mistakes. A slightly uneven rule-line or an ink-brushstroke that doesn't close is correct.
-2. **Natural Material Palette:** Fired clay (`#A07E6A`), ink stone (`#2A2622`), white rice paper (`#FAF7F0`), matcha green (`#5C6E4C`), bamboo cream (`#EDE8D0`). Zero synthetic neons or corporate blues.
-3. **Profound White Space (Ma):** The Japanese concept of ma — meaningful empty space — is structural. Margins of 80px to 160px at desktop. Content breathes like a haiku.
-4. **Handmade Typography:** Brush-ink calligraphic accents for display headings, paired with a quiet, readable humanist body typeface.
-5. **No Technological Artifacts:** No gradients, no blur effects, no drop shadows. Ink on paper. Glaze on clay. Nothing simulated.
+1. **Color:** Rice paper `#F7F3EE`, bamboo cream `#EDE8DF`, charcoal `#1E1E1A`, sumi ink `#2A2420`. Matcha accent `#5C7A4E` or iron gray `#4A4A46`. No bright pigments. No pure `#FFFFFF` white — always warm off-white.
+2. **Typography:** `font-family: 'Shippori Mincho', 'Hiragino Mincho Pro', Georgia, serif` for display (weight 400). Body: `Zen Kaku Gothic New` or `Noto Sans JP` at weight 300–400. Generous `line-height: 1.9–2.1`. Letter-spacing `0.02em` on body. Never condensed or heavy weights.
+3. **Spacing (Ma):** Whitespace IS the primary design element. Minimum section padding 120px vertical. Content width max 640px for reading columns. Single focused element per screen viewport. Never compete for attention — silence communicates.
+4. **Geometry:** Asymmetric layouts — deliberately uncentered. `border-radius: 2px–4px` on cards (near-sharp, not rounded). Ink-wash horizontal rules: `border-bottom: 1px solid rgba(30,30,26,0.15)`. No hard black borders.
+5. **Texture/Pattern:** Subtle paper texture via CSS `background-image: url('noise.png')` at 3–5% opacity. No photographic backgrounds. Ink-wash brush motifs as SVG overlays at low opacity. No geometric patterns.
 
 ## Mandatory Anti-Patterns (Explicit Negative Constraints)
 

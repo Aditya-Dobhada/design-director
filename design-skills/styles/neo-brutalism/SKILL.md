@@ -9,11 +9,11 @@ A bold, high-contrast, tactile aesthetic rooted in raw web design, physical pape
 
 ## Core Principles
 
-1. **Physicality & Hard Geometry:** Elements feel like cut paper cards pinned to a board. Every interactive element has weight, hard outlines, and tangible press depths.
-2. **Hard Offset Shadows (Zero Blur):** Shadows are solid black offsets (`3px 3px 0px #000`, `4px 4px 0px #000`, or `5px 5px 0px #000`). Blur is strictly 0px.
-3. **Heavy Black Outlines:** Every container, card, button, and input is bordered in solid black (`2px` to `4px` solid `#000000`). No faint `#E5E7EB` border lines.
-4. **Hyper-Saturated Accent Palette:** Raw, unapologetic primary and secondary colors: Canary Yellow (`#FFE600`), Electric Lime (`#00F0A8`), Hot Pink (`#FF69B4`), Vivid Cyan (`#00C4FF`), and Alert Orange (`#FF5C00`).
-5. **Bold, Punchy Typography:** Heavy display grotesks, punchy geometric sans, or heavyweight monospaces that command attention.
+1. **Borders:** `border: 3px solid #000000` on all interactive elements and cards. No `border-gray-*` or `border-opacity-*`. Buttons: `border: 3px solid #000000` always present — never borderless.
+2. **Shadows:** `box-shadow: 4px 4px 0px #000000` on cards. `box-shadow: 6px 6px 0px #000000` on primary CTAs. Shadow offset must be solid black — zero blur radius. Active/pressed state: `box-shadow: 0px 0px 0px`, `transform: translate(4px, 4px)`.
+3. **Color:** Maximum saturation background on the dominant element (e.g., `#FFDE03` yellow, `#FF3B30` red, `#00C853` green). Pure `#FFFFFF` or `#000000` secondary backgrounds. Single vibrant accent per composition, not multiple competing hues.
+4. **Typography:** `font-family: 'Space Grotesk', 'Clash Display', system-ui` at weight 700–900 for headings. Body: `font-weight: 500` minimum. Uppercase `.tracking-wider` labels. No light or thin font weights.
+5. **Geometry:** `border-radius: 0px` on cards and buttons. Inputs: `border-radius: 0px`, thick border. Pills only on tags (4px max). Never `rounded-full` on primary buttons.
 
 ## Mandatory Anti-Patterns (Explicit Negative Constraints)
 

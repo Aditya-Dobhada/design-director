@@ -9,11 +9,11 @@ A visual language from the radical 1980s Memphis Group design movement led by Et
 
 ## Core Principles
 
-1. **Decoration as Content:** Pattern fills ARE the design — squiggles, polka dots, diagonal hatch lines, and checkerboards applied to surfaces as deliberate decorative character, not background noise.
-2. **Anti-Hierarchical Geometry:** Triangles, circles, asymmetric laminate shapes, and wonky trapezoids rather than conventional rectangles.
-3. **Clashing Color Logic:** Coral + Electric Blue + Lemon Yellow + White simultaneously. Memphis is intentionally bad taste elevated to philosophy.
-4. **Flat Graphic, Zero Depth:** No shadows, no gradients, no blur. Flat opaque color planes with stark outlines.
-5. **Geometric Squiggle Typography:** Rounded sans with blocky letter-forms, or irreverent display fonts that feel plasticky and toy-like.
+1. **Color:** Contrasting primaries on white: Electric yellow `#FFE000`, coral `#FF6B6B`, cobalt `#003DE8`, teal `#00B4B4`, plus `#FFFFFF` background and `#000000` outlines. No gradients. No muted palettes. Colors appear as flat fills only.
+2. **Patterns:** Squiggle lines, polka dots (12px circles on 24px grid), diagonal hatching (45° at 4px spacing), zigzag bands — applied as CSS `background-image` repeating patterns or inline SVGs. At least two distinct patterns per layout.
+3. **Typography:** Display: `font-family: 'Boogaloo', 'Righteous', 'Fredoka One', sans-serif` at weight 400–700. Body: `'Space Grotesk'` or `'DM Sans'` for legibility. Large numbers and single letters as graphic elements (200px+). Never serif for display.
+4. **Geometry:** Mixed `border-radius` within the same layout: 0px on some elements, 50% on others, 8px on others — intentional inconsistency. Shapes overlap and clip outside their containers. No visual hierarchy of uniform radii.
+5. **Borders:** `border: 2px solid #000000` as a unifying element across all patterns and shapes. All pattern blocks enclosed in solid black outlines. No opacity-reduced borders.
 
 ## Mandatory Anti-Patterns (Explicit Negative Constraints)
 

@@ -9,11 +9,11 @@ A design language founded on discretion, bespoke craft, understatement, and expa
 
 ## Core Principles
 
-1. **Subtlety as the Ultimate Power Move:** Loud colors, aggressive dropshadows, and thick borders signify insecurity. Quiet Luxury uses quiet tonal shifts, whisper hairlines, and generous whitespace.
-2. **Warm Tactile Canvas:** Reject sterile `#FFFFFF` and cold `#F3F4F6`. Surfaces are built on warm alabaster, linen, ecru, and aged bone (`#FBFBF9`, `#F5F2EB`, `#EBE7DF`).
-3. **Immaculate Editorial Serifs:** High-contrast, elegant serif typefaces (Cormorant Garamond, Canela, Fraunces, Ogg) paired with a disciplined, quiet humanist sans.
-4. **Whisper Hairlines & Tone Layering:** Dividers are 1px semi-transparent warm stone (`rgba(0,0,0,0.06)` or `#E8E6E1`). Elevation is communicated through subtle tonal planes or borders, NEVER through dark dropshadows.
-5. **Zero Border Radius (`rounded-none`):** Cards, images, and interactive surfaces have crisp 0px corners. Sharp, tailored, architectural lines only.
+1. **Typography:** `font-family: 'Cormorant Garamond', Georgia, serif` at `font-weight: 300–400` for all h1–h2. Body copy: `Suisse Int'l` or `Neue Haas Unica` at weight 300–400, 17–18px, 1.65 line-height. Never Inter, Helvetica, or Roboto for display headings.
+2. **Color:** Canvas `#FBFBF9` (warm alabaster). Primary text `#1C1C1A`. Stone dividers `#E8E4DF`. Single deep-ink accent `#2C2C28`. No bright hues, no Tailwind color classes except `bg-neutral-*`, `text-neutral-*` (custom values only).
+3. **Geometry:** `border-radius: 0px` on all containers, cards, and buttons. No `rounded-*` Tailwind class except `rounded-none`. No drop shadows — separation via 1px stone dividers `#E8E4DF`.
+4. **Spacing:** Minimum 80px section padding. Grid gutters ≥ 40px. Never collapse to mobile gutters < 24px. Whitespace IS the design — never fill it.
+5. **Motion:** Max 300ms ease transitions. `cubic-bezier(0.4, 0, 0.2, 1)` only. No bounce, spring, or keyframe animations. No parallax.
 
 ## Mandatory Anti-Patterns (Explicit Negative Constraints)
 

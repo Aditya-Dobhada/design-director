@@ -63,71 +63,173 @@ def find_reference(query: str) -> Optional[Dict[str, Any]]:
 def extract_design_brief(context_text: str) -> Dict[str, Any]:
     """
     Parses product context (PRD, README, spec) into a structured Design Brief.
+    Covers 11 domain buckets. Falls through to a neutral SaaS default only when
+    no domain signals are found.
     """
     text_lower = context_text.lower()
-    
-    # 1. Product type & audience
-    if any(k in text_lower for k in ["wealth", "portfolio", "banking", "finance", "invest", "fintech"]):
+
+    # ── 1. FinTech / Wealth ──────────────────────────────────────────────────
+    if any(k in text_lower for k in ["wealth", "portfolio", "banking", "finance", "invest", "fintech", "asset", "equity", "fund", "endowment", "trust", "estate planning"]):
         product_type = "FinTech / Wealth Management"
         audience = "High-Net-Worth Individuals, Family Offices, and Wealth Advisory Teams"
-    elif any(k in text_lower for k in ["organic", "nature", "botanical", "climate", "sustainable", "ecology", "earth"]):
-        product_type = "Ecological / Organic Living"
-        audience = "Conscious Consumers, Environmental Stewards, and Botanical Enthusiasts"
-    elif re.search(r'\b(developer|engineers|api|cli|telemetry|kubernetes|terminal|sre)\b', text_lower):
-        product_type = "Developer Tool / Platform"
-        audience = "Software Engineers and Technical Operators"
-    elif any(k in text_lower for k in ["creator", "commerce", "art", "music", "zine"]):
-        product_type = "Creator Marketplace / Community"
-        audience = "Independent Creators, Artists, and Cultural Enthusiasts"
-    elif any(k in text_lower for k in ["enterprise", "internal", "operations"]):
-        product_type = "Enterprise Operations Platform"
-        audience = "Operations Teams and Enterprise Administrators"
-    else:
-        product_type = "Web Application"
-        audience = "General Users"
-
-    # 2. Personality traits
-    traits = []
-    if any(k in text_lower for k in ["trust", "wealth", "security", "discretion"]):
-        traits.extend(["authoritative", "understated", "meticulous", "discreet"])
-    if re.search(r'\b(developer|terminal|fast|telemetry|sre|kubernetes)\b', text_lower):
-        traits.extend(["tactical", "high-performance", "keyboard-first", "focused"])
-    if re.search(r'\b(creator|zine|comic|rebellious|risograph)\b', text_lower):
-        traits.extend(["unapologetic", "expressive", "tactile", "energetic"])
-    if re.search(r'\b(editorial|monograph|swiss|broadsheet|minimal|disciplined)\b', text_lower):
-        traits.extend(["disciplined", "objective", "content-first", "typographic"])
-    if not traits:
-        traits = ["intentional", "crafted", "clear", "distinctive"]
-
-    # 3. UX requirements
-    if re.search(r'\b(telemetry|data|dense|terminal|cluster)\b', text_lower):
-        density = "high"
-        info_load = "dense-tabular"
-        workflow = "keyboard-driven-operational"
-    elif re.search(r'\b(reading|wealth|luxury|monograph|ledger)\b', text_lower):
+        traits = ["authoritative", "understated", "meticulous", "discreet"]
         density = "spacious"
         info_load = "curated-editorial"
         workflow = "contemplative-decision-making"
-    elif re.search(r'\b(creator|shop|storefront|marketplace)\b', text_lower):
-        density = "balanced"
-        info_load = "visual-grid"
-        workflow = "exploratory-browsing"
-    else:
+        playful_serious = "Strongly Serious"
+        premium_accessible = "Ultra Premium"
+        futuristic_institutional = "Institutional / Traditional"
+
+    # ── 2. Developer Tools / Infrastructure ─────────────────────────────────
+    elif re.search(r'\b(developer|engineers?|api|cli|telemetry|kubernetes|terminal|sre|devops|sdk|ci/cd|pipeline|codebase|repository|deployment|observability)\b', text_lower):
+        product_type = "Developer Tool / Platform"
+        audience = "Software Engineers and Technical Operators"
+        traits = ["tactical", "high-performance", "keyboard-first", "focused"]
+        density = "high"
+        info_load = "dense-tabular"
+        workflow = "keyboard-driven-operational"
+        playful_serious = "Strongly Serious"
+        premium_accessible = "Refined Professional"
+        futuristic_institutional = "Futuristic / Avant-Garde"
+
+    # ── 3. EdTech / Learning ─────────────────────────────────────────────────
+    elif any(k in text_lower for k in ["learning", "education", "student", "teacher", "course", "curriculum", "lesson", "quiz", "edtech", "academy", "tutoring", "classroom", "lms"]):
+        product_type = "EdTech / Learning Platform"
+        audience = "Students, Educators, and Learning Institutions"
+        traits = ["clear", "encouraging", "structured", "accessible"]
         density = "balanced"
         info_load = "modular"
         workflow = "guided-task-completion"
+        playful_serious = "Balanced"
+        premium_accessible = "Accessible / Mass Appeal"
+        futuristic_institutional = "Contemporary Modern"
 
-    # 4. Brand positioning axes (qualitative)
-    playful_serious = "Strongly Serious" if any(k in text_lower for k in ["wealth", "security", "telemetry", "trust"]) else ("Strongly Playful" if re.search(r'\b(game|toy|zine|pop)\b', text_lower) else "Balanced")
-    premium_accessible = "Ultra Premium" if any(k in text_lower for k in ["luxury", "wealth", "boutique"]) else ("Accessible / Mass Appeal" if re.search(r'\b(consumer|grassroots)\b', text_lower) else "Refined Professional")
-    futuristic_institutional = "Futuristic / Avant-Garde" if re.search(r'\b(cyber|futurism|telemetry|terminal)\b', text_lower) else ("Institutional / Traditional" if any(k in text_lower for k in ["bank", "ledger", "estate", "wealth"]) else "Contemporary Modern")
+    # ── 4. Healthcare / Clinical ─────────────────────────────────────────────
+    elif any(k in text_lower for k in ["patient", "clinical", "medical", "health", "ehr", "hipaa", "hospital", "physician", "diagnosis", "pharmacy", "telehealth", "wellness"]):
+        product_type = "Healthcare / Clinical Platform"
+        audience = "Clinical Staff, Patients, and Healthcare Administrators"
+        traits = ["trustworthy", "calm", "legible", "compliant"]
+        density = "balanced"
+        info_load = "curated-editorial"
+        workflow = "guided-task-completion"
+        playful_serious = "Strongly Serious"
+        premium_accessible = "Refined Professional"
+        futuristic_institutional = "Institutional / Traditional"
 
-    # 5. Visual constraints
-    accessibility = "Strict WCAG AAA readability for critical numerical/tabular data" if "wealth" in text_lower or "telemetry" in text_lower else "Standard WCAG AA compliance"
-    readability = "Critical: tabular numbers, high contrast ratios, zero ambiguous glyphs"
-    motion_tolerance = "Restrained / Minimal: strictly functional transitions, zero bouncing" if ("wealth" in text_lower or "telemetry" in text_lower) else "Dynamic and fluid"
+    # ── 5. Logistics / Operations / Supply Chain ──────────────────────────────
+    # Must come before Legal to prevent "compliance alerts" in freight PRDs from matching Legal.
+    elif any(k in text_lower for k in ["logistics", "supply chain", "warehouse", "fleet", "freight", "shipping", "dispatch", "inventory", "fulfilment", "depot", "hos violation"]):
+        product_type = "Enterprise Operations Platform"
+        audience = "Operations Teams, Logistics Managers, and Enterprise Administrators"
+        traits = ["dependable", "functional", "efficient", "clear"]
+        density = "high"
+        info_load = "dense-tabular"
+        workflow = "keyboard-driven-operational"
+        playful_serious = "Strongly Serious"
+        premium_accessible = "Refined Professional"
+        futuristic_institutional = "Contemporary Modern"
 
-    brief = {
+    # ── 6. Legal / Compliance ────────────────────────────────────────────────
+    elif any(k in text_lower for k in ["legal", "law firm", "contract", "compliance", "regulatory", "litigation", "counsel", "attorney", "paralegal", "due diligence"]):
+        product_type = "Legal / Compliance Platform"
+        audience = "Attorneys, Legal Operations Teams, and Compliance Officers"
+        traits = ["authoritative", "meticulous", "precise", "institutional"]
+        density = "balanced"
+        info_load = "dense-tabular"
+        workflow = "guided-task-completion"
+        playful_serious = "Strongly Serious"
+        premium_accessible = "Refined Professional"
+        futuristic_institutional = "Institutional / Traditional"
+
+    # ── 7. Ecological / Organic / Sustainability ─────────────────────────────
+    elif any(k in text_lower for k in ["organic", "nature", "botanical", "climate", "sustainable", "sustainability", "ecology", "earth", "biophilic", "regenerative", "conservation"]):
+        product_type = "Ecological / Organic Living"
+        audience = "Conscious Consumers, Environmental Stewards, and Botanical Enthusiasts"
+        traits = ["grounded", "authentic", "mindful", "tactile"]
+        density = "balanced"
+        info_load = "visual-grid"
+        workflow = "exploratory-browsing"
+        playful_serious = "Balanced"
+        premium_accessible = "Refined Professional"
+        futuristic_institutional = "Contemporary Modern"
+
+    # ── 8. Luxury / Premium Consumer ─────────────────────────────────────────
+    # Must come before Creator so "boutique" and "artisanal" don't fall into the
+    # Creator bucket (which sets Accessible/Mass Appeal premium positioning).
+    elif any(k in text_lower for k in ["luxury", "boutique", "premium", "exclusive", "bespoke", "couture", "artisanal", "high-end", "atelier"]):
+        product_type = "Luxury / Premium Consumer"
+        audience = "Affluent Consumers Seeking Premium Experiences"
+        traits = ["refined", "understated", "exclusive", "crafted"]
+        density = "spacious"
+        info_load = "curated-editorial"
+        workflow = "contemplative-decision-making"
+        playful_serious = "Strongly Serious"
+        premium_accessible = "Ultra Premium"
+        futuristic_institutional = "Contemporary Modern"
+
+    # ── 9. Creator / Commerce / Cultural ─────────────────────────────────────
+    elif any(k in text_lower for k in ["creator", "commerce", "art", "music", "zine", "indie", "marketplace", "storefront", "streetwear", "fashion", "culture", "editorial"]):
+        product_type = "Creator Marketplace / Community"
+        audience = "Independent Creators, Artists, and Cultural Enthusiasts"
+        traits = ["unapologetic", "expressive", "tactile", "energetic"]
+        density = "balanced"
+        info_load = "visual-grid"
+        workflow = "exploratory-browsing"
+        playful_serious = "Balanced"
+        premium_accessible = "Accessible / Mass Appeal"
+        futuristic_institutional = "Contemporary Modern"
+
+    # ── 10. Real Estate / Property ────────────────────────────────────────────
+    elif any(k in text_lower for k in ["real estate", "property", "listing", "mortgage", "broker", "mls", "rental", "cre", "proptech"]):
+        product_type = "Real Estate / Property Platform"
+        audience = "Home Buyers, Property Investors, and Real Estate Agents"
+        traits = ["trustworthy", "clear", "aspirational", "approachable"]
+        density = "balanced"
+        info_load = "visual-grid"
+        workflow = "exploratory-browsing"
+        playful_serious = "Balanced"
+        premium_accessible = "Refined Professional"
+        futuristic_institutional = "Contemporary Modern"
+
+    # ── 11. Events / Entertainment / Community ────────────────────────────────
+    elif any(k in text_lower for k in ["event", "concert", "ticket", "venue", "entertainment", "community", "social", "gaming", "esports", "streaming"]):
+        product_type = "Events / Entertainment Platform"
+        audience = "General Consumers and Community Members"
+        traits = ["energetic", "social", "vibrant", "accessible"]
+        density = "balanced"
+        info_load = "visual-grid"
+        workflow = "exploratory-browsing"
+        playful_serious = "Strongly Playful"
+        premium_accessible = "Accessible / Mass Appeal"
+        futuristic_institutional = "Contemporary Modern"
+
+    # ── 12. Generic SaaS / Web Application ───────────────────────────────────
+    else:
+        product_type = "Web Application"
+        audience = "General Users"
+        traits = ["intentional", "crafted", "clear", "distinctive"]
+        density = "balanced"
+        info_load = "modular"
+        workflow = "guided-task-completion"
+        playful_serious = "Balanced"
+        premium_accessible = "Refined Professional"
+        futuristic_institutional = "Contemporary Modern"
+
+    # ── Visual constraints (cross-cutting) ──────────────────────────────────
+    strict_readability = product_type in ["FinTech / Wealth Management", "Healthcare / Clinical Platform", "Legal / Compliance Platform", "Enterprise Operations Platform", "Developer Tool / Platform"]
+    accessibility = (
+        "Strict WCAG AAA readability for critical numerical/tabular data"
+        if strict_readability
+        else "Standard WCAG AA compliance"
+    )
+    readability = "Critical: tabular numbers, high contrast ratios, zero ambiguous glyphs" if strict_readability else "Standard readability requirements"
+    motion_tolerance = (
+        "Restrained / Minimal: strictly functional transitions, zero bouncing"
+        if product_type in ["FinTech / Wealth Management", "Healthcare / Clinical Platform", "Legal / Compliance Platform", "Enterprise Operations Platform", "Developer Tool / Platform"]
+        else "Dynamic and fluid"
+    )
+
+    return {
         "product_type": product_type,
         "target_audience": audience,
         "personality_traits": traits,
@@ -147,7 +249,6 @@ def extract_design_brief(context_text: str) -> Dict[str, Any]:
             "motion_tolerance": motion_tolerance
         }
     }
-    return brief
 
 def recommend_styles(brief: Dict[str, Any]) -> List[Dict[str, Any]]:
     """
@@ -470,17 +571,134 @@ def create_design_spec(style_id: str, custom_layers: Optional[Dict[str, str]] = 
     }
     return spec
 
+def _resolve_layers_from_reference(ref: Dict[str, Any], direction: str) -> Dict[str, str]:
+    """
+    Translates a reference library entry into concrete spec layer overrides.
+    direction is either 'more_like' or 'less_like'.
+    Reads the reference's mode, borders, motion, typography, and color fields
+    to produce actionable file-path overrides.
+    """
+    overrides: Dict[str, str] = {}
+    shift_key = "when_requested_more_like" if direction == "more_like" else "when_requested_less_like"
+    shift_rules = ref.get("shift_rules", {}).get(shift_key, {})
+    mode = ref.get("mode", "")
+    color = ref.get("color", {})
+    palette_type = color.get("palette_type", "")
+    borders = ref.get("borders", "")
+    shadows = ref.get("shadows", "")
+    motion = ref.get("motion", {})
+    motion_char = motion.get("character", "")
+    motion_ms = motion.get("duration_ms", 200)
+
+    # ── Mode / canvas ────────────────────────────────────────────────────────
+    if direction == "more_like":
+        if "dark" in mode or "obsidian" in palette_type:
+            overrides["color"] = "cyberpunk/tokens.md"
+            overrides["surfaces"] = "cyberpunk/tokens.md"
+        elif "warm" in mode or "warm" in palette_type or "earth" in palette_type or "linen" in palette_type:
+            overrides["color"] = "quiet-luxury/tokens.md"
+            overrides["surfaces"] = "quiet-luxury/tokens.md"
+        elif "monochrome" in palette_type and "stark" in palette_type:
+            overrides["color"] = "swiss-editorial/tokens.md"
+            overrides["surfaces"] = "swiss-editorial/tokens.md"
+        elif "saturated" in palette_type or "pop" in palette_type or "neon" in palette_type:
+            overrides["color"] = "neo-brutalism/tokens.md"
+            overrides["surfaces"] = "neo-brutalism/tokens.md"
+        elif "gradient" in palette_type or "fluid" in palette_type:
+            overrides["color"] = "y2k-frutiger-aero/tokens.md"
+            overrides["surfaces"] = "y2k-frutiger-aero/tokens.md"
+    else:  # less_like: invert the dominant signal
+        if "dark" in mode:
+            overrides["color"] = "swiss-editorial/tokens.md"
+        if "saturated" in palette_type or "neon" in palette_type:
+            overrides["color"] = "quiet-luxury/tokens.md"
+            overrides["surfaces"] = "quiet-luxury/tokens.md"
+
+    # ── Borders / surfaces (override color above if borders are more specific) ──
+    if direction == "more_like":
+        if "heavy" in borders or "thick" in borders or "3px" in borders or "4px" in borders:
+            overrides["surfaces"] = "neo-brutalism/tokens.md"
+        elif "hairline" in borders or "0.5px" in borders or "subtle" in borders:
+            if "dark" in mode:
+                overrides["surfaces"] = "cyberpunk/tokens.md"
+            else:
+                overrides["surfaces"] = "swiss-editorial/tokens.md"
+        elif "none" in borders or "zero" in borders or "flat" in borders:
+            overrides["surfaces"] = "swiss-editorial/tokens.md"
+        if "hard" in shadows and "offset" in shadows:
+            overrides["surfaces"] = "neo-brutalism/tokens.md"
+
+    # ── Typography ───────────────────────────────────────────────────────────
+    if direction == "more_like":
+        typography = ref.get("typography", {})
+        heading = typography.get("heading_font", "").lower()
+        tracking = typography.get("tracking", "")
+        if any(k in heading for k in ["garamond", "serif", "canela", "fraunces", "suisse works"]):
+            overrides["typography"] = "quiet-luxury/typography.md"
+        elif any(k in heading for k in ["slab", "condensed", "rockwell", "alfa"]):
+            overrides["typography"] = "retro-americana/typography.md"
+        elif any(k in heading for k in ["mono", "consolas", "courier", "fixed"]):
+            overrides["typography"] = "cyberpunk/typography.md"
+        elif any(k in heading for k in ["playfair", "editorial"]):
+            overrides["typography"] = "swiss-editorial/typography.md"
+        elif any(k in heading for k in ["ibm plex", "geometric sans", "bayer"]):
+            overrides["typography"] = "bauhaus/typography.md"
+
+    # ── Motion ───────────────────────────────────────────────────────────────
+    if direction == "more_like":
+        if motion_ms <= 120 or any(k in motion_char for k in ["snappy", "instant", "immediate", "fast"]):
+            overrides["motion"] = "swiss-editorial/motion.md"
+        elif motion_ms >= 400 or any(k in motion_char for k in ["slow", "contemplative", "cinematic"]):
+            overrides["motion"] = "quiet-luxury/motion.md"
+        elif any(k in motion_char for k in ["bounce", "spring", "fluid"]):
+            overrides["motion"] = "y2k-frutiger-aero/motion.md"
+        elif any(k in motion_char for k in ["mechanical", "click", "toggle"]):
+            overrides["motion"] = "neo-brutalism/motion.md"
+
+    # ── Shift-rule overrides (explicit YAML shift_rules take priority) ────────
+    sr_mode = shift_rules.get("mode", "")
+    sr_borders = shift_rules.get("borders", "")
+    sr_typography = shift_rules.get("typography", "")
+    sr_motion = shift_rules.get("motion", "")
+    if "dark" in sr_mode:
+        overrides["color"] = "cyberpunk/tokens.md"
+        overrides["surfaces"] = "cyberpunk/tokens.md"
+    if "light" in sr_mode or "warm" in sr_mode:
+        overrides["color"] = "swiss-editorial/tokens.md"
+    if "heavy" in sr_borders or "solid" in sr_borders:
+        overrides["surfaces"] = "neo-brutalism/tokens.md"
+    if "hairline" in sr_borders or "hairline" in sr_borders:
+        overrides["surfaces"] = "cyberpunk/tokens.md" if "dark" in sr_mode else "swiss-editorial/tokens.md"
+    if "serif" in sr_typography:
+        overrides["typography"] = "quiet-luxury/typography.md"
+    if "snappy" in sr_motion or "fast" in sr_motion:
+        overrides["motion"] = "swiss-editorial/motion.md"
+
+    return overrides
+
+
 def refine_spec(current_spec: Dict[str, Any], critique: str) -> Dict[str, Any]:
     """
-    Applies free-text critique layer-by-layer using reference library mappings.
+    Applies free-text critique layer-by-layer.
+
+    Priority order:
+      1. Named brand/product from reference library → use _resolve_layers_from_reference()
+      2. Named style family shortcuts (wabi, bauhaus, memphis, etc.)
+      3. Generic directional keywords (too dark, more playful, etc.)
+      4. Layer-targeted fallback (font, shadow, border)
+
     Unrelated layers remain completely stable.
-    Reports which layers changed and why.
     """
     updated_spec = json.loads(json.dumps(current_spec))
     critique_lower = critique.lower()
     changes_made = []
 
-    # Check for references in the critique
+    # ── Determine direction ──────────────────────────────────────────────────
+    is_more_like = "more" in critique_lower or "like" in critique_lower or "feel" in critique_lower
+    is_less_like = "less" in critique_lower or "not" in critique_lower or "too" in critique_lower
+    direction = "more_like" if is_more_like and not is_less_like else ("less_like" if is_less_like else "more_like")
+
+    # ── 1. Reference library brand match ────────────────────────────────────
     refs = load_reference_library()
     matched_ref = None
     for r in refs:
@@ -488,273 +706,146 @@ def refine_spec(current_spec: Dict[str, Any], critique: str) -> Dict[str, Any]:
             matched_ref = r
             break
 
-    # 1. "More like Linear" / "Like Linear"
-    if "linear" in critique_lower or (matched_ref and matched_ref["id"] == "linear"):
-        if "more" in critique_lower or "like" in critique_lower:
-            updated_spec["layers"]["surfaces"] = "cyberpunk/tokens.md"  # Hairline dark surfaces
-            updated_spec["layers"]["color"] = "obsidian-monochrome-with-violet-accent"
-            updated_spec["layers"]["motion"] = "swiss-editorial/motion.md"  # Micro-snappy
-            changes_made.append({
-                "layer": "surfaces",
-                "old": current_spec["layers"]["surfaces"],
-                "new": updated_spec["layers"]["surfaces"],
-                "reason": "Linear-inspired shift: hairline dark depth with subtle translucent borders."
-            })
-            changes_made.append({
-                "layer": "color",
-                "old": current_spec["layers"]["color"],
-                "new": updated_spec["layers"]["color"],
-                "reason": "Linear-inspired shift: deep obsidian base (#08090a) with single violet interactive accent (#5e6ad2)."
-            })
-            changes_made.append({
-                "layer": "motion",
-                "old": current_spec["layers"]["motion"],
-                "new": updated_spec["layers"]["motion"],
-                "reason": "Linear-inspired shift: micro-snappy 120ms transitions."
-            })
-
-    # 2. "Less like a bank" / "Not corporate"
-    elif "bank" in critique_lower or "corporate" in critique_lower:
-        if "less" in critique_lower or "not" in critique_lower or "too" in critique_lower:
-            # Shift away from generic corporate blue/gray and generic cards
-            if "quiet-luxury" in current_spec["chosen_primary_style"]:
-                updated_spec["layers"]["typography"] = "quiet-luxury/typography.md" # Distinctive editorial serif
-                updated_spec["layers"]["color"] = "quiet-luxury/tokens.md" # Alabaster and deep espresso
+    if matched_ref:
+        layer_overrides = _resolve_layers_from_reference(matched_ref, direction)
+        brand_name = matched_ref["name"]
+        for layer, new_val in layer_overrides.items():
+            old_val = updated_spec["layers"].get(layer, "")
+            if old_val != new_val:
+                updated_spec["layers"][layer] = new_val
                 changes_made.append({
-                    "layer": "typography",
-                    "old": current_spec["layers"]["typography"],
-                    "new": updated_spec["layers"]["typography"],
-                    "reason": "Eliminated standard corporate sans; instituted authoritative literary serif hierarchy."
+                    "layer": layer,
+                    "old": old_val,
+                    "new": new_val,
+                    "reason": f"{direction.replace('_', ' ').title()} {brand_name}: derived from reference library (mode={matched_ref.get('mode', '?')}, palette={matched_ref.get('color', {}).get('palette_type', '?')})."
+                })
+
+    # ── 2. Named style family shortcuts ─────────────────────────────────────
+    elif any(k in critique_lower for k in ["wabi", "sabi", "zen", "japanese"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "japanese-wabi-sabi/tokens.md",
+            "color": "japanese-wabi-sabi/tokens.md",
+            "motion": "japanese-wabi-sabi/motion.md",
+        }, reasons={
+            "surfaces": "Mingei craft shift: rice-paper surfaces and ink-wash dividers.",
+            "color": "Natural pigments: charcoal ink stone, bamboo cream, and matcha accents.",
+            "motion": "Contemplative, breath-paced motion transitions.",
+        })
+    elif any(k in critique_lower for k in ["bauhaus", "constructivist"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "bauhaus/tokens.md",
+            "color": "bauhaus/tokens.md",
+            "typography": "bauhaus/typography.md",
+        }, reasons={
+            "surfaces": "Constructivist functionalism: 0px radius, structural black outlines.",
+            "color": "Pure primary triad: Red, Yellow, Blue on black and white.",
+            "typography": "Herbert Bayer Universal functional geometric sans.",
+        })
+    elif any(k in critique_lower for k in ["space age", "space-age", "nasa"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "space-age-optimism/tokens.md",
+            "color": "space-age-optimism/tokens.md",
+            "layout": "space-age-optimism/layout.md",
+        }, reasons={
+            "surfaces": "Space Age shift: molded pod fiberglass containers (24px–40px radius).",
+            "color": "Warm optical white with single NASA Mission Orange accent.",
+            "layout": "Capsule pod grid and moiré concentric circle framing.",
+        })
+    elif any(k in critique_lower for k in ["maximalist", "dopamine", "sticker"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "maximalist-dopamine/tokens.md",
+            "color": "maximalist-dopamine/tokens.md",
+            "components": "maximalist-dopamine/components.md",
+        }, reasons={
+            "surfaces": "Maximalist shift: multi-colored hard offset drop shadows.",
+            "color": "Colliding candy neon palette (Yellow, Magenta, Cyan, Lime).",
+            "components": "Sticker-bomb tags and pop-up button hover mechanics.",
+        })
+    elif any(k in critique_lower for k in ["memphis", "postmodern", "sottsass"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "memphis-postmodern/tokens.md",
+            "color": "memphis-postmodern/tokens.md",
+            "layout": "memphis-postmodern/layout.md",
+        }, reasons={
+            "surfaces": "Memphis shift: flat graphic planes and polka-dot/diagonal hatch patterns.",
+            "color": "Contrasting primaries and pastels on stark white canvas.",
+            "layout": "Pattern-filled panels and eccentric geometric arrangements.",
+        })
+    elif any(k in critique_lower for k in ["americana", "diner", "saul bass"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "retro-americana/tokens.md",
+            "color": "retro-americana/tokens.md",
+            "typography": "retro-americana/typography.md",
+        }, reasons={
+            "surfaces": "Retro Americana shift: ink-press borders and parchment paper canvas.",
+            "color": "Warm incandescent palette: vermilion, neon amber, and deep carbon ink.",
+            "typography": "Slab serif display headers and condensed poster typography.",
+        })
+    elif any(k in critique_lower for k in ["organic", "natural", "biophilic", "earthy"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "organic-natural/tokens.md",
+            "color": "organic-natural/tokens.md",
+            "typography": "organic-natural/typography.md",
+        }, reasons={
+            "surfaces": "Organic shift: river-stone rounding and bone-white canvas.",
+            "color": "Natural earth palette: raw clay, moss green, and bone white.",
+            "typography": "Humanist oldstyle serif hierarchy with warm reading proportions.",
+        })
+
+    # ── 3. Generic directional keywords ─────────────────────────────────────
+    elif "bank" in critique_lower or "corporate" in critique_lower:
+        if is_less_like:
+            if "quiet-luxury" in current_spec["chosen_primary_style"]:
+                _apply_layers(updated_spec, current_spec, changes_made, {
+                    "typography": "quiet-luxury/typography.md",
+                    "color": "quiet-luxury/tokens.md",
+                }, reasons={
+                    "typography": "Eliminated standard corporate sans; instituted authoritative literary serif hierarchy.",
+                    "color": "Alabaster and deep espresso — no corporate navy or generic Tailwind grays.",
                 })
             else:
-                updated_spec["layers"]["typography"] = "swiss-editorial/typography.md"
-                updated_spec["layers"]["surfaces"] = "neo-brutalism/tokens.md"
-                changes_made.append({
-                    "layer": "surfaces",
-                    "old": current_spec["layers"]["surfaces"],
-                    "new": updated_spec["layers"]["surfaces"],
-                    "reason": "Replaced timid gray-bordered corporate cards with tangible, purposeful border contrast."
+                _apply_layers(updated_spec, current_spec, changes_made, {
+                    "typography": "swiss-editorial/typography.md",
+                    "surfaces": "neo-brutalism/tokens.md",
+                }, reasons={
+                    "typography": "High-contrast editorial sans instead of rounded corporate defaults.",
+                    "surfaces": "Replaced timid gray-bordered corporate cards with tangible, purposeful border contrast.",
                 })
-
-    # 3. "More playful" / "More tactile" / "Like Gumroad"
-    elif "gumroad" in critique_lower or "playful" in critique_lower or "tactile" in critique_lower:
-        updated_spec["layers"]["surfaces"] = "neo-brutalism/tokens.md"
-        updated_spec["layers"]["components"] = "neo-brutalism/components.md"
-        changes_made.append({
-            "layer": "surfaces",
-            "old": current_spec["layers"]["surfaces"],
-            "new": updated_spec["layers"]["surfaces"],
-            "reason": "Shifted to physical paper cards with 3px solid black outlines and 4px solid offset shadows."
+    elif "playful" in critique_lower or "tactile" in critique_lower:
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "neo-brutalism/tokens.md",
+            "components": "neo-brutalism/components.md",
+        }, reasons={
+            "surfaces": "Physical paper cards with 3px solid black outlines and 4px solid offset shadows.",
+            "components": "Physical button switch behavior: depression translation on active click.",
         })
-        changes_made.append({
-            "layer": "components",
-            "old": current_spec["layers"]["components"],
-            "new": updated_spec["layers"]["components"],
-            "reason": "Physical button switch behavior: depression translation on active click."
+    elif "too dark" in critique_lower or "light mode" in critique_lower or "make it light" in critique_lower:
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "color": "swiss-editorial/tokens.md",
+        }, reasons={
+            "color": "Switched canvas to crisp high-contrast light mode (#FFFFFF / #F8F8F6).",
         })
 
-    # 4. "Too dark" / "Make it light" / "More readable"
-    elif "too dark" in critique_lower or "make it light" in critique_lower or "light mode" in critique_lower:
-        updated_spec["layers"]["color"] = "swiss-editorial/tokens.md"
-        changes_made.append({
-            "layer": "color",
-            "old": current_spec["layers"]["color"],
-            "new": updated_spec["layers"]["color"],
-            "reason": "Switched surface and canvas to crisp high-contrast light mode (#FFFFFF / #F8F8F6)."
-        })
-
-    # 5. "More organic" / "Biophilic" / "Natural"
-    elif any(k in critique_lower for k in ["organic", "natural", "biophilic", "earthy"]):
-        updated_spec["layers"]["surfaces"] = "organic-natural/tokens.md"
-        updated_spec["layers"]["color"] = "organic-natural/tokens.md"
-        updated_spec["layers"]["typography"] = "organic-natural/typography.md"
-        changes_made.append({
-            "layer": "surfaces",
-            "old": current_spec["layers"]["surfaces"],
-            "new": updated_spec["layers"]["surfaces"],
-            "reason": "Organic shift: river-stone rounding and bone-white canvas."
-        })
-        changes_made.append({
-            "layer": "color",
-            "old": current_spec["layers"]["color"],
-            "new": updated_spec["layers"]["color"],
-            "reason": "Natural earth palette: raw clay, moss green, and bone white."
-        })
-        changes_made.append({
-            "layer": "typography",
-            "old": current_spec["layers"]["typography"],
-            "new": updated_spec["layers"]["typography"],
-            "reason": "Humanist oldstyle serif hierarchy with warm reading proportions."
-        })
-
-    # 6. "Wabi-Sabi" / "Zen" / "Japanese"
-    elif any(k in critique_lower for k in ["wabi", "sabi", "zen", "japanese"]):
-        updated_spec["layers"]["surfaces"] = "japanese-wabi-sabi/tokens.md"
-        updated_spec["layers"]["color"] = "japanese-wabi-sabi/tokens.md"
-        updated_spec["layers"]["motion"] = "japanese-wabi-sabi/motion.md"
-        changes_made.append({
-            "layer": "surfaces",
-            "old": current_spec["layers"]["surfaces"],
-            "new": updated_spec["layers"]["surfaces"],
-            "reason": "Mingei craft shift: rice-paper surfaces and ink-wash dividers."
-        })
-        changes_made.append({
-            "layer": "color",
-            "old": current_spec["layers"]["color"],
-            "new": updated_spec["layers"]["color"],
-            "reason": "Natural pigments: charcoal ink stone, bamboo cream, and matcha accents."
-        })
-        changes_made.append({
-            "layer": "motion",
-            "old": current_spec["layers"]["motion"],
-            "new": updated_spec["layers"]["motion"],
-            "reason": "Contemplative, breath-paced motion transitions."
-        })
-
-    # 7. "Bauhaus" / "Constructivist"
-    elif any(k in critique_lower for k in ["bauhaus", "constructivist"]):
-        updated_spec["layers"]["surfaces"] = "bauhaus/tokens.md"
-        updated_spec["layers"]["color"] = "bauhaus/tokens.md"
-        updated_spec["layers"]["typography"] = "bauhaus/typography.md"
-        changes_made.append({
-            "layer": "surfaces",
-            "old": current_spec["layers"]["surfaces"],
-            "new": updated_spec["layers"]["surfaces"],
-            "reason": "Constructivist functionalism: 0px radius, structural black outlines."
-        })
-        changes_made.append({
-            "layer": "color",
-            "old": current_spec["layers"]["color"],
-            "new": updated_spec["layers"]["color"],
-            "reason": "Pure primary triad: Red, Yellow, Blue on black and white."
-        })
-        changes_made.append({
-            "layer": "typography",
-            "old": current_spec["layers"]["typography"],
-            "new": updated_spec["layers"]["typography"],
-            "reason": "Herbert Bayer Universal functional geometric sans."
-        })
-
-    # 8. "Space Age" / "NASA"
-    elif any(k in critique_lower for k in ["space age", "space-age", "nasa"]):
-        updated_spec["layers"]["surfaces"] = "space-age-optimism/tokens.md"
-        updated_spec["layers"]["color"] = "space-age-optimism/tokens.md"
-        updated_spec["layers"]["layout"] = "space-age-optimism/layout.md"
-        changes_made.append({
-            "layer": "surfaces",
-            "old": current_spec["layers"]["surfaces"],
-            "new": updated_spec["layers"]["surfaces"],
-            "reason": "Space Age shift: molded pod fiberglass containers (24px–40px radius)."
-        })
-        changes_made.append({
-            "layer": "color",
-            "old": current_spec["layers"]["color"],
-            "new": updated_spec["layers"]["color"],
-            "reason": "Warm optical white with single NASA Mission Orange accent."
-        })
-        changes_made.append({
-            "layer": "layout",
-            "old": current_spec["layers"]["layout"],
-            "new": updated_spec["layers"]["layout"],
-            "reason": "Capsule pod grid and moiré concentric circle framing."
-        })
-
-    # 9. "Maximalist" / "Dopamine"
-    elif any(k in critique_lower for k in ["maximalist", "dopamine", "sticker"]):
-        updated_spec["layers"]["surfaces"] = "maximalist-dopamine/tokens.md"
-        updated_spec["layers"]["color"] = "maximalist-dopamine/tokens.md"
-        updated_spec["layers"]["components"] = "maximalist-dopamine/components.md"
-        changes_made.append({
-            "layer": "surfaces",
-            "old": current_spec["layers"]["surfaces"],
-            "new": updated_spec["layers"]["surfaces"],
-            "reason": "Maximalist shift: multi-colored hard offset drop shadows."
-        })
-        changes_made.append({
-            "layer": "color",
-            "old": current_spec["layers"]["color"],
-            "new": updated_spec["layers"]["color"],
-            "reason": "Colliding candy neon palette (Yellow, Magenta, Cyan, Lime)."
-        })
-        changes_made.append({
-            "layer": "components",
-            "old": current_spec["layers"]["components"],
-            "new": updated_spec["layers"]["components"],
-            "reason": "Sticker-bomb tags and pop-up button hover mechanics."
-        })
-
-    # 10. "Retro Americana" / "Diner" / "Saul Bass"
-    elif any(k in critique_lower for k in ["americana", "diner", "saul bass"]):
-        updated_spec["layers"]["surfaces"] = "retro-americana/tokens.md"
-        updated_spec["layers"]["color"] = "retro-americana/tokens.md"
-        updated_spec["layers"]["typography"] = "retro-americana/typography.md"
-        changes_made.append({
-            "layer": "surfaces",
-            "old": current_spec["layers"]["surfaces"],
-            "new": updated_spec["layers"]["surfaces"],
-            "reason": "Retro Americana shift: ink-press borders and parchment paper canvas."
-        })
-        changes_made.append({
-            "layer": "color",
-            "old": current_spec["layers"]["color"],
-            "new": updated_spec["layers"]["color"],
-            "reason": "Warm incandescent palette: vermilion, neon amber, and deep carbon ink."
-        })
-        changes_made.append({
-            "layer": "typography",
-            "old": current_spec["layers"]["typography"],
-            "new": updated_spec["layers"]["typography"],
-            "reason": "Slab serif display headers and condensed poster typography."
-        })
-
-    # 11. "Memphis" / "Postmodern" / "Squiggle"
-    elif any(k in critique_lower for k in ["memphis", "postmodern", "sottsass"]):
-        updated_spec["layers"]["surfaces"] = "memphis-postmodern/tokens.md"
-        updated_spec["layers"]["color"] = "memphis-postmodern/tokens.md"
-        updated_spec["layers"]["layout"] = "memphis-postmodern/layout.md"
-        changes_made.append({
-            "layer": "surfaces",
-            "old": current_spec["layers"]["surfaces"],
-            "new": updated_spec["layers"]["surfaces"],
-            "reason": "Memphis shift: flat graphic planes and polka-dot/diagonal hatch patterns."
-        })
-        changes_made.append({
-            "layer": "color",
-            "old": current_spec["layers"]["color"],
-            "new": updated_spec["layers"]["color"],
-            "reason": "Contrasting primaries and pastels on stark white canvas."
-        })
-        changes_made.append({
-            "layer": "layout",
-            "old": current_spec["layers"]["layout"],
-            "new": updated_spec["layers"]["layout"],
-            "reason": "Pattern-filled panels and eccentric geometric arrangements."
-        })
-
-    # Generic layer-targeted refinement fallback
+    # ── 4. Layer-targeted fallback ───────────────────────────────────────────
     else:
-        # Check if user mentioned typography, borders, shadows, motion
         if "font" in critique_lower or "typography" in critique_lower:
-            updated_spec["layers"]["typography"] = "swiss-editorial/typography.md"
-            changes_made.append({
-                "layer": "typography",
-                "old": current_spec["layers"]["typography"],
-                "new": updated_spec["layers"]["typography"],
-                "reason": "Refined typographic scale to high-contrast asymmetric Swiss hierarchy."
+            _apply_layers(updated_spec, current_spec, changes_made, {
+                "typography": "swiss-editorial/typography.md",
+            }, reasons={
+                "typography": "Refined typographic scale to high-contrast asymmetric Swiss hierarchy.",
             })
         elif "shadow" in critique_lower or "border" in critique_lower or "surface" in critique_lower:
-            updated_spec["layers"]["surfaces"] = "swiss-editorial/tokens.md"
-            changes_made.append({
-                "layer": "surfaces",
-                "old": current_spec["layers"]["surfaces"],
-                "new": updated_spec["layers"]["surfaces"],
-                "reason": "Cleaned surfaces to 0px border-radius and crisp hairlines."
+            _apply_layers(updated_spec, current_spec, changes_made, {
+                "surfaces": "swiss-editorial/tokens.md",
+            }, reasons={
+                "surfaces": "Cleaned surfaces to 0px border-radius and crisp hairlines.",
             })
 
     result = {
         "updated_spec": updated_spec,
         "diff_report": {
             "critique_received": critique,
+            "matched_reference": matched_ref["name"] if matched_ref else None,
             "layers_changed_count": len(changes_made),
             "layers_preserved_count": len(updated_spec["layers"]) - len(changes_made),
             "changes": changes_made,
@@ -762,6 +853,25 @@ def refine_spec(current_spec: Dict[str, Any], critique: str) -> Dict[str, Any]:
         }
     }
     return result
+
+
+def _apply_layers(
+    updated_spec: Dict[str, Any],
+    current_spec: Dict[str, Any],
+    changes_made: List[Dict[str, Any]],
+    layer_map: Dict[str, str],
+    reasons: Dict[str, str]
+) -> None:
+    """Helper: apply layer overrides and record diffs."""
+    for layer, new_val in layer_map.items():
+        old_val = current_spec["layers"].get(layer, "")
+        updated_spec["layers"][layer] = new_val
+        changes_made.append({
+            "layer": layer,
+            "old": old_val,
+            "new": new_val,
+            "reason": reasons.get(layer, "")
+        })
 
 def generate_implementation_contract(spec: Dict[str, Any], product_spec: str, tech_stack: str = "Tailwind CSS + React") -> str:
     """

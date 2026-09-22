@@ -9,11 +9,11 @@ A visual language from the German Bauhaus school (1919–1933): Walter Gropius, 
 
 ## Core Principles
 
-1. **Pure Geometric Primaries:** Red (`#D62B2B`), Yellow (`#F5C800`), and Blue (`#1B4FBD`) on Black and White — the Bauhaus primary triad. No intermediate, muted, or tonal colors except black, white, and neutral gray.
-2. **Constructivist Geometric Structure:** Circles, squares, and triangles as both decorative and functional elements. The classic Bauhaus circle-square-triangle vocabulary appears as accent marks and section dividers.
-3. **Modular Mathematical Grid:** All spacing derives from a single unit (e.g. 8px). Grid lines are visible or implied and never broken.
-4. **Universal Typeface Spirit:** Herbert Bayer's Universal typeface — geometric sans with minimal stroke variation, lowercase-first philosophy, functional letterforms.
-5. **Zero Ornamentation:** No gradients, no drop shadows, no decorative borders, no textures. Only structural color planes, geometric dividers, and typographic hierarchy.
+1. **Color:** Primary triad only: Red `#CC0000`, Yellow `#FFD700`, Blue `#0033CC`, on `#FFFFFF` white canvas and `#000000` black. No pastels, no tints, no gradients. Color applied as flat fills — never gradients or opacity layers.
+2. **Typography:** `font-family: 'IBM Plex Sans', 'Neue Haas Grotesk', Helvetica, sans-serif` at weight 700–900 for display. Body weight 400. Scale locked to 8px baseline grid: 12 / 16 / 24 / 32 / 48 / 64px. Herbert Bayer universal letterforms as decorative elements where applicable.
+3. **Geometry:** `border-radius: 0px` universally. Geometric primitives only: circles (`border-radius: 50%`), squares, triangles (CSS clip-path). No freeform organic shapes. Composition built from overlapping geometric blocks.
+4. **Grid:** 8px base unit. All spacing and sizing multiples of 8. 12-column grid with 24px gutters. Asymmetric column splits (e.g., 3/9, 4/8) for visual tension.
+5. **Borders/Dividers:** Structural `border: 2px solid #000000` to define zones. No decorative borders. No shadows. Separation through solid black lines, not softened edges.
 
 ## Mandatory Anti-Patterns (Explicit Negative Constraints)
 
