@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia Private Wealth — Swiss Editorial</title>
+  <!-- DESIGN CONTRACT: swiss-editorial -->
+  <!-- NEVER: pill badges, blurry shadows, rounded corners (max 2px), centered body text, Poppins/Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    /* === SWISS / EDITORIAL DESIGN CONTRACT ===
+       Tokens: swiss-editorial/tokens.md, typography.md, components.md, layout.md
+       VIOLATIONS:
+         - border-radius > 2px anywhere = FAIL
+         - box-shadow with blur > 0px = FAIL
+         - pill badges = FAIL
+         - center-aligned body copy = FAIL
+    */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --swiss-bg:       #FFFFFF;
+      --swiss-paper:    #F8F8F6;
+      --swiss-ink:      #111111;
+      --swiss-secondary:#4A4A4A;
+      --swiss-muted:    #737373;
+      --swiss-border:   #E5E5E5;
+      --swiss-accent:   #E30613;   /* Single accent — no second hue */
+      --radius:         0px;       /* Strict — only micro-elements may use 2px */
+      --shadow-solid:   2px 2px 0px #111111; /* Hard offset, zero blur */
+    }
+
+    html, body {
+      background: var(--swiss-bg);
+      color: var(--swiss-ink);
+      font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Navigation ─── */
+    nav {
+      background: var(--swiss-bg);
+      border-bottom: 1px solid var(--swiss-ink);
+      padding: 0 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-mark {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--swiss-ink);
+    }
+    .nav-index {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--swiss-muted);
+      margin-left: 8px;
+    }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--swiss-secondary);
+      border-bottom: 1px solid transparent;
+      padding-bottom: 2px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .nav-links a:hover { color: var(--swiss-ink); border-color: var(--swiss-ink); }
+    .nav-cta {
+      background: var(--swiss-ink);
+      color: var(--swiss-bg);
+      border: 1px solid var(--swiss-ink);
+      border-radius: 0px;
+      padding: 8px 18px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .nav-cta:hover { background: var(--swiss-accent); border-color: var(--swiss-accent); }
+
+    /* ─── Structure: Number-indexed section strip ─── */
+    .index-strip {
+      border-bottom: 1px solid var(--swiss-ink);
+      display: flex;
+    }
+    .index-tab {
+      padding: 12px 32px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--swiss-muted);
+      border-right: 1px solid var(--swiss-border);
+      cursor: pointer;
+    }
+    .index-tab.active {
+      color: var(--swiss-ink);
+      background: var(--swiss-paper);
+      position: relative;
+    }
+    .index-tab.active::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--swiss-accent);
+    }
+
+    /* ─── Hero: Asymmetric 5+7 split ─── */
+    .hero {
+      display: grid;
+      grid-template-columns: 5fr 7fr;
+      border-bottom: 1px solid var(--swiss-ink);
+      min-height: 320px;
+    }
+    .hero-left {
+      padding: 64px;
+      border-right: 1px solid var(--swiss-ink);
+      background: var(--swiss-paper);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .hero-overline {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--swiss-accent);
+      margin-bottom: 16px;
+    }
+    .hero-left h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 48px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      color: var(--swiss-ink);
+    }
+    .hero-vol {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--swiss-muted);
+      letter-spacing: 0.08em;
+    }
+    .hero-right {
+      padding: 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .hero-right p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--swiss-secondary);
+      max-width: 480px;
+      margin-bottom: 32px;
+    }
+    .btn-primary-sw {
+      display: inline-block;
+      background: var(--swiss-ink);
+      color: var(--swiss-bg);
+      border: 1px solid var(--swiss-ink);
+      border-radius: 0px;
+      padding: 10px 22px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+      width: fit-content;
+    }
+    .btn-primary-sw:hover { background: var(--swiss-accent); border-color: var(--swiss-accent); }
+    .btn-outline-sw {
+      display: inline-block;
+      background: transparent;
+      color: var(--swiss-ink);
+      border: 1px solid var(--swiss-ink);
+      border-radius: 0px;
+      padding: 10px 22px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      text-decoration: none;
+      margin-left: 12px;
+    }
+    .btn-outline-sw:hover { background: var(--swiss-ink); color: var(--swiss-bg); }
+
+    /* ─── Metrics: 4-col rule-divided ─── */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      border-bottom: 1px solid var(--swiss-border);
+    }
+    .metric-cell {
+      padding: 36px 40px;
+      border-right: 1px solid var(--swiss-border);
+    }
+    .metric-cell:last-child { border-right: none; }
+    .m-index {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--swiss-muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .m-value {
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: var(--swiss-ink);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+    .m-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--swiss-muted);
+      margin-top: 6px;
+      letter-spacing: 0.04em;
+    }
+    .m-accent { color: var(--swiss-accent); }
+
+    /* ─── Main: 4+8 asymmetric content split ─── */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 4fr 8fr;
+      border-bottom: 1px solid var(--swiss-border);
+    }
+
+    /* Left: Index / navigation sidebar */
+    .content-index {
+      border-right: 1px solid var(--swiss-border);
+      padding: 48px 40px;
+      background: var(--swiss-paper);
+    }
+    .section-numeral {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--swiss-accent);
+      margin-bottom: 24px;
+    }
+    .index-list { list-style: none; }
+    .index-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--swiss-border);
+      font-size: 13px;
+      color: var(--swiss-secondary);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .index-list li:last-child { border-bottom: none; }
+    .index-list li.active { color: var(--swiss-ink); font-weight: 600; }
+    .index-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--swiss-muted);
+    }
+
+    /* Allocation mini view in sidebar */
+    .alloc-section { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--swiss-ink); }
+    .alloc-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--swiss-border);
+      font-size: 13px;
+    }
+    .alloc-row:last-child { border-bottom: none; }
+    .alloc-name { color: var(--swiss-secondary); }
+    .alloc-pct { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    /* Right: Holdings table */
+    .holdings-area {
+      padding: 48px 56px;
+    }
+
+    .table-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 24px;
+    }
+    .table-section-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--swiss-ink);
+    }
+    .table-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--swiss-muted);
+      letter-spacing: 0.06em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--swiss-muted);
+      padding: 10px 0;
+      text-align: left;
+      border-bottom: 1px solid var(--swiss-ink);
+    }
+    th:not(:first-child) { text-align: right; }
+    td {
+      font-size: 14px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--swiss-border);
+      font-variant-numeric: tabular-nums;
+      color: var(--swiss-secondary);
+    }
+    td:not(:first-child) { text-align: right; }
+    .td-name { color: var(--swiss-ink); font-weight: 500; }
+    .td-class {
+      display: inline-block;
+      border: 1px solid var(--swiss-border);
+      border-radius: 0px; /* HARD ZERO — no pills */
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--swiss-muted);
+      background: var(--swiss-paper);
+    }
+    .td-pos { color: var(--swiss-ink); font-weight: 600; }
+    .td-neg { color: var(--swiss-secondary); font-weight: 500; }
+
+    /* ─── Messages bar at bottom ─── */
+    .msg-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--swiss-border);
+    }
+    .msg-card {
+      padding: 32px 40px;
+      border-right: 1px solid var(--swiss-border);
+    }
+    .msg-card:last-child { border-right: none; }
+    .msg-from {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--swiss-ink);
+      margin-bottom: 4px;
+    }
+    .msg-body { font-size: 13px; color: var(--swiss-secondary); line-height: 1.5; }
+    .msg-ts {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--swiss-muted);
+      margin-top: 8px;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div>
+      <span class="nav-mark">Aurelia</span>
+      <span class="nav-index">01 / Private Wealth</span>
+    </div>
+    <div class="nav-links">
+      <a href="#">Portfolio</a>
+      <a href="#">Holdings</a>
+      <a href="#">Reports</a>
+      <a href="#">Correspondence</a>
+    </div>
+    <button class="nav-cta">Schedule Review</button>
+  </nav>
+
+  <!-- Index strip -->
+  <div class="index-strip">
+    <div class="index-tab active">01 / Overview</div>
+    <div class="index-tab">02 / Holdings</div>
+    <div class="index-tab">03 / Distributions</div>
+    <div class="index-tab">04 / Deal Briefs</div>
+    <div class="index-tab">05 / Messages</div>
+  </div>
+
+  <!-- Hero: 5+7 split -->
+  <div class="hero">
+    <div class="hero-left">
+      <div>
+        <div class="hero-overline">Q3 · 2026</div>
+        <h1>Wealth<br>under<br>discipline.</h1>
+      </div>
+      <div class="hero-vol">VOL. XII — PRIVATE FAMILY OFFICE BRIEF</div>
+    </div>
+    <div class="hero-right">
+      <p>Discreet portfolio oversight for principals managing multi-generational capital above $25M. Precision, restraint, and institutional rigor — without the commercial gloss.</p>
+      <div>
+        <a href="#" class="btn-primary-sw">Q3 Allocation Review</a>
+        <a href="#" class="btn-outline-sw">Download Report</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="metrics-row">
+    <div class="metric-cell">
+      <div class="m-index">01 / AUM</div>
+      <div class="m-value">$47.3M</div>
+      <div class="m-label"><span class="m-accent">↑ +3.2%</span> since last review</div>
+    </div>
+    <div class="metric-cell">
+      <div class="m-index">02 / Return</div>
+      <div class="m-value">11.8%</div>
+      <div class="m-label">vs <span class="m-accent">9.1%</span> benchmark</div>
+    </div>
+    <div class="metric-cell">
+      <div class="m-index">03 / Distributions</div>
+      <div class="m-value">$1.24M</div>
+      <div class="m-label">YTD · Trust &amp; generational</div>
+    </div>
+    <div class="metric-cell">
+      <div class="m-index">04 / Positions</div>
+      <div class="m-value">18</div>
+      <div class="m-label"><span class="m-accent">+2</span> new this quarter</div>
+    </div>
+  </div>
+
+  <!-- Content grid: 4+8 -->
+  <div class="content-grid">
+
+    <!-- Left index sidebar -->
+    <div class="content-index">
+      <div class="section-numeral">02 / Holdings Index</div>
+      <ul class="index-list">
+        <li class="active"><span>Alternative Assets</span><span class="index-num">41%</span></li>
+        <li><span>Public Equities</span><span class="index-num">33%</span></li>
+        <li><span>Fixed Income</span><span class="index-num">26%</span></li>
+      </ul>
+
+      <div class="alloc-section">
+        <div class="section-numeral">03 / Allocation</div>
+        <div class="alloc-row">
+          <span class="alloc-name">Alternatives</span>
+          <span class="alloc-pct">41%</span>
+        </div>
+        <div class="alloc-row">
+          <span class="alloc-name">Equities</span>
+          <span class="alloc-pct">33%</span>
+        </div>
+        <div class="alloc-row">
+          <span class="alloc-name">Fixed Income</span>
+          <span class="alloc-pct">26%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Holdings table -->
+    <div class="holdings-area">
+      <div class="table-header-row">
+        <div class="table-section-title">Current Holdings</div>
+        <div class="table-meta">UPDATED 22 SEPT 2026</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Instrument</th>
+            <th>Class</th>
+            <th>Value</th>
+            <th>Weight</th>
+            <th>Return</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-name">Blackstone Real Estate Partners</td>
+            <td><span class="td-class">Alternative</span></td>
+            <td>$12,400,000</td>
+            <td>26.3%</td>
+            <td class="td-pos">+14.2%</td>
+          </tr>
+          <tr>
+            <td class="td-name">MSCI World Equity Index</td>
+            <td><span class="td-class">Equity</span></td>
+            <td>$9,800,000</td>
+            <td>20.8%</td>
+            <td class="td-pos">+11.1%</td>
+          </tr>
+          <tr>
+            <td class="td-name">Pictet Strategic Bond Fund</td>
+            <td><span class="td-class">Fixed Income</span></td>
+            <td>$7,200,000</td>
+            <td>15.2%</td>
+            <td class="td-pos">+4.8%</td>
+          </tr>
+          <tr>
+            <td class="td-name">KKR Private Equity Fund IV</td>
+            <td><span class="td-class">Alternative</span></td>
+            <td>$6,900,000</td>
+            <td>14.6%</td>
+            <td class="td-neg">−2.3%</td>
+          </tr>
+          <tr>
+            <td class="td-name">US Treasury Notes 2028</td>
+            <td><span class="td-class">Fixed Income</span></td>
+            <td>$5,100,000</td>
+            <td>10.8%</td>
+            <td class="td-pos">+3.1%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Messages bar -->
+  <div class="msg-bar">
+    <div class="msg-card">
+      <div class="msg-from">Marcus Chen — Managing Director</div>
+      <div class="msg-body">Q3 allocation brief is ready for your review. Recommend scheduling a call this week.</div>
+      <div class="msg-ts">2 HRS AGO</div>
+    </div>
+    <div class="msg-card">
+      <div class="msg-from">Sophie Bergmann — Senior Partner</div>
+      <div class="msg-body">New private equity deal brief attached — KKR Fund V pre-close opportunity.</div>
+      <div class="msg-ts">YESTERDAY</div>
+    </div>
+    <div class="msg-card">
+      <div class="msg-from">Robert Hale — Trust Officer</div>
+      <div class="msg-body">Trust distribution approval required for the generational transfer by end of month.</div>
+      <div class="msg-ts">3 DAYS AGO</div>
+    </div>
+  </div>
+
+</body>
+</html>

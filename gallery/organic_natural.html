@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — Organic Natural</title>
+  <!-- DESIGN CONTRACT: organic-natural -->
+  <!-- NEVER: hard offset shadows, cold grays, neon accents, sharp 0px corners -->
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bone:       #F5F1E8;
+      --linen:      #EDE8DA;
+      --paper:      #E0D9C8;
+      --charcoal:   #2A2824;
+      --bark:       #5C5248;
+      --stone:      #8A7E74;
+      --clay:       #C4956A;
+      --terra:      #AA6244;
+      --moss:       #5D7A52;
+      --sap:        #3E5C3A;
+      --sand:       #C9A87C;
+      --radius-stone: 24px;
+      --radius-pod:   40px;
+    }
+    body {
+      background: var(--bone);
+      color: var(--charcoal);
+      font-family: 'Lato', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Nav */
+    nav {
+      background: var(--bone);
+      border-bottom: 1px solid rgba(42,40,36,0.12);
+      padding: 0 56px;
+      height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-wordmark {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 400;
+      color: var(--charcoal);
+      letter-spacing: 0.02em;
+    }
+    .nav-links { display: flex; gap: 36px; }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 14px; font-weight: 400;
+      color: var(--stone);
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--charcoal); }
+    .nav-cta {
+      background: var(--moss);
+      color: var(--bone);
+      border: none;
+      border-radius: var(--radius-pod);
+      padding: 10px 26px;
+      font-size: 13px; font-weight: 400;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(42,40,36,0.12);
+      transition: background 0.3s, transform 0.2s;
+    }
+    .nav-cta:hover { background: var(--sap); transform: translateY(-1px); }
+
+    /* Hero */
+    .hero {
+      padding: 72px 56px 56px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 56px; align-items: center;
+    }
+    .hero-leaf-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(93,122,82,0.12);
+      border: 1px solid rgba(93,122,82,0.25);
+      border-radius: var(--radius-pod);
+      padding: 5px 14px;
+      font-size: 11px; font-weight: 400;
+      color: var(--moss);
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px; font-weight: 400;
+      color: var(--charcoal);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin-bottom: 20px;
+    }
+    .hero h1 em { font-style: italic; color: var(--terra); }
+    .hero p {
+      font-size: 16px; font-weight: 300;
+      color: var(--bark);
+      line-height: 1.75;
+      max-width: 440px;
+      margin-bottom: 36px;
+    }
+    .hero-actions { display: flex; gap: 14px; align-items: center; }
+    .btn-organic-primary {
+      background: var(--clay);
+      color: var(--bone);
+      border: none;
+      border-radius: var(--radius-pod);
+      padding: 14px 32px;
+      font-size: 14px; font-weight: 400;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(42,40,36,0.12);
+      transition: background 0.3s, transform 0.2s;
+    }
+    .btn-organic-primary:hover { background: var(--terra); transform: translateY(-1px); }
+    .btn-organic-sec {
+      background: var(--linen);
+      color: var(--charcoal);
+      border: 1.5px solid rgba(42,40,36,0.20);
+      border-radius: var(--radius-pod);
+      padding: 14px 32px;
+      font-size: 14px; font-weight: 400;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+    .btn-organic-sec:hover { border-color: var(--clay); color: var(--clay); }
+
+    /* Metric pods */
+    .metric-pods { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .metric-pod {
+      background: var(--linen);
+      border: 1px solid rgba(42,40,36,0.10);
+      border-radius: var(--radius-stone);
+      padding: 28px;
+      box-shadow: 0 4px 20px rgba(42,40,36,0.08);
+    }
+    .mp-label { font-size: 11px; font-weight: 400; letter-spacing: 0.10em; color: var(--stone); margin-bottom: 12px; }
+    .mp-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px; color: var(--charcoal);
+      font-variant-numeric: tabular-nums;
+    }
+    .mp-tag {
+      display: inline-flex; align-items: center;
+      background: rgba(93,122,82,0.12);
+      border: 1px solid rgba(93,122,82,0.20);
+      border-radius: var(--radius-pod);
+      padding: 3px 12px;
+      font-size: 11px; font-weight: 400; color: var(--moss);
+      margin-top: 8px;
+    }
+
+    /* Content */
+    .content { padding: 0 56px 64px; display: grid; grid-template-columns: 2fr 1fr; gap: 28px; }
+    .organic-panel {
+      background: var(--linen);
+      border: 1px solid rgba(42,40,36,0.10);
+      border-radius: var(--radius-stone);
+      box-shadow: 0 4px 20px rgba(42,40,36,0.06);
+      overflow: hidden;
+    }
+    .organic-panel-header {
+      padding: 22px 32px;
+      border-bottom: 1px solid rgba(42,40,36,0.08);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .panel-title-organic {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px; color: var(--charcoal);
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    th { font-size: 11px; font-weight: 400; letter-spacing: 0.08em; color: var(--stone); padding: 12px 28px; text-align: left; }
+    th:not(:first-child) { text-align: right; }
+    td { font-size: 14px; color: var(--bark); padding: 16px 28px; border-top: 1px solid rgba(42,40,36,0.07); font-variant-numeric: tabular-nums; }
+    td:not(:first-child) { text-align: right; }
+    .td-name { font-weight: 400; color: var(--charcoal); }
+    .td-class {
+      display: inline-block;
+      background: rgba(196,149,106,0.15);
+      border: 1px solid rgba(196,149,106,0.25);
+      border-radius: var(--radius-pod);
+      padding: 2px 10px;
+      font-size: 10px; font-weight: 400; letter-spacing: 0.06em;
+      color: var(--terra);
+    }
+    .td-class.moss-tag { background: rgba(93,122,82,0.12); border-color: rgba(93,122,82,0.20); color: var(--moss); }
+    .td-pos { color: var(--moss); font-weight: 400; }
+    .td-neg { color: var(--terra); }
+
+    .sidebar-organic { display: flex; flex-direction: column; gap: 20px; }
+    .alloc-item { padding: 14px 24px; border-bottom: 1px solid rgba(42,40,36,0.08); }
+    .alloc-item:last-child { border-bottom: none; }
+    .alloc-label { font-size: 12px; font-weight: 400; color: var(--stone); margin-bottom: 4px; }
+    .alloc-pct {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px; color: var(--charcoal);
+    }
+    .alloc-track { height: 3px; background: rgba(42,40,36,0.10); border-radius: 2px; margin-top: 8px; }
+    .alloc-fill { height: 3px; background: var(--clay); border-radius: 2px; }
+
+    .msg-item { padding: 14px 24px; border-bottom: 1px solid rgba(42,40,36,0.08); }
+    .msg-item:last-child { border-bottom: none; }
+    .msg-from { font-size: 13px; font-weight: 400; color: var(--charcoal); }
+    .msg-preview { font-size: 13px; font-weight: 300; color: var(--stone); font-style: italic; margin-top: 2px; }
+    .msg-time { font-size: 11px; color: var(--clay); margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-wordmark">Aurelia</div>
+    <div class="nav-links">
+      <a href="#">Portfolio</a><a href="#">Holdings</a><a href="#">Reports</a><a href="#">Messages</a>
+    </div>
+    <button class="nav-cta">Schedule Review</button>
+  </nav>
+
+  <div class="hero">
+    <div>
+      <div class="hero-leaf-tag">🌿 Private Wealth · Q3 2026</div>
+      <h1>Wealth that<br>grows <em>naturally.</em></h1>
+      <p>Thoughtful, earth-grounded portfolio stewardship for families with $25M+ in generational wealth. Patient capital. Enduring values.</p>
+      <div class="hero-actions">
+        <button class="btn-organic-primary">View Portfolio</button>
+        <button class="btn-organic-sec">Download Q3</button>
+      </div>
+    </div>
+    <div class="metric-pods">
+      <div class="metric-pod"><div class="mp-label">Total AUM</div><div class="mp-value">$47.3M</div><div class="mp-tag">↑ +3.2%</div></div>
+      <div class="metric-pod"><div class="mp-label">YTD Return</div><div class="mp-value">11.8%</div><div class="mp-tag">vs 9.1%</div></div>
+      <div class="metric-pod"><div class="mp-label">Distributions</div><div class="mp-value">$1.24M</div></div>
+      <div class="metric-pod"><div class="mp-label">Positions</div><div class="mp-value">18</div><div class="mp-tag">+2 new</div></div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="organic-panel">
+      <div class="organic-panel-header">
+        <div class="panel-title-organic">Holdings</div>
+        <span style="font-size:12px;color:var(--stone);">22 September 2026</span>
+      </div>
+      <table>
+        <thead><tr><th>Instrument</th><th>Class</th><th>Value</th><th>Weight</th><th>Return</th></tr></thead>
+        <tbody>
+          <tr><td class="td-name">Blackstone Real Estate Partners</td><td><span class="td-class">Alternative</span></td><td>$12,400,000</td><td>26.3%</td><td class="td-pos">+14.2%</td></tr>
+          <tr><td class="td-name">MSCI World Equity Index</td><td><span class="td-class moss-tag">Equity</span></td><td>$9,800,000</td><td>20.8%</td><td class="td-pos">+11.1%</td></tr>
+          <tr><td class="td-name">Pictet Strategic Bond Fund</td><td><span class="td-class">Fixed Income</span></td><td>$7,200,000</td><td>15.2%</td><td class="td-pos">+4.8%</td></tr>
+          <tr><td class="td-name">KKR Private Equity Fund IV</td><td><span class="td-class">Alternative</span></td><td>$6,900,000</td><td>14.6%</td><td class="td-neg">−2.3%</td></tr>
+          <tr><td class="td-name">US Treasury Notes 2028</td><td><span class="td-class">Fixed Income</span></td><td>$5,100,000</td><td>10.8%</td><td class="td-pos">+3.1%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sidebar-organic">
+      <div class="organic-panel">
+        <div class="organic-panel-header"><div class="panel-title-organic">Allocation</div></div>
+        <div class="alloc-item"><div class="alloc-label">Alternatives</div><div class="alloc-pct">41%</div><div class="alloc-track"><div class="alloc-fill" style="width:41%;"></div></div></div>
+        <div class="alloc-item"><div class="alloc-label">Equities</div><div class="alloc-pct">33%</div><div class="alloc-track"><div class="alloc-fill" style="width:33%;background:var(--moss);"></div></div></div>
+        <div class="alloc-item"><div class="alloc-label">Fixed Income</div><div class="alloc-pct">26%</div><div class="alloc-track"><div class="alloc-fill" style="width:26%;background:var(--sand);"></div></div></div>
+      </div>
+      <div class="organic-panel">
+        <div class="organic-panel-header"><div class="panel-title-organic">Messages</div></div>
+        <div class="msg-item"><div class="msg-from">Marcus Chen</div><div class="msg-preview">Q3 brief ready for review…</div><div class="msg-time">2 hours ago</div></div>
+        <div class="msg-item"><div class="msg-from">Sophie Bergmann</div><div class="msg-preview">New PE deal brief attached…</div><div class="msg-time">Yesterday</div></div>
+        <div class="msg-item"><div class="msg-from">Robert Hale</div><div class="msg-preview">Trust distribution approval…</div><div class="msg-time">3 days ago</div></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
