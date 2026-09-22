@@ -54,12 +54,19 @@ visual_constraints:
 
 ## 2. Style Recommendation (`/design recommend`)
 
-Evaluate the Design Brief against the candidate style families:
-- **Swiss / Editorial** (`swiss-editorial`)
-- **Neo-Brutalism** (`neo-brutalism`)
-- **Quiet Luxury** (`quiet-luxury`)
-- **Y2K / Frutiger Aero** (`y2k-frutiger-aero`)
-- **Cyberpunk** (`cyberpunk`)
+Evaluate the Design Brief against the full 12-family style taxonomy:
+- **Modernist / International:** Swiss / Editorial (`swiss-editorial`)
+- **Brutalist / Anti-Design:** Neo-Brutalism (`neo-brutalism`)
+- **Retro-Tech:** Y2K / Frutiger Aero (`y2k-frutiger-aero`)
+- **Luxury:** Quiet Luxury (`quiet-luxury`)
+- **Futuristic-Dark:** Cyberpunk (`cyberpunk`)
+- **Retro Americana:** Retro Americana (`retro-americana`)
+- **Postmodern Maximalism:** Memphis Postmodern (`memphis-postmodern`)
+- **Futuristic-Optimism:** Space Age Optimism (`space-age-optimism`)
+- **Cultural / Zen Craft:** Japanese Wabi-Sabi (`japanese-wabi-sabi`)
+- **Constructivist Functionalism:** Bauhaus (`bauhaus`)
+- **Organic / Biophilic:** Organic Natural (`organic-natural`)
+- **Experimental / Maximalist Chaos:** Maximalist Dopamine (`maximalist-dopamine`)
 
 Produce **2 to 4 candidate directions**. For each direction, output:
 1. **Name & Style ID**

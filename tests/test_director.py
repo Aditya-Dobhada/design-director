@@ -222,5 +222,56 @@ class TestDesignDirector(unittest.TestCase):
         cyber_violation_types = [v["type"] for v in cyber_report["violations"]]
         self.assertIn("color_violation", cyber_violation_types)
 
+        # 5. Deviant Bauhaus implementation -> Must detect rounded radius and blurry shadow
+        auditor_bau = DesignAuditor("bauhaus")
+        bau_report = auditor_bau.run_audit(fixtures_dir / "deviant_bauhaus.html")
+        self.assertIn("FAILED", bau_report["status"])
+        bau_violation_types = [v["type"] for v in bau_report["violations"]]
+        self.assertIn("radius_violation", bau_violation_types)
+        self.assertIn("shadow_violation", bau_violation_types)
+
+    def test_all_twelve_styles_taxonomy(self):
+        """Verifies all 12 styles in the taxonomy can generate valid specs and contracts."""
+        self.assertEqual(len(SUPPORTED_STYLES), 12)
+        expected_styles = {
+            "swiss-editorial", "neo-brutalism", "y2k-frutiger-aero", "quiet-luxury",
+            "cyberpunk", "retro-americana", "memphis-postmodern", "space-age-optimism",
+            "japanese-wabi-sabi", "bauhaus", "organic-natural", "maximalist-dopamine"
+        }
+        self.assertEqual(set(SUPPORTED_STYLES), expected_styles)
+
+        for style in SUPPORTED_STYLES:
+            spec = create_design_spec(style)
+            contract = generate_implementation_contract(spec, "Build product UI")
+            self.assertIn("HARD IMPLEMENTATION DESIGN CONTRACT", contract)
+            self.assertIn(style.upper(), contract)
+            self.assertIn("NEVER", contract)
+
+    def test_new_styles_refinement(self):
+        """Tests refinement prompts targeting the new families."""
+        base_spec = create_design_spec("swiss-editorial")
+
+        # Test organic refinement
+        res_org = refine_spec(base_spec, "make it more organic and natural")
+        self.assertIn("organic-natural", res_org["updated_spec"]["layers"]["surfaces"])
+        self.assertIn("organic-natural", res_org["updated_spec"]["layers"]["color"])
+
+        # Test wabi-sabi refinement
+        res_wabi = refine_spec(base_spec, "feel like wabi-sabi tea house")
+        self.assertIn("japanese-wabi-sabi", res_wabi["updated_spec"]["layers"]["surfaces"])
+
+        # Test bauhaus refinement
+        res_bau = refine_spec(base_spec, "make it constructivist bauhaus")
+        self.assertIn("bauhaus", res_bau["updated_spec"]["layers"]["surfaces"])
+        self.assertIn("bauhaus", res_bau["updated_spec"]["layers"]["color"])
+
+        # Test space age refinement
+        res_space = refine_spec(base_spec, "more like NASA space age optimism")
+        self.assertIn("space-age-optimism", res_space["updated_spec"]["layers"]["surfaces"])
+
+        # Test maximalist dopamine refinement
+        res_max = refine_spec(base_spec, "more maximalist dopamine sticker bomb")
+        self.assertIn("maximalist-dopamine", res_max["updated_spec"]["layers"]["surfaces"])
+
 if __name__ == "__main__":
     unittest.main()

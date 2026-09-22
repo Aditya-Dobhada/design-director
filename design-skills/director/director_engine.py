@@ -25,7 +25,14 @@ SUPPORTED_STYLES = [
     "neo-brutalism",
     "y2k-frutiger-aero",
     "quiet-luxury",
-    "cyberpunk"
+    "cyberpunk",
+    "retro-americana",
+    "memphis-postmodern",
+    "space-age-optimism",
+    "japanese-wabi-sabi",
+    "bauhaus",
+    "organic-natural",
+    "maximalist-dopamine"
 ]
 
 def load_reference_library() -> List[Dict[str, Any]]:
@@ -63,6 +70,9 @@ def extract_design_brief(context_text: str) -> Dict[str, Any]:
     if any(k in text_lower for k in ["wealth", "portfolio", "banking", "finance", "invest", "fintech"]):
         product_type = "FinTech / Wealth Management"
         audience = "High-Net-Worth Individuals, Family Offices, and Wealth Advisory Teams"
+    elif any(k in text_lower for k in ["organic", "nature", "botanical", "climate", "sustainable", "ecology", "earth"]):
+        product_type = "Ecological / Organic Living"
+        audience = "Conscious Consumers, Environmental Stewards, and Botanical Enthusiasts"
     elif re.search(r'\b(developer|engineers|api|cli|telemetry|kubernetes|terminal|sre)\b', text_lower):
         product_type = "Developer Tool / Platform"
         audience = "Software Engineers and Technical Operators"
@@ -164,6 +174,15 @@ def recommend_styles(brief: Dict[str, Any]) -> List[Dict[str, Any]]:
             ]
         })
         recs.append({
+            "name": "Japanese Wabi-Sabi",
+            "style_id": "japanese-wabi-sabi",
+            "fit_rating": "Good fit",
+            "reasoning": "Contemplative rice-paper tones, Mingei craft philosophy, and profound ma (whitespace) communicate timeless permanence, humility, and generational stewardship.",
+            "tradeoffs": [
+                "Extreme quietness and organic asymmetry can feel unfamiliar to users expecting traditional financial dashboards."
+            ]
+        })
+        recs.append({
             "name": "Swiss / Editorial",
             "style_id": "swiss-editorial",
             "fit_rating": "Good fit",
@@ -173,14 +192,33 @@ def recommend_styles(brief: Dict[str, Any]) -> List[Dict[str, Any]]:
                 "Demands high typographic discipline in tabular layouts."
             ]
         })
+    elif "organic" in p_type or "ecological" in p_type:
         recs.append({
-            "name": "Cyberpunk",
-            "style_id": "cyberpunk",
-            "fit_rating": "Possible",
-            "reasoning": "Obsidian dark mode and neon telemetry could appeal to algorithmic crypto traders or quantitative hedge funds.",
+            "name": "Organic Natural",
+            "style_id": "organic-natural",
+            "fit_rating": "Strong fit",
+            "reasoning": "Earth and botanical pigment palette (clay, moss, sap), river-stone pod containers, and living-system geometry authentically connect users to nature and regenerative craft.",
             "tradeoffs": [
-                "High visual aggression and dark-room aesthetic will alienate traditional wealth management clients seeking stability.",
-                "Neon glows can fatigue eyes over long reading sessions."
+                "Organic rounded geometry consumes more padding and reduces raw data density.",
+                "Requires careful contrast calibration to ensure accessible contrast on linen backgrounds."
+            ]
+        })
+        recs.append({
+            "name": "Japanese Wabi-Sabi",
+            "style_id": "japanese-wabi-sabi",
+            "fit_rating": "Good fit",
+            "reasoning": "Handmade ceramic warmth, ink wash textures, and profound empty space reflect environmental humility and artisanal mindfulness.",
+            "tradeoffs": [
+                "Asymmetric unhurried layouts require disciplined content curation."
+            ]
+        })
+        recs.append({
+            "name": "Retro Americana",
+            "style_id": "retro-americana",
+            "fit_rating": "Possible",
+            "reasoning": "Evokes National Parks heritage, WPA conservation posters, and rustic outdoorsmanship.",
+            "tradeoffs": [
+                "Heavy ink borders and slab serifs lean nostalgic rather than contemporary biophilic."
             ]
         })
     elif "developer" in p_type or "platform" in p_type or "telemetry" in p_type or density == "high":
@@ -195,22 +233,30 @@ def recommend_styles(brief: Dict[str, Any]) -> List[Dict[str, Any]]:
             ]
         })
         recs.append({
+            "name": "Bauhaus",
+            "style_id": "bauhaus",
+            "fit_rating": "Good fit",
+            "reasoning": "Form strictly follows function: rigorous constructivist 8px grid, primary triad accents, Herbert Bayer functional type, and zero extraneous ornament.",
+            "tradeoffs": [
+                "Radical functionalism and stark primary color blocks can feel rigid or austere for consumer audiences."
+            ]
+        })
+        recs.append({
+            "name": "Space Age Optimism",
+            "style_id": "space-age-optimism",
+            "fit_rating": "Good fit",
+            "reasoning": "Warm white fiberglass pods, NASA mission orange accents, and clean geometric typography bring high technical capability with radiant human optimism.",
+            "tradeoffs": [
+                "Pod curves require generous padding that slightly limits maximum line density compared to monospace terminals."
+            ]
+        })
+        recs.append({
             "name": "Swiss / Editorial",
             "style_id": "swiss-editorial",
             "fit_rating": "Good fit",
             "reasoning": "Objective typographic hierarchy, tabular data discipline, and modular asymmetric layouts turn dense technical data into an effortless, readable broadsheet.",
             "tradeoffs": [
-                "Lacks the futuristic, high-octane gaming or hacker excitement of dark telemetry consoles.",
-                "Strict monochrome structure requires crisp copy and icon discipline."
-            ]
-        })
-        recs.append({
-            "name": "Neo-Brutalism",
-            "style_id": "neo-brutalism",
-            "fit_rating": "Possible",
-            "reasoning": "Solid black borders and tactile button switches give command modules a physical retro-hardware / Teenage Engineering vibe.",
-            "tradeoffs": [
-                "Heavy 3px borders and offset shadows consume valuable screen real estate in high-density data views."
+                "Lacks the futuristic, high-octane gaming or hacker excitement of dark telemetry consoles."
             ]
         })
     elif "creator" in p_type or "marketplace" in p_type:
@@ -220,27 +266,34 @@ def recommend_styles(brief: Dict[str, Any]) -> List[Dict[str, Any]]:
             "fit_rating": "Strong fit",
             "reasoning": "Chunky solid black outlines, hard offset shadows, and saturated color pops communicate authentic grassroots energy, anti-corporate rebellion, and tactile physicality.",
             "tradeoffs": [
-                "High visual volume can overwhelm subtle product imagery or art if colors compete directly.",
-                "Not suitable for enterprise stakeholders who equate heavy borders with amateurism."
+                "High visual volume can overwhelm subtle product imagery or art if colors compete directly."
             ]
         })
         recs.append({
-            "name": "Y2K / Frutiger Aero",
-            "style_id": "y2k-frutiger-aero",
+            "name": "Maximalist Dopamine",
+            "style_id": "maximalist-dopamine",
             "fit_rating": "Good fit",
-            "reasoning": "Glossy glass buttons, sky-cyan gradients, and optimistic rounded capsules evoke nostalgic digital delight and consumer approachability.",
+            "reasoning": "Sticker-bomb badges, candy neon explosions, and chaotic typography shifts create hyper-sensory joy for youth culture, streetwear, and drops.",
             "tradeoffs": [
-                "Translucent backdrop filters and specular reflections increase CSS implementation complexity.",
-                "Requires careful contrast auditing to prevent aqua text from washing out on pale backgrounds."
+                "Visual density and colliding hues can cause fatigue during prolonged administrative tasks."
             ]
         })
         recs.append({
-            "name": "Swiss / Editorial",
-            "style_id": "swiss-editorial",
-            "fit_rating": "Possible",
-            "reasoning": "Elevates indie creators into museum-grade cultural curators through stark typography and broadside framing.",
+            "name": "Memphis Postmodern",
+            "style_id": "memphis-postmodern",
+            "fit_rating": "Good fit",
+            "reasoning": "Ettore Sottsass pattern collisions (polka dots, diagonal hatch, squiggles) celebrate creative freedom and intentional kitsch.",
             "tradeoffs": [
-                "May feel overly formal, cold, or academic for a casual creator community."
+                "Ornamental pattern fills require careful layering to avoid competing with actual creator products."
+            ]
+        })
+        recs.append({
+            "name": "Retro Americana",
+            "style_id": "retro-americana",
+            "fit_rating": "Possible",
+            "reasoning": "Roadside diner warmth, Saul Bass poster silhouettes, and letterpress ink slabs bring authentic heritage craft.",
+            "tradeoffs": [
+                "Nostalgic 1950s-70s aesthetic may feel dated for bleeding-edge digital art."
             ]
         })
     else:
@@ -325,6 +378,69 @@ def create_design_spec(style_id: str, custom_layers: Optional[Dict[str, str]] = 
             "motion": "cyberpunk/motion.md",
             "imagery": "wireframe-hud-schematics",
             "components": "cyberpunk/components.md"
+        },
+        "retro-americana": {
+            "layout": "retro-americana/layout.md",
+            "typography": "retro-americana/typography.md",
+            "surfaces": "retro-americana/tokens.md",
+            "color": "retro-americana/tokens.md",
+            "motion": "retro-americana/motion.md",
+            "imagery": "screenprint-woodblock-halftone",
+            "components": "retro-americana/components.md"
+        },
+        "memphis-postmodern": {
+            "layout": "memphis-postmodern/layout.md",
+            "typography": "memphis-postmodern/typography.md",
+            "surfaces": "memphis-postmodern/tokens.md",
+            "color": "memphis-postmodern/tokens.md",
+            "motion": "memphis-postmodern/motion.md",
+            "imagery": "geometric-squiggle-polka-patterns",
+            "components": "memphis-postmodern/components.md"
+        },
+        "space-age-optimism": {
+            "layout": "space-age-optimism/layout.md",
+            "typography": "space-age-optimism/typography.md",
+            "surfaces": "space-age-optimism/tokens.md",
+            "color": "space-age-optimism/tokens.md",
+            "motion": "space-age-optimism/motion.md",
+            "imagery": "molded-fiberglass-moiré-vector",
+            "components": "space-age-optimism/components.md"
+        },
+        "japanese-wabi-sabi": {
+            "layout": "japanese-wabi-sabi/layout.md",
+            "typography": "japanese-wabi-sabi/typography.md",
+            "surfaces": "japanese-wabi-sabi/tokens.md",
+            "color": "japanese-wabi-sabi/tokens.md",
+            "motion": "japanese-wabi-sabi/motion.md",
+            "imagery": "shodō-ink-wash-botanical-ceramic",
+            "components": "japanese-wabi-sabi/components.md"
+        },
+        "bauhaus": {
+            "layout": "bauhaus/layout.md",
+            "typography": "bauhaus/typography.md",
+            "surfaces": "bauhaus/tokens.md",
+            "color": "bauhaus/tokens.md",
+            "motion": "bauhaus/motion.md",
+            "imagery": "constructivist-circle-square-triangle",
+            "components": "bauhaus/components.md"
+        },
+        "organic-natural": {
+            "layout": "organic-natural/layout.md",
+            "typography": "organic-natural/typography.md",
+            "surfaces": "organic-natural/tokens.md",
+            "color": "organic-natural/tokens.md",
+            "motion": "organic-natural/motion.md",
+            "imagery": "botanical-specimen-fine-linework",
+            "components": "organic-natural/components.md"
+        },
+        "maximalist-dopamine": {
+            "layout": "maximalist-dopamine/layout.md",
+            "typography": "maximalist-dopamine/typography.md",
+            "surfaces": "maximalist-dopamine/tokens.md",
+            "color": "maximalist-dopamine/tokens.md",
+            "motion": "maximalist-dopamine/motion.md",
+            "imagery": "sticker-bomb-net-art-collages",
+            "components": "maximalist-dopamine/components.md"
         }
     }
 
@@ -445,6 +561,174 @@ def refine_spec(current_spec: Dict[str, Any], critique: str) -> Dict[str, Any]:
             "old": current_spec["layers"]["color"],
             "new": updated_spec["layers"]["color"],
             "reason": "Switched surface and canvas to crisp high-contrast light mode (#FFFFFF / #F8F8F6)."
+        })
+
+    # 5. "More organic" / "Biophilic" / "Natural"
+    elif any(k in critique_lower for k in ["organic", "natural", "biophilic", "earthy"]):
+        updated_spec["layers"]["surfaces"] = "organic-natural/tokens.md"
+        updated_spec["layers"]["color"] = "organic-natural/tokens.md"
+        updated_spec["layers"]["typography"] = "organic-natural/typography.md"
+        changes_made.append({
+            "layer": "surfaces",
+            "old": current_spec["layers"]["surfaces"],
+            "new": updated_spec["layers"]["surfaces"],
+            "reason": "Organic shift: river-stone rounding and bone-white canvas."
+        })
+        changes_made.append({
+            "layer": "color",
+            "old": current_spec["layers"]["color"],
+            "new": updated_spec["layers"]["color"],
+            "reason": "Natural earth palette: raw clay, moss green, and bone white."
+        })
+        changes_made.append({
+            "layer": "typography",
+            "old": current_spec["layers"]["typography"],
+            "new": updated_spec["layers"]["typography"],
+            "reason": "Humanist oldstyle serif hierarchy with warm reading proportions."
+        })
+
+    # 6. "Wabi-Sabi" / "Zen" / "Japanese"
+    elif any(k in critique_lower for k in ["wabi", "sabi", "zen", "japanese"]):
+        updated_spec["layers"]["surfaces"] = "japanese-wabi-sabi/tokens.md"
+        updated_spec["layers"]["color"] = "japanese-wabi-sabi/tokens.md"
+        updated_spec["layers"]["motion"] = "japanese-wabi-sabi/motion.md"
+        changes_made.append({
+            "layer": "surfaces",
+            "old": current_spec["layers"]["surfaces"],
+            "new": updated_spec["layers"]["surfaces"],
+            "reason": "Mingei craft shift: rice-paper surfaces and ink-wash dividers."
+        })
+        changes_made.append({
+            "layer": "color",
+            "old": current_spec["layers"]["color"],
+            "new": updated_spec["layers"]["color"],
+            "reason": "Natural pigments: charcoal ink stone, bamboo cream, and matcha accents."
+        })
+        changes_made.append({
+            "layer": "motion",
+            "old": current_spec["layers"]["motion"],
+            "new": updated_spec["layers"]["motion"],
+            "reason": "Contemplative, breath-paced motion transitions."
+        })
+
+    # 7. "Bauhaus" / "Constructivist"
+    elif any(k in critique_lower for k in ["bauhaus", "constructivist"]):
+        updated_spec["layers"]["surfaces"] = "bauhaus/tokens.md"
+        updated_spec["layers"]["color"] = "bauhaus/tokens.md"
+        updated_spec["layers"]["typography"] = "bauhaus/typography.md"
+        changes_made.append({
+            "layer": "surfaces",
+            "old": current_spec["layers"]["surfaces"],
+            "new": updated_spec["layers"]["surfaces"],
+            "reason": "Constructivist functionalism: 0px radius, structural black outlines."
+        })
+        changes_made.append({
+            "layer": "color",
+            "old": current_spec["layers"]["color"],
+            "new": updated_spec["layers"]["color"],
+            "reason": "Pure primary triad: Red, Yellow, Blue on black and white."
+        })
+        changes_made.append({
+            "layer": "typography",
+            "old": current_spec["layers"]["typography"],
+            "new": updated_spec["layers"]["typography"],
+            "reason": "Herbert Bayer Universal functional geometric sans."
+        })
+
+    # 8. "Space Age" / "NASA"
+    elif any(k in critique_lower for k in ["space age", "space-age", "nasa"]):
+        updated_spec["layers"]["surfaces"] = "space-age-optimism/tokens.md"
+        updated_spec["layers"]["color"] = "space-age-optimism/tokens.md"
+        updated_spec["layers"]["layout"] = "space-age-optimism/layout.md"
+        changes_made.append({
+            "layer": "surfaces",
+            "old": current_spec["layers"]["surfaces"],
+            "new": updated_spec["layers"]["surfaces"],
+            "reason": "Space Age shift: molded pod fiberglass containers (24px–40px radius)."
+        })
+        changes_made.append({
+            "layer": "color",
+            "old": current_spec["layers"]["color"],
+            "new": updated_spec["layers"]["color"],
+            "reason": "Warm optical white with single NASA Mission Orange accent."
+        })
+        changes_made.append({
+            "layer": "layout",
+            "old": current_spec["layers"]["layout"],
+            "new": updated_spec["layers"]["layout"],
+            "reason": "Capsule pod grid and moiré concentric circle framing."
+        })
+
+    # 9. "Maximalist" / "Dopamine"
+    elif any(k in critique_lower for k in ["maximalist", "dopamine", "sticker"]):
+        updated_spec["layers"]["surfaces"] = "maximalist-dopamine/tokens.md"
+        updated_spec["layers"]["color"] = "maximalist-dopamine/tokens.md"
+        updated_spec["layers"]["components"] = "maximalist-dopamine/components.md"
+        changes_made.append({
+            "layer": "surfaces",
+            "old": current_spec["layers"]["surfaces"],
+            "new": updated_spec["layers"]["surfaces"],
+            "reason": "Maximalist shift: multi-colored hard offset drop shadows."
+        })
+        changes_made.append({
+            "layer": "color",
+            "old": current_spec["layers"]["color"],
+            "new": updated_spec["layers"]["color"],
+            "reason": "Colliding candy neon palette (Yellow, Magenta, Cyan, Lime)."
+        })
+        changes_made.append({
+            "layer": "components",
+            "old": current_spec["layers"]["components"],
+            "new": updated_spec["layers"]["components"],
+            "reason": "Sticker-bomb tags and pop-up button hover mechanics."
+        })
+
+    # 10. "Retro Americana" / "Diner" / "Saul Bass"
+    elif any(k in critique_lower for k in ["americana", "diner", "saul bass"]):
+        updated_spec["layers"]["surfaces"] = "retro-americana/tokens.md"
+        updated_spec["layers"]["color"] = "retro-americana/tokens.md"
+        updated_spec["layers"]["typography"] = "retro-americana/typography.md"
+        changes_made.append({
+            "layer": "surfaces",
+            "old": current_spec["layers"]["surfaces"],
+            "new": updated_spec["layers"]["surfaces"],
+            "reason": "Retro Americana shift: ink-press borders and parchment paper canvas."
+        })
+        changes_made.append({
+            "layer": "color",
+            "old": current_spec["layers"]["color"],
+            "new": updated_spec["layers"]["color"],
+            "reason": "Warm incandescent palette: vermilion, neon amber, and deep carbon ink."
+        })
+        changes_made.append({
+            "layer": "typography",
+            "old": current_spec["layers"]["typography"],
+            "new": updated_spec["layers"]["typography"],
+            "reason": "Slab serif display headers and condensed poster typography."
+        })
+
+    # 11. "Memphis" / "Postmodern" / "Squiggle"
+    elif any(k in critique_lower for k in ["memphis", "postmodern", "sottsass"]):
+        updated_spec["layers"]["surfaces"] = "memphis-postmodern/tokens.md"
+        updated_spec["layers"]["color"] = "memphis-postmodern/tokens.md"
+        updated_spec["layers"]["layout"] = "memphis-postmodern/layout.md"
+        changes_made.append({
+            "layer": "surfaces",
+            "old": current_spec["layers"]["surfaces"],
+            "new": updated_spec["layers"]["surfaces"],
+            "reason": "Memphis shift: flat graphic planes and polka-dot/diagonal hatch patterns."
+        })
+        changes_made.append({
+            "layer": "color",
+            "old": current_spec["layers"]["color"],
+            "new": updated_spec["layers"]["color"],
+            "reason": "Contrasting primaries and pastels on stark white canvas."
+        })
+        changes_made.append({
+            "layer": "layout",
+            "old": current_spec["layers"]["layout"],
+            "new": updated_spec["layers"]["layout"],
+            "reason": "Pattern-filled panels and eccentric geometric arrangements."
         })
 
     # Generic layer-targeted refinement fallback
