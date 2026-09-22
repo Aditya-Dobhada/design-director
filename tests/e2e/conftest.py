@@ -9,7 +9,7 @@ import os
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # director engine
-sys.path.insert(0, os.path.join(PROJECT_ROOT, "design-skills", "director"))
+sys.path.insert(0, os.path.join(PROJECT_ROOT, "skills", "design-director"))
 
 # audit tool
-sys.path.insert(0, os.path.join(PROJECT_ROOT, "design-skills", "audit", "scripts"))
+sys.path.insert(0, os.path.join(PROJECT_ROOT, "skills", "design-audit"))

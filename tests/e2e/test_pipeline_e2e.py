@@ -19,8 +19,8 @@ from pathlib import Path
 # Mirror the pattern from test_director.py — add paths at module scope
 ROOT_DIR = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(ROOT_DIR))
-sys.path.insert(0, str(ROOT_DIR / "design-skills" / "director"))
-sys.path.insert(0, str(ROOT_DIR / "design-skills" / "audit" / "scripts"))
+sys.path.insert(0, str(ROOT_DIR / "skills" / "design-director"))
+sys.path.insert(0, str(ROOT_DIR / "skills" / "design-audit"))
 
 from director_engine import (  # noqa: E402
     extract_design_brief,
@@ -29,7 +29,7 @@ from director_engine import (  # noqa: E402
     generate_implementation_contract,
 )
 
-P2_DIR = str(ROOT_DIR / "tests" / "p2_validation")
+GALLERY_DIR = str(ROOT_DIR / "gallery")
 
 
 # ── Unseen PRDs (not used in any unit-test fixture) ────────────────────────
@@ -189,16 +189,15 @@ class TestLevel1Refinement(unittest.TestCase):
 
 
 class TestLevel1AuditOnP2Fixtures(unittest.TestCase):
-    """Runs the auditor over all 12 P2 validation HTML files and asserts zero critical violations."""
+    """Runs the auditor over all 12 gallery HTML preview files and asserts zero critical violations."""
 
     def _audit_file(self, style_id: str, html_filename: str):
         from audit_code import DesignAuditor
         from pathlib import Path
-        html_path = os.path.join(P2_DIR, html_filename)
+        clean_name = html_filename.replace("p2_", "")
+        html_path = os.path.join(GALLERY_DIR, clean_name)
         if not os.path.exists(html_path):
-            self.skipTest(f"P2 fixture not found: {html_filename}")
-        # DesignAuditor(style_id) then run_audit(directory)
-        # Use a temp dir containing only the target file
+            self.skipTest(f"Gallery fixture not found: {clean_name}")
         with tempfile.TemporaryDirectory() as tmp:
             shutil.copy(html_path, tmp)
             auditor = DesignAuditor(style_id)

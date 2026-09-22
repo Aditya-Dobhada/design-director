@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional
 
 REFERENCE_LIBRARY_PATH = Path(__file__).parent / "reference-library.yaml"
-STYLES_DIR = Path(__file__).parent.parent / "styles"
+STYLES_DIR = Path(__file__).resolve().parent.parent.parent / "styles"
 
 SUPPORTED_STYLES = [
     "swiss-editorial",
@@ -882,12 +882,18 @@ def generate_implementation_contract(spec: Dict[str, Any], product_spec: str, te
     layers = spec.get("layers", {})
     
     # Load specific style tokens and anti-patterns
+    style_file = STYLES_DIR / f"{primary_style}.md"
     style_dir = STYLES_DIR / primary_style
     skill_md = ""
-    tokens_md = ""
     anti_patterns = []
     
-    if (style_dir / "SKILL.md").exists():
+    if style_file.exists():
+        with open(style_file, "r", encoding="utf-8") as f:
+            content = f.read()
+            if "## Mandatory Anti-Patterns" in content:
+                anti_patterns_block = content.split("## Mandatory Anti-Patterns")[1].split("\n\n---\n\n")[0]
+                anti_patterns = [line.strip() for line in anti_patterns_block.split("\n") if line.strip().startswith("-")]
+    elif (style_dir / "SKILL.md").exists():
         with open(style_dir / "SKILL.md", "r", encoding="utf-8") as f:
             skill_md = f.read()
             # Extract anti-patterns section

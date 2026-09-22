@@ -21,11 +21,12 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const P2_DIR = path.resolve(__dirname, '../p2_validation');
+const GALLERY_DIR = path.resolve(__dirname, '../../gallery');
 
-/** Helper: file:// URL for a p2 validation HTML file */
+/** Helper: file:// URL for a gallery HTML file */
 function p2url(filename) {
-  return `file://${path.join(P2_DIR, filename)}`;
+  const clean = filename.replace('p2_', '');
+  return `file://${path.join(GALLERY_DIR, clean)}`;
 }
 
 /** Helper: get computed borderRadius for the first matching selector */

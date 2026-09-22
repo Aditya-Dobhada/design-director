@@ -16,11 +16,10 @@ import os
 import unittest
 from pathlib import Path
 
-# Add project root and director to sys.path
 ROOT_DIR = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT_DIR))
-sys.path.insert(0, str(ROOT_DIR / "design-skills" / "director"))
-sys.path.insert(0, str(ROOT_DIR / "design-skills" / "audit" / "scripts"))
+sys.path.insert(0, str(ROOT_DIR / "skills" / "design-director"))
+sys.path.insert(0, str(ROOT_DIR / "skills" / "design-audit"))
 
 from director_engine import (
     extract_design_brief,
@@ -152,27 +151,20 @@ class TestDesignDirector(unittest.TestCase):
         self.assertTrue(diff["layers_changed_count"] >= 1)
 
     def test_style_packs_completeness_and_anti_patterns(self):
-        """Criterion 6.6: All 5 style packs contain required files, testable tokens, and negative constraints."""
-        styles_dir = ROOT_DIR / "design-skills" / "styles"
-        required_files = [
-            "SKILL.md", "tokens.md", "typography.md",
-            "layout.md", "components.md", "motion.md"
-        ]
+        """Criterion 6.6: All 12 style packs contain complete tokens, typography, and negative constraints."""
+        styles_dir = ROOT_DIR / "styles"
 
         for style in SUPPORTED_STYLES:
-            style_path = styles_dir / style
-            self.assertTrue(style_path.exists(), f"Style directory missing: {style}")
+            style_file = styles_dir / f"{style}.md"
+            self.assertTrue(style_file.exists(), f"Style pack missing: {style}.md")
+            content = style_file.read_text(encoding="utf-8")
+            self.assertTrue(len(content) > 500, f"{style}.md is unexpectedly short")
 
-            for rf in required_files:
-                target_file = style_path / rf
-                self.assertTrue(target_file.exists(), f"Missing required file {rf} in {style}")
-                content = target_file.read_text(encoding="utf-8")
-                self.assertTrue(len(content) > 100, f"{rf} in {style} is unexpectedly short")
-
-            # Check explicit negative constraints in SKILL.md
-            skill_content = (style_path / "SKILL.md").read_text(encoding="utf-8")
-            self.assertIn("Anti-Patterns", skill_content, f"Missing Anti-Patterns section in {style}/SKILL.md")
-            self.assertIn("NEVER", skill_content, f"Missing explicit negative constraint keyword NEVER in {style}/SKILL.md")
+            # Check explicit tokens and negative constraints
+            self.assertIn("Mandatory Anti-Patterns", content, f"Missing Anti-Patterns in {style}.md")
+            self.assertIn("NEVER", content, f"Missing negative constraint keyword NEVER in {style}.md")
+            self.assertIn("Color Tokens", content, f"Missing Color Tokens in {style}.md")
+            self.assertTrue("Radius Tokens" in content or "Border Radius" in content, f"Missing Border Radius in {style}.md")
 
     def test_implementation_contract_generation(self):
         """Criterion 6.7: Generates binding implementation contract with hard anti-patterns."""

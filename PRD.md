@@ -6,244 +6,139 @@
 
 ## 1. Problem Statement
 
-AI coding agents produce technically valid, functionally correct UI that is visually indistinguishable from every other AI-generated product. This happens because coding agents collapse **design direction** and **implementation** into a single prompt-to-code step, defaulting to the statistical median of their training data — generic Tailwind SaaS aesthetics.
+AI coding agents produce technically valid, functionally correct UI that is visually indistinguishable from generic AI SaaS. This happens because agents collapse **design direction** and **implementation** into a single prompt-to-code step, defaulting to the statistical median of their training data (`Inter`, `rounded-lg`, `shadow-sm`, `bg-blue-600`).
 
-There is no layer that:
-- Reasons about what a product *should feel like* based on its actual context (users, domain, competitors, constraints)
-- Translates that feeling into a concrete, composable visual language
-- Hands that language to a coding agent as a **contract** rather than a **vibe**
-- Verifies after implementation that the contract was actually followed
-
-This tool is not a frontend generator. It is a **design reasoning engine** whose output happens to be consumed by frontend coding agents (and, eventually, other downstream consumers like Figma plugins or brand guideline generators).
-
-Since this system is built via agentic AI-driven development, it should be scoped in **build phases gated by validation checkpoints**, not calendar time. Each phase completes when its acceptance criteria pass, not when a deadline arrives.
+Design Director introduces an intentional reasoning and constraint layer that:
+1. Analyzes what a product should feel like based on its actual context (users, domain, workflow density, constraints).
+2. Interactively aligns with the user through a low-friction diagnostic interview when context is thin.
+3. Provides concrete visual previews from a live gallery before code generation starts.
+4. Hands that direction to a coding agent as a hard **`DESIGN_CONTRACT.md`** rather than a vague aesthetic vibe.
+5. Verifies after implementation that the contract was strictly followed using an automated audit.
 
 ---
 
-## 2. Goals
-
-1. Produce a structured **Design Brief** from product context (PRD, README, codebase, target audience, competitors).
-2. Recommend multiple visual directions with honest tradeoffs, not a single forced answer.
-3. Represent visual direction as **composable layers** (layout, typography, surface, color, imagery, motion) rather than a single monolithic "style."
-4. Translate the chosen direction into an implementation-ready **Design Spec** that a coding agent can follow as hard constraints.
-5. Audit implemented frontend code against the Design Spec and report deviations.
-6. Support natural, iterative refinement ("more like Linear, less like a bank") without regenerating from scratch.
-
-## 3. Non-Goals (v1)
-
-- Generating pixel-accurate visual previews (images or full HTML mockups) before implementation.
-- Supporting all ~50 design styles/families from the initial taxonomy.
-- Building a general-purpose design tool, Figma integration, or standalone app. v1 is a coding-agent skill/CLI.
-- Automatically fixing audit failures (v1 reports; it does not auto-remediate).
-
----
-
-## 4. Users
-
-- Developers using AI coding agents (Cursor, Claude Code, etc.) to build product frontends who want intentional, non-generic visual identity without hiring a designer.
-- Small teams/solo founders who need a defensible design direction fast, with reasoning they can explain to stakeholders.
-
----
-
-## 5. System Overview
+## 2. Core Architecture: The 2-Skill Model
 
 ```
-PRD / SPEC / README / Codebase
-              │
-              ▼
-       DESIGN DIRECTOR
-   (extracts Design Brief)
-              │
-              ▼
-   STYLE RECOMMENDATION
- (multiple directions + fit + tradeoffs)
-              │
-        User chooses / refines
-              │
-              ▼
-      DESIGN SPEC (layered)
-              │
-              ▼
-   STYLE-SPECIFIC SKILL PACKS
-              │
-              ▼
-       FRONTEND AGENT
-      (implements UI)
-              │
-              ▼
-       DESIGN AUDIT
- (checks implementation vs spec)
+PRD / README / Codebase Context
+               │
+               ▼
+   [Skill 1: design-director]
+   ├── Context Analysis
+   ├── Diagnostic Interview Gate (max 3 questions if context is thin)
+   ├── Curated Style Recommendations (2–3 candidates with gallery links)
+   └── Contract Handoff (DESIGN_CONTRACT.md generation)
+               │
+               ▼
+        AI Coding Agent
+      (implements frontend)
+               │
+               ▼
+    [Skill 2: design-audit]
+ (Inspects code against contract)
 ```
+
+### Token Economy & Zero-Bloat Guardrails
+- **Lean Router Skill:** `skills/design-director/SKILL.md` is capped under **1,200 tokens**.
+- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`styles/<style_id>.md`, ~2.2k tokens) when generating the contract. The 11 other styles are never loaded into prompt context.
+- **Project-Scoped Enforcement:** Outputs a local, project-level `DESIGN_CONTRACT.md`. Never mutates global system configurations.
 
 ---
 
-## 6. Functional Requirements
+## 3. Supported Design Taxonomy (12 Styles)
 
-### 6.1 `design-director` (analysis skill)
+Each style is delivered as a consolidated, self-contained specification in [`styles/<style_id>.md`](file:///styles/) with complete tokens, typography, component geometry, and mandatory `NEVER` anti-patterns:
 
-Reads available inputs: `PRD.md`, `SPEC.md`, `README.md`, existing frontend code, screenshots, stated target audience, product category, brand requirements, competitor references.
-
-Outputs a **Design Brief** in structured YAML, including at minimum:
-- Product type and audience
-- Personality traits (e.g., trustworthy, playful, technical, premium)
-- UX requirements (density, information load, workflow orientation)
-- Brand positioning axes (playful↔serious, premium↔accessible, futuristic↔institutional)
-- Visual constraints (accessibility needs, readability criticality, motion tolerance)
-
-**Acceptance criteria:** Given a sample PRD, the director produces a Design Brief that a human reviewer agrees accurately reflects the product's context, without requiring the human to re-explain the product.
-
-### 6.2 Style Recommendation
-
-Given a Design Brief, recommend **2–4 candidate directions**, each with:
-- Name/description of the direction
-- Reasoning for why it fits
-- Explicit tradeoffs/risks
-- Qualitative fit rating only: **Strong fit / Good fit / Possible / Poor fit** (no numeric/percentage scores exposed to the user)
-
-**Acceptance criteria:** Recommendations must differ meaningfully from each other (not cosmetic variants of the same direction), and each must include at least one honest tradeoff or risk.
-
-### 6.3 Reference Library
-
-A structured library (v1: ~20–30 entries) mapping well-known products/brands to decomposed design properties (mode, density, spacing, borders, shadows, typography, color, motion, personality) — not screenshots.
-
-**Purpose:** When a user says "make it feel like Linear" or "less like a bank," the director maps this to concrete property adjustments instead of hallucinating.
-
-**Acceptance criteria:** For at least 10 test reference terms, the director produces a consistent, concrete property mapping rather than a vague restatement.
-
-### 6.4 Design Spec (Layered Composition)
-
-Once a direction is chosen (or refined), the director outputs a **Design Spec** that decomposes the direction into independent layers, each with a single clear source of truth — no ambiguous percentage blending:
-
-```yaml
-layout: swiss-asymmetric-grid
-typography: editorial-serif-headings + grotesk-body
-surfaces: neo-brutalist-borders + hard-shadows
-color: swiss-neutral + single-accent
-motion: restrained
-imagery: conceptual-sketch
-```
-
-**Acceptance criteria:** Every layer resolves to exactly one style-pack source; no layer is left as an unresolved blend/percentage.
-
-### 6.5 Iterative Refinement
-
-User can provide free-text critique (e.g., "too corporate," "more like Stripe"). The director updates the Design Spec layer-by-layer rather than regenerating the whole direction from scratch, and reports which layers changed and why.
-
-**Acceptance criteria:** A refinement request changes only the relevant layers; unrelated layers remain stable across iterations.
-
-### 6.6 Style Packs
-
-Each supported style is a self-contained skill package including:
-- Core principles
-- Typography recommendations (preferred fonts + explicit fonts/approaches to avoid)
-- Component rules (buttons, cards, inputs — concrete values: border widths, radius, shadow style)
-- Layout guidance (preferred and anti-pattern layouts)
-- Motion guidance (preferred and anti-pattern motion)
-
-**v1 scope: 5 style packs**, chosen for maximum mutual distinctiveness and distance from generic AI-SaaS default:
-1. Swiss / Editorial
-2. Neo-Brutalism
-3. Y2K / Frutiger Aero
-4. Quiet Luxury
-5. Cyberpunk
-
-**Acceptance criteria:** Each style pack includes explicit **negative constraints** (anti-patterns), since these are more effective than positive descriptions at steering models away from default output.
-
-### 6.7 Implementation Handoff
-
-The Design Spec + relevant Style Pack(s) + product spec + tech stack are packaged into a single implementation contract handed to the frontend coding agent.
-
-**Acceptance criteria (critical validation gate):** Given identical product specs, a coding agent's output *with* the Design Spec must be visibly and consistently distinguishable from its output *without* one, across all 5 v1 style packs. **This gate must pass before any further style packs or preview features are built.**
-
-### 6.8 Design Audit
-
-A post-implementation skill that inspects generated frontend code against the chosen Design Spec and reports adherence/deviation per layer (e.g., "14 cards use rounded corners; spec requires 0 radius").
-
-**Acceptance criteria:** Audit correctly flags at least the deviations manually seeded into a test implementation (border-radius, shadow style, font substitution, spacing violations).
+| Style ID | Name | Visual Signature | Ideal Domain | Gallery Preview |
+|---|---|---|---|---|
+| `quiet-luxury` | **Quiet Luxury** | Alabaster (`#FBFBF9`), Cormorant Garamond 300, 0px radius, hairline dividers | Private wealth, high-end advisory, luxury | [quiet_luxury.html](file:///gallery/quiet_luxury.html) |
+| `swiss-editorial` | **Swiss / Editorial** | Pure white (`#FFFFFF`), Playfair 600, Swiss red (`#E30613`), 4+8 asymmetric grid | Media, architecture, dense data broadsheets | [swiss_editorial.html](file:///gallery/swiss_editorial.html) |
+| `neo-brutalism` | **Neo-Brutalism** | 3px solid ink borders, 4px solid black offset shadows, Space Grotesk | Creator platforms, dev tools, zines | [neo_brutalism.html](file:///gallery/neo_brutalism.html) |
+| `cyberpunk` | **Cyberpunk** | Obsidian dark (`#050508`), cyan HUD (`#00F5FF`), Rajdhani 700, chamfers | CLI telemetry, terminals, security consoles | [cyberpunk.html](file:///gallery/cyberpunk.html) |
+| `space-age-optimism` | **Space Age Optimism** | Warm optical white (`#FAFAF8`), molded pods (32px), NASA orange (`#FF5C00`) | Edtech, aerospace, optimistic platforms | [space_age_optimism.html](file:///gallery/space_age_optimism.html) |
+| `bauhaus` | **Bauhaus** | Constructivist 8px grid, primary triad (`#E03A3E`/`#FFD100`/`#004B97`), IBM Plex Sans | Engineering, industrial software, tools | [bauhaus.html](file:///gallery/bauhaus.html) |
+| `japanese-wabi-sabi` | **Japanese Wabi-Sabi** | Rice paper (`#FAF7F0`), charcoal ink wash, Mingei craft, Noto Serif JP 300 | Mindfulness, tea/craft, contemplative apps | [japanese_wabi_sabi.html](file:///gallery/japanese_wabi_sabi.html) |
+| `organic-natural` | **Organic Natural** | Bone canvas (`#F5F1E8`), living earth pigments (clay, moss, sap), river-stone pods | Sustainability, climate, botanicals | [organic_natural.html](file:///gallery/organic_natural.html) |
+| `retro-americana` | **Retro Americana** | Cream parchment (`#F9F0DC`), vermilion (`#C8391E`), Saul Bass geometry, slab type | Food, heritage brands, national parks | [retro_americana.html](file:///gallery/retro_americana.html) |
+| `y2k-frutiger-aero` | **Y2K / Frutiger Aero** | Glossy specular glassmorphism, aqua-to-lime gradients, Nunito 800 | Consumer productivity, playful apps | [y2k_frutiger_aero.html](file:///gallery/y2k_frutiger_aero.html) |
+| `memphis-postmodern` | **Memphis Postmodern** | Polka dots, diagonal hatch patterns, geometric squiggles, Syne 800 | Drops, fashion, experimental portfolios | [memphis_postmodern.html](file:///gallery/memphis_postmodern.html) |
+| `maximalist-dopamine` | **Maximalist Dopamine** | Acid yellow (`#FFF500`), colliding neon hues, multi-color drop shadows | Streetwear, music, youth culture | [maximalist_dopamine.html](file:///gallery/maximalist_dopamine.html) |
 
 ---
 
-## 7. Non-Functional Requirements
+## 4. Functional Requirements
 
-- Delivered as a coding-agent skill repository (`SKILL.md`-based), not a hosted app, for v1.
-- No numeric/percentage fit scores or blend ratios exposed in any user-facing output — qualitative language only.
-- All style pack rules must be concrete/testable (specific values), not purely descriptive prose.
-- Every skill (director, style packs, audit) must be independently testable in isolation before wiring the full pipeline together — build and validate bottom-up.
+### 4.1 Context Analysis & Diagnostic Interview
+- Inspects project files (`README.md`, `PRD.md`, `package.json`, source code).
+- Detects product domain, audience, and workflow density.
+- **Interview Gate:** If the domain or density is ambiguous, asks up to 3 targeted questions before guessing.
+
+### 4.2 Recommendation & Visual Previews
+- Recommends 2–3 candidate styles tailored to the domain.
+- Displays an **in-chat visual micro-spec** (display font, primary hex swatches, radius rule) directly in chat.
+- Provides clickable links to live standalone HTML preview files in [`gallery/`](file:///gallery/).
+- Details honest operational trade-offs for each candidate style.
+
+### 4.3 Critique & Layer Refinement
+- Maps free-text user feedback directly to concrete style layers:
+  - *"More like Linear / Raycast"* → Obsidian dark surfaces, translucent hairlines, single violet accent, micro-snappy 120ms transitions.
+  - *"More like Stripe"* → Crisp white cards, refined typographic scale, vibrant gradient accents.
+  - *"More like Gumroad"* → 3px solid ink borders, 4px solid black offset shadows.
+  - *"More like Aesop"* → Warm cream parchment, stone hairlines, literary serif headings.
+
+### 4.4 Contract Handoff
+- Assembles a binding `DESIGN_CONTRACT.md` file in the project root containing:
+  - Exact token variables (CSS variables and Tailwind mappings).
+  - Component geometry (buttons, cards, inputs).
+  - **`## Mandatory Anti-Patterns`**: Explicit `NEVER` constraints.
+  - Product specifications for the coding agent.
+
+### 4.5 Post-Implementation Audit
+- The `design-audit` tool statically inspects generated `.html`, `.jsx`, `.tsx`, `.vue`, `.svelte`, and `.css` files.
+- Flags forbidden border-radius, diffuse blur drop shadows, invalid heading fonts, and illegal color classes.
+- Returns a structured report with file paths, line numbers, and actionable remediation notes.
 
 ---
 
-## 8. Repository Structure (v1)
+## 5. Repository Structure
 
 ```
-design-skills/
+design-director/
+├── skills/
+│   ├── design-director/
+│   │   ├── SKILL.md            # Conversational director skill (<1.2k tokens)
+│   │   ├── director_engine.py  # Programmatic engine (for deterministic pipelines)
+│   │   └── reference-library.yaml
+│   └── design-audit/
+│       ├── SKILL.md            # Audit skill prompt
+│       └── audit_code.py       # Standalone static linter
 │
-├── director/
-│   ├── SKILL.md
-│   └── reference-library.yaml
+├── styles/                     # 12 consolidated, single-file style packs
+│   ├── quiet-luxury.md
+│   ├── swiss-editorial.md
+│   ├── neo-brutalism.md
+│   └── ... (9 other styles)
 │
-├── styles/
-│   ├── swiss-editorial/
-│   ├── neo-brutalism/
-│   ├── y2k-frutiger-aero/
-│   ├── quiet-luxury/
-│   └── cyberpunk/
-│       ├── SKILL.md
-│       ├── tokens.md
-│       ├── typography.md
-│       ├── layout.md
-│       ├── components.md
-│       └── motion.md
+├── gallery/                    # 13 standalone HTML visual previews
+│   ├── quiet_luxury.html
+│   ├── swiss_editorial.html
+│   └── ... (11 other styles + baseline)
 │
-└── audit/
-    └── SKILL.md
-```
-
-CLI/skill invocations:
-```
-/design analyze
-/design recommend
-/design choose <style>
-/design refine "<free-text critique>"
-/design implement
-/design audit
+├── tests/                      # CI verification suites
+│   ├── fixtures/               # Seeded code and test PRDs
+│   ├── test_director.py        # 10 unit tests
+│   └── e2e/
+│       ├── test_pipeline_e2e.py    # 22 pipeline integration tests
+│       └── browser_dom_audit.spec.js # Playwright DOM computed style audit
+│
+├── package.json
+└── README.md
 ```
 
 ---
 
-## 9. Explicit Design Decisions
+## 6. Verification & Quality Standards
 
-- **No visual preview generation in v1.** Image-based previews don't translate reliably into implementation; full HTML previews collapse the separation between direction and implementation. v1 ships a readable **Design Spec document** (typography specimens, color swatches, component rules in prose/HTML snippets) instead of a rendered preview.
-- **No percentage-based style blending exposed to coding agents.** Composition is resolved into single-source-of-truth layers before handoff.
-- **Negative constraints (anti-patterns) are mandatory** in every style pack, not optional.
-- **Start with 5 deep style packs, not 50 shallow ones.** Depth over breadth until the handoff mechanism is proven.
-
----
-
-## 10. Build Phases (dependency-gated, not time-gated)
-
-Since development is agentic-AI-driven, phases proceed as fast as each gate can be validated — there is no assumption of multi-week durations. A phase does not start until the prior phase's acceptance criteria pass.
-
-| Phase | Deliverable | Gate to proceed |
-|---|---|---|
-| **P1 — Core Reasoning** | `design-director` SKILL.md + reference library + 3 style packs (Swiss, Neo-Brutalism, Quiet Luxury) | Director produces an accurate Design Brief and a fully-resolved layered Design Spec on a real test PRD |
-| **P2 — Handoff Validation (critical gate)** | Feed Design Spec + style pack into a real coding agent against a real product spec | Blind comparison shows output *with* spec is visibly distinct from output *without* spec, across all 3 packs. **Do not proceed to P3 until this passes** — if it fails, iterate on spec format/handoff, not on adding more styles |
-| **P3 — Audit Loop** | `design-audit` skill | Audit correctly flags deviations seeded into a test implementation (radius, shadow, font, spacing) |
-| **P4 — Expansion** | Remaining style packs (Y2K, Cyberpunk) + refinement loop (`/design refine`) | Refinement changes only targeted layers; new packs pass the same handoff gate as P2 |
-| **P5 — Full Pipeline** | End-to-end `/design analyze → recommend → choose → implement → audit` on a fresh, unseen product spec | Full run completes without manual intervention and produces an implementation that passes audit |
-
----
-
-## 11. Success Metrics
-
-- **Primary:** In blind comparison, human reviewers can correctly match generated frontends to their intended style direction ≥80% of the time, and distinguish them from "default AI SaaS" output.
-- **Secondary:** Audit skill precision/recall on seeded deviations ≥90%.
-- **Secondary:** Refinement requests do not require full regeneration (layer-scoped diffs only).
-
----
-
-## 12. Future / Out of Scope for v1
-
-- Full 12-family style taxonomy (Retro, Futuristic, Cultural/Historical, Organic, Luxury, Experimental).
-- Visual board/preview generation once a reliable image-to-token pipeline exists.
-- Non-code downstream consumers (Figma plugins, brand guideline docs, design token exports to design tools).
-- Auto-remediation of audit failures.
+- **Unit Testing:** 10/10 tests passing via `npm run test:unit`.
+- **Pipeline Integration Testing:** 22/22 tests passing via `npm run test:e2e:pipeline`.
+- **Browser DOM Audit:** Headless Chromium testing via Playwright asserting computed CSS values (`borderRadius === 0px`, `boxShadow === none`, font loading, and contrast luminance).
