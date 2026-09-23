@@ -19,6 +19,7 @@ import yaml
 REFERENCE_LIBRARY_PATH = Path(__file__).parent / "reference-library.yaml"
 STYLES_DIR = Path(__file__).resolve().parent.parent.parent / "styles"
 MODIFIERS_PATH = STYLES_DIR / "modifiers.yaml"
+DOMAIN_DEFAULTS_PATH = STYLES_DIR / "domain-style-defaults.yaml"
 
 SUPPORTED_STYLES = [
     "swiss-editorial",
@@ -60,12 +61,19 @@ def load_modifiers() -> dict[str, Any]:
         data = yaml.safe_load(f)
         return data.get("modifiers", {})
 
+_REFERENCE_LIBRARY_CACHE: list[dict[str, Any]] | None = None
+
 def load_reference_library() -> list[dict[str, Any]]:
+    global _REFERENCE_LIBRARY_CACHE
+    if _REFERENCE_LIBRARY_CACHE is not None:
+        return _REFERENCE_LIBRARY_CACHE
     if not REFERENCE_LIBRARY_PATH.exists():
-        return []
+        _REFERENCE_LIBRARY_CACHE = []
+        return _REFERENCE_LIBRARY_CACHE
     with open(REFERENCE_LIBRARY_PATH, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
-        return data.get("references", [])
+        _REFERENCE_LIBRARY_CACHE = data.get("references", [])
+        return _REFERENCE_LIBRARY_CACHE
 
 def find_reference(query: str) -> dict[str, Any] | None:
     refs = load_reference_library()
@@ -94,7 +102,7 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
     text_lower = context_text.lower()
 
     # ── 1. FinTech / Wealth ──────────────────────────────────────────────────
-    if any(k in text_lower for k in ["wealth", "portfolio", "banking", "finance", "invest", "fintech", "asset", "equity", "fund", "endowment", "trust", "estate planning"]):
+    if re.search(r'\b(wealth|portfolio|banking|finance|invest(?:ment|ing)?|fintech|asset|equity|funds?|endowment|trust|estate planning)\b', text_lower):
         product_type = "FinTech / Wealth Management"
         audience = "High-Net-Worth Individuals, Family Offices, and Wealth Advisory Teams"
         traits = ["authoritative", "understated", "meticulous", "discreet"]
@@ -270,6 +278,7 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
         "product_type": product_type,
         "target_audience": audience,
         "personality_traits": traits,
+        "raw_context": context_text,
         "ux_requirements": {
             "density": density,
             "information_load": info_load,
@@ -287,245 +296,286 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
         }
     }
 
+def load_domain_style_defaults() -> dict[str, Any]:
+    if not DOMAIN_DEFAULTS_PATH.exists():
+        return {}
+    with open(DOMAIN_DEFAULTS_PATH, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+        return data.get("domain_style_defaults", {})
+
+STYLE_METADATA: dict[str, dict[str, Any]] = {
+    "art-deco": {
+        "default_reasoning": "Geometric symmetry, caviar black canvas, and burnished gold hairlines communicate formal luxury, heritage pedigree, and architectural permanence.",
+        "name": "Art Deco",
+        "tradeoffs": [
+            "High visual ornamentation and strict symmetry may feel too ornate for purely utilitarian data tables."
+        ],
+    },
+    "aurora-gradient": {
+        "default_reasoning": "Soft atmospheric multi-color gradients over obsidian canvas create an ethereal, calm, futuristic AI environment.",
+        "name": "Aurora Gradient",
+        "tradeoffs": [
+            "Atmospheric gradient overlays require dedicated dark canvas to maintain sufficient text legibility."
+        ],
+    },
+    "bauhaus": {
+        "default_reasoning": "Form strictly follows function: 8px constructivist grid and functional geometric typography mirror modernist architectural heritage.",
+        "name": "Bauhaus",
+        "tradeoffs": [
+            "Primary color blocks can feel austere or unyielding for softer lifestyle contexts."
+        ],
+    },
+    "claymorphism": {
+        "default_reasoning": "Voluminous rounded clay geometry (20-32px), layered inner highlights, and friendly pastel fills communicate approachable, tactile warmth.",
+        "name": "Claymorphism",
+        "tradeoffs": [
+            "Voluminous 20-32px rounded clay geometry and pastel fills consume high padding and reduce screen density."
+        ],
+    },
+    "command-center": {
+        "default_reasoning": "Near-black multi-panel operational grid with strict semantic status indicators (healthy/warning/critical) built for incident response.",
+        "name": "Command Center",
+        "tradeoffs": [
+            "High information density and multi-panel ops layout can overwhelm casual or non-technical operators."
+        ],
+    },
+    "cyberpunk": {
+        "default_reasoning": "Obsidian canvas, monospace telemetry, and neon HUD brackets provide an immersive, high-voltage environment ideal for real-time monitoring streams.",
+        "name": "Cyberpunk",
+        "tradeoffs": [
+            "High sensory intensity is unsuitable for calm documentation or administrative configuration flows."
+        ],
+    },
+    "dark-minimal": {
+        "default_reasoning": "Obsidian canvas (#09090B), hairline translucent borders, 6-8px micro-radii, and a single electric accent create a calm, focused, high-density environment ideal for modern developer tools, AI command surfaces, and telemetry.",
+        "name": "Dark Minimal",
+        "tradeoffs": [
+            "Low-sensory dark canvas requires disciplined contrast checking in bright daylight environments.",
+            "Requires strict micro-typography hierarchy to prevent dense data from blurring together."
+        ],
+    },
+    "data-native": {
+        "default_reasoning": "Ultra-dense monospace numerical hierarchy, 32px compact table rows, and disciplined status dots maximize information density for deep analytics.",
+        "name": "Data-Native",
+        "tradeoffs": [
+            "Ultra-dense monospace numerical hierarchy leaves minimal room for expressive brand personality."
+        ],
+    },
+    "digital-organic": {
+        "default_reasoning": "Living biomorphic blob geometry, natural gradient fills, and humanist typography bridge organic living systems with modern digital precision.",
+        "name": "Digital Organic",
+        "tradeoffs": [
+            "Asymmetric organic blob containers and earthy palettes require disciplined asset art-direction."
+        ],
+    },
+    "glassmorphism": {
+        "default_reasoning": "Translucent frosted glass panels over dark canvas with specular 1px hairlines provide OS-native depth cues.",
+        "name": "Glassmorphism",
+        "tradeoffs": [
+            "Multi-layer backdrop blur and translucent panels can cause GPU performance overhead on lower-end devices."
+        ],
+    },
+    "high-fashion-editorial": {
+        "default_reasoning": "Monumental Bodoni display headlines, micro-grotesque metadata, razor-thin hairlines, and asymmetric runway grids bring high-drama couture sophistication.",
+        "name": "High Fashion Editorial",
+        "tradeoffs": [
+            "Severe typographic scale contrast requires strict editorial discipline and short, punchy copy.",
+            "Zero drop shadows and knife-edge corners demand immaculate layout composition."
+        ],
+    },
+    "japanese-wabi-sabi": {
+        "default_reasoning": "Handmade ceramic warmth, ink wash textures, and profound empty space reflect environmental humility and artisanal mindfulness.",
+        "name": "Japanese Wabi-Sabi",
+        "tradeoffs": [
+            "Asymmetric unhurried layouts require disciplined content curation."
+        ],
+    },
+    "maximalist-dopamine": {
+        "default_reasoning": "Sticker-bomb badges, candy neon explosions, and chaotic typography shifts create hyper-sensory joy for youth culture, streetwear, and drops.",
+        "name": "Maximalist Dopamine",
+        "tradeoffs": [
+            "Visual density and colliding hues can cause fatigue during prolonged administrative tasks."
+        ],
+    },
+    "memphis-postmodern": {
+        "default_reasoning": "Ettore Sottsass pattern collisions (polka dots, diagonal hatch, squiggles) celebrate creative freedom and intentional kitsch.",
+        "name": "Memphis Postmodern",
+        "tradeoffs": [
+            "Ornamental pattern fills require careful layering to avoid competing with actual creator products."
+        ],
+    },
+    "mid-century-modern": {
+        "default_reasoning": "Warm architectural parchment, atomic pod curves (16-24px), terracotta and olive palette, and modernist geometric typography celebrate organic materials and structural clarity.",
+        "name": "Mid-Century Modern",
+        "tradeoffs": [
+            "Warm color blocks and organic radii reduce raw tabular line density.",
+            "Requires high-quality photography and intentional spatial balance."
+        ],
+    },
+    "minimal-modern": {
+        "default_reasoning": "Clean neutral zinc canvas, 6-8px micro-radii, crisp 1px borders, and disciplined typography (Geist/Inter) elevate standard SaaS workflows with modern restraint and high whitespace clarity.",
+        "name": "Minimal Modern",
+        "tradeoffs": [
+            "Subtle aesthetic requires disciplined typographic hierarchy to avoid feeling generic if content is sparse."
+        ],
+    },
+    "neo-brutalism": {
+        "default_reasoning": "Chunky solid black outlines, hard offset shadows, and saturated color pops communicate authentic grassroots energy, anti-corporate rebellion, and tactile physicality.",
+        "name": "Neo-Brutalism",
+        "tradeoffs": [
+            "High visual volume can overwhelm subtle product imagery or art if colors compete directly."
+        ],
+    },
+    "neumorphism": {
+        "default_reasoning": "Canvas-matched monochromatic surfaces with dual light/dark soft extruded shadows create tactile physical controls without hard borders.",
+        "name": "Neumorphism",
+        "tradeoffs": [
+            "Low contrast between extruded surface shapes and canvas requires strict accessibility verification."
+        ],
+    },
+    "organic-natural": {
+        "default_reasoning": "Earth and botanical pigment palette (clay, moss, sap), river-stone pod containers, and living-system geometry authentically connect users to nature and regenerative craft.",
+        "name": "Organic Natural",
+        "tradeoffs": [
+            "Organic rounded geometry consumes more padding and reduces raw data density.",
+            "Requires careful contrast calibration to ensure accessible contrast on linen backgrounds."
+        ],
+    },
+    "quiet-luxury": {
+        "default_reasoning": "Understated alabaster palette, immaculate serif typography, and generous whitespace convey deep institutional trust, bespoke advisory craft, and financial gravitas without screaming.",
+        "name": "Quiet Luxury",
+        "tradeoffs": [
+            "Generous whitespace reduces immediate above-the-fold information density.",
+            "Zero border-radius and pale stone dividers require rigorous content discipline to prevent looking sparse or unstyled on smaller screens."
+        ],
+    },
+    "retro-americana": {
+        "default_reasoning": "Evokes National Parks heritage, WPA conservation posters, and rustic outdoorsmanship.",
+        "name": "Retro Americana",
+        "tradeoffs": [
+            "Heavy ink borders and slab serifs lean nostalgic rather than contemporary biophilic."
+        ],
+    },
+    "space-age-optimism": {
+        "default_reasoning": "Warm optical white canvas, molded pod curves (24-40px), and single Mission Orange accent celebrate discovery and aerospace optimism.",
+        "name": "Space Age Optimism",
+        "tradeoffs": [
+            "Generous 24-40px pod container radii reduce maximum tabular information density."
+        ],
+    },
+    "swiss-editorial": {
+        "default_reasoning": "Rigorous asymmetric grid, razor-sharp hairlines, and high-contrast typography give financial data objective clarity and architectural prestige.",
+        "name": "Swiss / Editorial",
+        "tradeoffs": [
+            "Stark monochrome palette can feel overly sterile or clinical if not softened with an intentional warm accent.",
+            "Demands high typographic discipline in tabular layouts."
+        ],
+    },
+    "terminal-cli": {
+        "default_reasoning": "100% monospace typography, amber/emerald phosphors on black, ASCII box-drawing borders, and zero-blur elevation deliver authentic Unix command-line utility and keyboard-first speed.",
+        "name": "Terminal CLI",
+        "tradeoffs": [
+            "Complete absence of proportional typography or rounded corners can feel stark or intimidating to non-technical users."
+        ],
+    },
+    "vaporwave": {
+        "default_reasoning": "Pastel sunset gradients, Windows 95 dialog chrome, and classical Roman statues celebrate retro-digital net art and nostalgia.",
+        "name": "Vaporwave",
+        "tradeoffs": [
+            "Heavy retro-digital styling is polarizing for conventional commercial storefronts."
+        ],
+    },
+    "web-brutalism": {
+        "default_reasoning": "Raw browser-default HTML, Courier typography, blue underlined links, and 0px radius strip all decorative distraction.",
+        "name": "Web Brutalism",
+        "tradeoffs": [
+            "Raw default browser styling and unstyled controls can feel unpolished or harsh for conventional consumer apps."
+        ],
+    },
+    "y2k-frutiger-aero": {
+        "default_reasoning": "Glossy aqua-to-lime specular glassmorphism, pill containers, and vibrant optimism evoke late-90s/early-2000s consumer software.",
+        "name": "Y2K / Frutiger Aero",
+        "tradeoffs": [
+            "High glossy complexity and skeuomorphic gradients require custom asset rendering and careful contrast calibration."
+        ],
+    },
+}
+
+def detect_domain_from_brief(brief: dict[str, Any]) -> str | None:
+    """Matches a design brief to a domain key in domain-style-defaults.yaml."""
+    p_type = brief.get("product_type", "")
+    raw_ctx = (brief.get("raw_context", "") or "").lower()
+    full = f"{p_type} {raw_ctx}".lower()
+
+    product_type_to_domain = {
+        "FinTech / Wealth Management": "wealth_management",
+        "EdTech / Learning Platform": "edtech",
+        "Healthcare / Clinical Platform": "healthcare",
+        "Enterprise Operations Platform": "devops",
+        "Legal / Compliance Platform": "legal",
+        "Ecological / Organic Living": "digital_health",
+        "Architecture & Spatial Design": "real_estate",
+        "Luxury / Premium Consumer": "luxury_retail",
+        "Creator Marketplace / Community": "ecommerce",
+        "Real Estate / Property Platform": "real_estate",
+        "Events / Entertainment Platform": "social",
+    }
+
+    if p_type in product_type_to_domain and "Developer Tool" not in p_type:
+        return product_type_to_domain[p_type]
+
+    # AI Products
+    if any(k in full for k in ["llm", "ai assistant", "artificial intelligence", "gpt", "generative ai", "model interface"]) or ("ai" in full.split() and any(k in full for k in ["interface", "platform", "tool", "agent"])):
+        return "ai_product"
+
+    # DevOps vs Developer Tools
+    if "Developer Tool" in p_type or "developer" in p_type.lower():
+        if any(k in full for k in ["devops", "sre", "infrastructure", "observability", "incident response", "runbook", "kubernetes", "monitoring"]):
+            return "devops"
+        return "developer_tools"
+
+    return None
+
 def recommend_styles(brief: dict[str, Any]) -> list[dict[str, Any]]:
     """
     Given a Design Brief, recommends 2-4 candidate directions.
+    Consults domain-style-defaults.yaml first, then falls back to neutral SaaS defaults.
     Qualitative fit ratings only: Strong fit / Good fit / Possible / Poor fit.
     Every recommendation must include at least one honest tradeoff/risk.
     """
-    recs = []
-    p_type = brief.get("product_type", "").lower()
-    density = brief.get("ux_requirements", {}).get("density", "")
-    axes = brief.get("brand_positioning_axes", {})
-    pos_prem = axes.get("premium_vs_accessible", "")
-    pos_fut = axes.get("futuristic_vs_institutional", "")
+    domain_defaults = load_domain_style_defaults()
+    domain_key = detect_domain_from_brief(brief)
 
-    if "wealth" in p_type or "fintech" in p_type or "ultra premium" in pos_prem.lower():
+    fit_ratings = {0: "Strong fit", 1: "Good fit", 2: "Possible", 3: "Possible"}
+
+    if domain_key and domain_key in domain_defaults:
+        recs = []
+        for idx, item in enumerate(domain_defaults[domain_key].get("recommended_styles", [])):
+            sid = item["style_id"]
+            meta = STYLE_METADATA.get(sid, {})
+            recs.append({
+                "name": meta.get("name", sid),
+                "style_id": sid,
+                "id": sid,
+                "fit_rating": fit_ratings.get(idx, "Good fit"),
+                "reasoning": item.get("rationale") or meta.get("default_reasoning", ""),
+                "tradeoffs": meta.get("tradeoffs", ["Specific operational tradeoffs require disciplined asset and layout pairing."])
+            })
+        return recs
+
+    # Fallback to neutral modern SaaS defaults when domain is completely unrecognized
+    fallback_ids = ["minimal-modern", "swiss-editorial", "dark-minimal"]
+    recs = []
+    for idx, sid in enumerate(fallback_ids):
+        meta = STYLE_METADATA.get(sid, {})
         recs.append({
-            "name": "Quiet Luxury",
-            "style_id": "quiet-luxury",
-            "fit_rating": "Strong fit",
-            "reasoning": "Understated alabaster palette, immaculate serif typography, and generous whitespace convey deep institutional trust, bespoke advisory craft, and financial gravitas without screaming.",
-            "tradeoffs": [
-                "Generous whitespace reduces immediate above-the-fold information density.",
-                "Zero border-radius and pale stone dividers require rigorous content discipline to prevent looking sparse or unstyled on smaller screens."
-            ]
+            "name": meta.get("name", sid),
+            "style_id": sid,
+            "id": sid,
+            "fit_rating": fit_ratings.get(idx, "Good fit"),
+            "reasoning": meta.get("default_reasoning", ""),
+            "tradeoffs": meta.get("tradeoffs", ["Requires disciplined typographic hierarchy and layout pairing."])
         })
-        recs.append({
-            "name": "Art Deco",
-            "style_id": "art-deco",
-            "fit_rating": "Good fit",
-            "reasoning": "Geometric symmetry, caviar black canvas, and burnished gold hairlines communicate formal luxury, heritage pedigree, and architectural permanence.",
-            "tradeoffs": [
-                "High visual ornamentation and strict symmetry may feel too ornate for purely utilitarian data tables."
-            ]
-        })
-        recs.append({
-            "name": "Swiss / Editorial",
-            "style_id": "swiss-editorial",
-            "fit_rating": "Good fit",
-            "reasoning": "Rigorous asymmetric grid, razor-sharp hairlines, and high-contrast typography give financial data objective clarity and architectural prestige.",
-            "tradeoffs": [
-                "Stark monochrome palette can feel overly sterile or clinical if not softened with an intentional warm accent.",
-                "Demands high typographic discipline in tabular layouts."
-            ]
-        })
-    elif "architecture" in p_type or "spatial" in p_type:
-        recs.append({
-            "name": "Mid-Century Modern",
-            "style_id": "mid-century-modern",
-            "fit_rating": "Strong fit",
-            "reasoning": "Warm architectural parchment, atomic pod curves (16-24px), terracotta and olive palette, and modernist geometric typography celebrate organic materials and structural clarity.",
-            "tradeoffs": [
-                "Warm color blocks and organic radii reduce raw tabular line density.",
-                "Requires high-quality photography and intentional spatial balance."
-            ]
-        })
-        recs.append({
-            "name": "Swiss / Editorial",
-            "style_id": "swiss-editorial",
-            "fit_rating": "Good fit",
-            "reasoning": "International Typographic Style grid precision, asymmetric layouts, and monumental typography treat architectural projects like museum monographs.",
-            "tradeoffs": [
-                "Zero-radius sharp edges and stark monochrome can feel clinical without warm photographic assets."
-            ]
-        })
-        recs.append({
-            "name": "Bauhaus",
-            "style_id": "bauhaus",
-            "fit_rating": "Good fit",
-            "reasoning": "Form strictly follows function: 8px constructivist grid and functional geometric typography mirror modernist architectural heritage.",
-            "tradeoffs": [
-                "Primary color blocks can feel austere or unyielding for softer lifestyle contexts."
-            ]
-        })
-    elif "couture" in p_type or "fashion" in p_type:
-        recs.append({
-            "name": "High Fashion Editorial",
-            "style_id": "high-fashion-editorial",
-            "fit_rating": "Strong fit",
-            "reasoning": "Monumental Bodoni display headlines, micro-grotesque metadata, razor-thin hairlines, and asymmetric runway grids bring high-drama couture sophistication.",
-            "tradeoffs": [
-                "Severe typographic scale contrast requires strict editorial discipline and short, punchy copy.",
-                "Zero drop shadows and knife-edge corners demand immaculate layout composition."
-            ]
-        })
-        recs.append({
-            "name": "Quiet Luxury",
-            "style_id": "quiet-luxury",
-            "fit_rating": "Good fit",
-            "reasoning": "Warm alabaster tones and Cormorant Garamond headings create an understated, discreet, bespoke luxury feeling.",
-            "tradeoffs": [
-                "Generous whitespace limits information density."
-            ]
-        })
-        recs.append({
-            "name": "Art Deco",
-            "style_id": "art-deco",
-            "fit_rating": "Good fit",
-            "reasoning": "Stepped geometry, burnished gold accents, and caviar black surfaces bring 1920s glamour and formal craftsmanship.",
-            "tradeoffs": [
-                "High ornamental presence requires disciplined content pairing."
-            ]
-        })
-    elif "organic" in p_type or "ecological" in p_type:
-        recs.append({
-            "name": "Organic Natural",
-            "style_id": "organic-natural",
-            "fit_rating": "Strong fit",
-            "reasoning": "Earth and botanical pigment palette (clay, moss, sap), river-stone pod containers, and living-system geometry authentically connect users to nature and regenerative craft.",
-            "tradeoffs": [
-                "Organic rounded geometry consumes more padding and reduces raw data density.",
-                "Requires careful contrast calibration to ensure accessible contrast on linen backgrounds."
-            ]
-        })
-        recs.append({
-            "name": "Japanese Wabi-Sabi",
-            "style_id": "japanese-wabi-sabi",
-            "fit_rating": "Good fit",
-            "reasoning": "Handmade ceramic warmth, ink wash textures, and profound empty space reflect environmental humility and artisanal mindfulness.",
-            "tradeoffs": [
-                "Asymmetric unhurried layouts require disciplined content curation."
-            ]
-        })
-        recs.append({
-            "name": "Retro Americana",
-            "style_id": "retro-americana",
-            "fit_rating": "Possible",
-            "reasoning": "Evokes National Parks heritage, WPA conservation posters, and rustic outdoorsmanship.",
-            "tradeoffs": [
-                "Heavy ink borders and slab serifs lean nostalgic rather than contemporary biophilic."
-            ]
-        })
-    elif "developer" in p_type or "platform" in p_type or "telemetry" in p_type or density == "high":
-        recs.append({
-            "name": "Dark Minimal",
-            "style_id": "dark-minimal",
-            "fit_rating": "Strong fit",
-            "reasoning": "Obsidian canvas (#09090B), hairline translucent borders, 6-8px micro-radii, and a single electric accent create a calm, focused, high-density environment ideal for modern developer tools, AI command surfaces, and telemetry.",
-            "tradeoffs": [
-                "Low-sensory dark canvas requires disciplined contrast checking in bright daylight environments.",
-                "Requires strict micro-typography hierarchy to prevent dense data from blurring together."
-            ]
-        })
-        recs.append({
-            "name": "Terminal CLI",
-            "style_id": "terminal-cli",
-            "fit_rating": "Good fit",
-            "reasoning": "100% monospace typography, amber/emerald phosphors on black, ASCII box-drawing borders, and zero-blur elevation deliver authentic Unix command-line utility and keyboard-first speed.",
-            "tradeoffs": [
-                "Complete absence of proportional typography or rounded corners can feel stark or intimidating to non-technical users."
-            ]
-        })
-        recs.append({
-            "name": "Cyberpunk",
-            "style_id": "cyberpunk",
-            "fit_rating": "Good fit",
-            "reasoning": "Obsidian canvas, monospace telemetry, and neon HUD brackets provide an immersive, high-voltage environment ideal for real-time monitoring streams.",
-            "tradeoffs": [
-                "High sensory intensity is unsuitable for calm documentation or administrative configuration flows."
-            ]
-        })
-        recs.append({
-            "name": "Bauhaus",
-            "style_id": "bauhaus",
-            "fit_rating": "Possible",
-            "reasoning": "Form strictly follows function: rigorous constructivist 8px grid, primary triad accents, and zero extraneous ornament.",
-            "tradeoffs": [
-                "Radical functionalism can feel rigid for consumer developer tools."
-            ]
-        })
-    elif "creator" in p_type or "marketplace" in p_type:
-        recs.append({
-            "name": "Neo-Brutalism",
-            "style_id": "neo-brutalism",
-            "fit_rating": "Strong fit",
-            "reasoning": "Chunky solid black outlines, hard offset shadows, and saturated color pops communicate authentic grassroots energy, anti-corporate rebellion, and tactile physicality.",
-            "tradeoffs": [
-                "High visual volume can overwhelm subtle product imagery or art if colors compete directly."
-            ]
-        })
-        recs.append({
-            "name": "Maximalist Dopamine",
-            "style_id": "maximalist-dopamine",
-            "fit_rating": "Good fit",
-            "reasoning": "Sticker-bomb badges, candy neon explosions, and chaotic typography shifts create hyper-sensory joy for youth culture, streetwear, and drops.",
-            "tradeoffs": [
-                "Visual density and colliding hues can cause fatigue during prolonged administrative tasks."
-            ]
-        })
-        recs.append({
-            "name": "Memphis Postmodern",
-            "style_id": "memphis-postmodern",
-            "fit_rating": "Good fit",
-            "reasoning": "Ettore Sottsass pattern collisions (polka dots, diagonal hatch, squiggles) celebrate creative freedom and intentional kitsch.",
-            "tradeoffs": [
-                "Ornamental pattern fills require careful layering to avoid competing with actual creator products."
-            ]
-        })
-        recs.append({
-            "name": "Vaporwave",
-            "style_id": "vaporwave",
-            "fit_rating": "Possible",
-            "reasoning": "Pastel sunset gradients, Windows 95 dialog chrome, and classical Roman statues celebrate retro-digital net art and nostalgia.",
-            "tradeoffs": [
-                "Heavy retro-digital styling is polarizing for conventional commercial storefronts."
-            ]
-        })
-    else:
-        recs.append({
-            "name": "Minimal Modern",
-            "style_id": "minimal-modern",
-            "fit_rating": "Strong fit",
-            "reasoning": "Clean neutral zinc canvas, 6-8px micro-radii, crisp 1px borders, and disciplined typography (Geist/Inter) elevate standard SaaS workflows with modern restraint and high whitespace clarity.",
-            "tradeoffs": [
-                "Subtle aesthetic requires disciplined typographic hierarchy to avoid feeling generic if content is sparse."
-            ]
-        })
-        recs.append({
-            "name": "Swiss / Editorial",
-            "style_id": "swiss-editorial",
-            "fit_rating": "Good fit",
-            "reasoning": "Universal architectural clarity, disciplined modular grids, and timeless typography elevate standard workflows into premium editorial experiences.",
-            "tradeoffs": [
-                "Requires high-quality typographic assets and rigorous alignment discipline.",
-                "Zero-radius aesthetic can feel austere if not balanced with purposeful accent color."
-            ]
-        })
-        recs.append({
-            "name": "Dark Minimal",
-            "style_id": "dark-minimal",
-            "fit_rating": "Possible",
-            "reasoning": "Obsidian canvas and hairline translucent borders provide a sleek, low-sensory alternative for products demanding a dedicated dark theme.",
-            "tradeoffs": [
-                "Dark-only canvas may not suit daytime or print-heavy workflow contexts."
-            ]
-        })
-    for r in recs:
-        if "id" not in r and "style_id" in r:
-            r["id"] = r["style_id"]
-        if "style_id" not in r and "id" in r:
-            r["style_id"] = r["id"]
     return recs
 
 def create_design_spec(style_id: str, custom_layers: dict[str, str] | None = None) -> dict[str, Any]:
@@ -1121,7 +1171,19 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
             "color": "Warm cream canvas with soft pastel element colors (coral, sky, mint, lemon).",
             "typography": "Rounded humanist sans (Nunito/Poppins) to reinforce the tactile clay feel.",
         })
-    elif any(k in critique_lower for k in ["data native", "data-native", "dense data", "tabular analytics"]):
+    elif any(k in critique_lower for k in ["cyberpunk", "neon hud", "hud", "cyber", "sci-fi", "scifi", "high-voltage"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "cyberpunk/tokens.md",
+            "color": "cyberpunk/tokens.md",
+            "typography": "cyberpunk/typography.md",
+            "motion": "cyberpunk/motion.md",
+        }, reasons={
+            "surfaces": "Cyberpunk shift: obsidian canvas, chamfer corner clips, and neon HUD brackets.",
+            "color": "High-voltage neon palette: electric cyan (#00F5FF), neon magenta, and obsidian canvas.",
+            "typography": "Rajdhani angular geometric display headers colliding with monospace telemetry.",
+            "motion": "Fast 100ms snappy tactical transitions with glitch hover effects.",
+        })
+    elif any(k in critique_lower for k in ["data native", "data-native", "dense data", "tabular analytics", "analytics", "dense tabular", "data dashboard", "tabular analytics dashboard"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
             "surfaces": "data-native/tokens.md",
             "color": "data-native/tokens.md",
@@ -1130,6 +1192,50 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
             "surfaces": "Data-Native shift: hairline 1px dividers, zero decorative fills, ultra-compact 32px rows.",
             "color": "Dark #0D1117 canvas with single blue/green accent for positive delta values only.",
             "typography": "JetBrains Mono for all numerics; 11–12px Inter labels.",
+        })
+    elif any(k in critique_lower for k in ["y2k", "frutiger aero", "frutiger-aero", "glossy aero", "aqua gloss"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "y2k-frutiger-aero/tokens.md",
+            "color": "y2k-frutiger-aero/tokens.md",
+            "typography": "y2k-frutiger-aero/typography.md",
+            "motion": "y2k-frutiger-aero/motion.md",
+        }, reasons={
+            "surfaces": "Frutiger Aero shift: glossy specular glassmorphism, pill containers, and aqua gradients.",
+            "color": "Sky gradient canvas with aqua and lime specular highlights.",
+            "typography": "Rounded humanist sans typography (Nunito).",
+            "motion": "Springy 350ms bounce transitions.",
+        })
+    elif any(k in critique_lower for k in ["neo brutalism", "neo-brutalism", "chunky border", "offset shadow"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "neo-brutalism/tokens.md",
+            "color": "neo-brutalism/tokens.md",
+            "components": "neo-brutalism/components.md",
+        }, reasons={
+            "surfaces": "Neo-Brutalism shift: chunky 3px black borders and 4px solid black offset shadows.",
+            "color": "High-saturation poster color accents on stark white/cream canvas.",
+            "components": "Physical button switch behavior with active click depression.",
+        })
+    elif any(k in critique_lower for k in ["quiet luxury", "quiet-luxury", "old money", "alabaster"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "quiet-luxury/tokens.md",
+            "color": "quiet-luxury/tokens.md",
+            "typography": "quiet-luxury/typography.md",
+        }, reasons={
+            "surfaces": "Quiet Luxury shift: alabaster canvas, razor stone dividers, and zero border radius.",
+            "color": "Understated alabaster, warm ecru, and deep charcoal/espresso.",
+            "typography": "Authoritative Cormorant Garamond editorial serif hierarchy.",
+        })
+    elif any(k in critique_lower for k in ["swiss editorial", "swiss-editorial", "international typographic"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "swiss-editorial/tokens.md",
+            "color": "swiss-editorial/tokens.md",
+            "typography": "swiss-editorial/typography.md",
+            "layout": "swiss-editorial/layout.md",
+        }, reasons={
+            "surfaces": "Swiss Editorial shift: 0px radius, razor hairlines, and strict asymmetric grid.",
+            "color": "Stark monochrome canvas with single Swiss Red (#E30613) accent.",
+            "typography": "High-contrast Playfair / Grotesque asymmetric hierarchy.",
+            "layout": "Modular asymmetric grid broadsheet layout.",
         })
     elif any(k in critique_lower for k in ["command center", "command-center", "multi panel", "ops panel", "devops"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
@@ -1275,9 +1381,9 @@ def generate_implementation_contract(
                 anti_patterns = [line.strip() for line in anti_patterns_block.split("\n") if line.strip().startswith("-")]
 
     # Load modifier specs if specified
-    all_mods = load_modifiers()
     active_modifier_blocks = []
     if modifiers:
+        all_mods = load_modifiers()
         for mod_id in modifiers:
             # Search across modifier categories
             for cat, mod_list in all_mods.items():

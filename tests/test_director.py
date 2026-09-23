@@ -440,6 +440,67 @@ class TestDesignDirector(unittest.TestCase):
         res_mcm = refine_spec(base_spec, "bring in mid-century modern eames era vibes")
         self.assertIn("mid-century-modern", res_mcm["updated_spec"]["layers"]["surfaces"])
 
+        # Test cyberpunk refinement
+        res_cyber = refine_spec(base_spec, "make it more cyberpunk, neon HUD vibes")
+        self.assertIn("cyberpunk", res_cyber["updated_spec"]["layers"]["surfaces"])
+        self.assertIn("cyberpunk", res_cyber["updated_spec"]["layers"]["color"])
+        self.assertGreater(res_cyber["diff_report"]["layers_changed_count"], 0)
+
+        # Test expanded data-native refinement
+        res_tabular = refine_spec(base_spec, "more like a data analytics dashboard, dense tabular")
+        self.assertIn("data-native", res_tabular["updated_spec"]["layers"]["surfaces"])
+        self.assertGreater(res_tabular["diff_report"]["layers_changed_count"], 0)
+
+    def test_domain_style_defaults_wired_recommendations(self):
+        """Verifies domain-style-defaults.yaml wires directly into recommend_styles()."""
+        # AI Product query
+        brief_ai = extract_design_brief("LLM interface for developers")
+        recs_ai = recommend_styles(brief_ai)
+        ai_style_ids = [r["style_id"] for r in recs_ai]
+        self.assertEqual(ai_style_ids, ["aurora-gradient", "dark-minimal", "digital-organic"])
+
+        # DevOps query
+        brief_ops = extract_design_brief("DevOps infrastructure monitoring platform")
+        recs_ops = recommend_styles(brief_ops)
+        ops_style_ids = [r["style_id"] for r in recs_ops]
+        self.assertIn("command-center", ops_style_ids)
+        self.assertEqual(ops_style_ids, ["command-center", "dark-minimal", "terminal-cli"])
+
+    def test_corporate_memphis_style_exemptions(self):
+        """Verifies claymorphism and neumorphism exemptions from Corporate Memphis false positives."""
+        import tempfile
+        from pathlib import Path
+        import sys
+        sys.path.insert(0, str(ROOT_DIR / "skills" / "design-audit"))
+        from audit_code import DesignAuditor
+
+        # 1. Claymorphism with bubbly container and purple accent -> bubbly container exempt -> WARNING, NOT CRITICAL
+        clay_html = '''<div class="card rounded-3xl bg-indigo-500 shadow-xl p-6">Clay card</div>'''
+        # 2. Neumorphism with ambient shadow and purple accent -> ambient shadow exempt -> WARNING, NOT CRITICAL
+        neu_html = '''<div class="card shadow-lg bg-[#E0E5EC]"><span class="text-purple-600">Neu</span></div>'''
+        # 3. Minimal Modern with all 3 signals -> CRITICAL
+        memphis_html = '''<div class="card rounded-2xl shadow-lg"><span class="text-purple-600">Memphis</span></div>'''
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            p_clay = Path(tmpdir) / "clay.html"
+            p_clay.write_text(clay_html)
+            p_neu = Path(tmpdir) / "neu.html"
+            p_neu.write_text(neu_html)
+            p_mem = Path(tmpdir) / "memphis.html"
+            p_mem.write_text(memphis_html)
+
+            rep_clay = DesignAuditor("claymorphism").run_audit(p_clay)
+            rep_neu = DesignAuditor("neumorphism").run_audit(p_neu)
+            rep_mem = DesignAuditor("minimal-modern").run_audit(p_mem)
+
+            clay_cm = [v for v in rep_clay["violations"] if v["type"] == "corporate_memphis_drift"]
+            neu_cm = [v for v in rep_neu["violations"] if v["type"] == "corporate_memphis_drift"]
+            mem_cm = [v for v in rep_mem["violations"] if v["type"] == "corporate_memphis_drift"]
+
+            self.assertFalse(any(v["severity"] == "CRITICAL" for v in clay_cm))
+            self.assertFalse(any(v["severity"] == "CRITICAL" for v in neu_cm))
+            self.assertTrue(any(v["severity"] == "CRITICAL" for v in mem_cm))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -41,7 +41,7 @@ PRD / README / Codebase Context
 
 ### Token Economy & Zero-Bloat Guardrails
 - **Lean Router Skill:** `skills/design-director/SKILL.md` is capped under **1,200 tokens**.
-- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`styles/<style_id>.md`, ~2.2k tokens) when generating the contract. The other 26 styles are never loaded into prompt context.
+- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`styles/<style_id>.md`, range: 1,205–3,669 tokens across the 27 styles) when generating the contract. The other 26 styles are never loaded into prompt context.
 - **Project-Scoped Enforcement:** Outputs a local, project-level `DESIGN_CONTRACT.md`. Never mutates global system configurations.
 
 ---
@@ -97,7 +97,7 @@ Rather than multiplying styles combinatorially, six orthogonal modifier dimensio
 
 ## 3.2 Anti-Pattern References (`styles/reference-anti-patterns.md`)
 
-**Corporate Memphis / Alegria** is documented as a named anti-pattern (not a selectable style). The `design-audit` engine detects drift toward this pattern using signal accumulation across five indicators (generic purple accent, bubbly containers, ambient shadow saturation, gradient blob decoration, illustration placeholders). Two signals = WARNING; three or more = CRITICAL.
+**Corporate Memphis / Alegria** is documented as a named anti-pattern (not a selectable style). `styles/reference-anti-patterns.md` serves as a human-reference document detailing the design history, visual indicators, and remediation guidelines for this pattern. The `design-audit` engine (`audit_code.py`) statically implements and enforces drift detection via hardcoded rule heuristics (`_check_line()` and `_check_corporate_memphis_drift()`) using signal accumulation across purple accents, bubbly containers, ambient shadow saturation, gradient blob decoration, and illustration placeholders (2 signals = WARNING; 3+ = CRITICAL).
 
 ---
 

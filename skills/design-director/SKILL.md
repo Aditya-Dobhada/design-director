@@ -35,29 +35,8 @@ Select the 2–3 strongest fits from the 20 foundational styles. Present each di
 2. **Local Preview Link:** Provide a clickable link to `gallery/<style_id>.html`.
 3. **Honest Trade-offs:** The specific operational limitation of the style.
 
-#### 20 Foundations Taxonomy (Grouped by Family)
-| Family | Style ID | Visual Signature | Ideal For | Preview File |
-|---|---|---|---|---|
-| **Modern UI** | `minimal-modern` | Neutral zinc (`#FAFAFA`), 6–8px radius, Geist/Inter, 1px border (`#E4E4E7`) | Contemporary SaaS, productivity, apps | [minimal_modern.html](file:///gallery/minimal_modern.html) |
-| | `dark-minimal` | Obsidian (`#09090B`), 6–8px radius, Geist Mono, 1px translucent border | Modern devtools, AI consoles, telemetry | [dark_minimal.html](file:///gallery/dark_minimal.html) |
-| **Historical** | `swiss-editorial` | Pure white (`#FFFFFF`), Playfair 600 + Mono, Swiss Red (`#E30613`), 0px radius | Media, architecture, dense broadsheets | [swiss_editorial.html](file:///gallery/swiss_editorial.html) |
-| | `bauhaus` | Constructivist 8px grid, primary triad (`#E03A3E`/`#FFD100`/`#004B97`), IBM Plex Sans | Industrial software, engineering tools | [bauhaus.html](file:///gallery/bauhaus.html) |
-| | `art-deco` | Caviar black (`#0E0E10`), burnished gold (`#D4AF37`), Bodoni/Cinzel, 0px radius | High-end hospitality, formal luxury | [art_deco.html](file:///gallery/art_deco.html) |
-| | `mid-century-modern` | Warm parchment (`#F6F3EB`), terracotta/olive/mustard, atomic pods (16–24px) | Architecture, furniture, lifestyle brands | [mid_century_modern.html](file:///gallery/mid_century_modern.html) |
-| **Retro** | `retro-americana` | Cream parchment (`#F9F0DC`), vermilion (`#C8391E`), slab serifs, 3px ink borders | Food, heritage brands, national parks | [retro_americana.html](file:///gallery/retro_americana.html) |
-| | `y2k-frutiger-aero` | Aqua/lime glossy gradients, specular glassmorphism, 9999px pills, Nunito 800 | Consumer productivity, playful apps | [y2k_frutiger_aero.html](file:///gallery/y2k_frutiger_aero.html) |
-| | `vaporwave` | Twilight lavender, pastel pink/cyan, CRT scanlines, VT323 + Playfair, bevels | Music, culture, retro digital experiments | [vaporwave.html](file:///gallery/vaporwave.html) |
-| **Futuristic** | `cyberpunk` | Obsidian (`#050508`), cyan HUD (`#00F5FF`), Rajdhani 700 + Mono, chamfer clips | Sci-fi telemetry, terminals, security consoles | [cyberpunk.html](file:///gallery/cyberpunk.html) |
-| | `space-age-optimism` | Warm white (`#FAFAF8`), molded fiberglass pods (32px), NASA orange (`#FF5C00`) | Edtech, aerospace, optimistic platforms | [space_age_optimism.html](file:///gallery/space_age_optimism.html) |
-| | `terminal-cli` | Pitch black (`#0C0C0C`), amber/emerald phosphors, 100% monospace, ASCII rules | Unix consoles, SRE dashboards, internal tools | [terminal_cli.html](file:///gallery/terminal_cli.html) |
-| **Raw Web** | `web-brutalism` | Raw document HTML, Courier/system font, blue underlined links, 0px radius | Zines, dev blogs, experimental sites | [web_brutalism.html](file:///gallery/web_brutalism.html) |
-| | `neo-brutalism` | 3px solid ink borders, 4px solid black offset shadows, Space Grotesk | Creator platforms, dev tools, zines | [neo_brutalism.html](file:///gallery/neo_brutalism.html) |
-| **Organic** | `organic-natural` | Bone canvas (`#F5F1E8`), clay/moss/sap pigments, river-stone pod containers | Sustainability, climate, botanicals | [organic_natural.html](file:///gallery/organic_natural.html) |
-| | `japanese-wabi-sabi` | Rice paper (`#FAF7F0`), charcoal ink wash, Mingei craft, Noto Serif JP 300 | Mindfulness, tea/craft, contemplative apps | [japanese_wabi_sabi.html](file:///gallery/japanese_wabi_sabi.html) |
-| **Luxury** | `quiet-luxury` | Alabaster (`#FBFBF9`), Cormorant Garamond 300, 0px radius, hairline dividers | Private wealth, high-end advisory, luxury | [quiet_luxury.html](file:///gallery/quiet_luxury.html) |
-| | `high-fashion-editorial` | Stark monochrome (`#0A0A0A`/`#FFFFFF`), Bodoni display + micro sans, 0px radius | Couture lookbooks, runway portfolios | [high_fashion_editorial.html](file:///gallery/high_fashion_editorial.html) |
-| | `memphis-postmodern` | Flat graphic planes, diagonal hatch patterns, geometric squiggles, Syne 800 | Drops, fashion, experimental portfolios | [memphis_postmodern.html](file:///gallery/memphis_postmodern.html) |
-| | `maximalist-dopamine` | Acid yellow (`#FFF500`), colliding neon hues, multi-color drop shadows | Streetwear, music, youth culture | [maximalist_dopamine.html](file:///gallery/maximalist_dopamine.html) |
+#### Foundation Style Taxonomy
+See `PRD.md` §3 and `styles/domain-style-defaults.yaml` for the complete 27-foundation style taxonomy, visual signatures, and domain defaults. Live visual previews for all styles are in [`gallery/<style_id>.html`](file:///gallery/).
 
 ### Phase 4: Critique, Refinements & Modifiers
 When the user requests refinements or surface treatments, apply orthogonal modifiers from `styles/modifiers.yaml`:

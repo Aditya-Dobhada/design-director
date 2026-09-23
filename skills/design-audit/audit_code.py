@@ -308,6 +308,15 @@ class DesignAuditor:
         """Emit violations if Corporate Memphis signal threshold is reached for a file."""
         signals = self._memphis_signals.get(str(file_path), [])
         signal_types = set(s[0] for s in signals)
+
+        # Style-specific exemptions where elements are spec-mandated:
+        # claymorphism: rounded-2xl/3xl (20-32px) is spec-mandated
+        if self.target_style == "claymorphism":
+            signal_types.discard("bubbly_container")
+        # neumorphism: dual soft box-shadow is spec-mandated
+        if self.target_style == "neumorphism":
+            signal_types.discard("ambient_shadow")
+
         count = len(signal_types)
         if count >= 3:
             self.violations.append({

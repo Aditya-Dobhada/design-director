@@ -34,7 +34,7 @@ Design Director prevents coding agents (Cursor, Claude Code, Antigravity) from c
 
 ### Token-Optimized Design
 - **Lean Entry Point:** `skills/design-director/SKILL.md` is strictly capped under **1,200 tokens**.
-- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`styles/<style_id>.md`, ~2.2k tokens) when generating the contract. The other 26 styles are never loaded into prompt context.
+- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`styles/<style_id>.md`, range: 1,205–3,669 tokens across the 27 styles) when generating the contract. The other 26 styles are never loaded into prompt context.
 - **Project-Scoped:** Generates `DESIGN_CONTRACT.md` in the local workspace. Never mutates global system configurations.
 
 ---
@@ -90,7 +90,7 @@ Rather than multiplying the foundation taxonomy into combinations, orthogonal vi
 
 ## Anti-Pattern References
 
-**Corporate Memphis / Alegria** is documented as a named anti-pattern in `styles/reference-anti-patterns.md`. The audit engine detects drift using signal accumulation (generic purple, bubbly containers, ambient shadows, blob decoration, illustration placeholders). Two signals = WARNING; three or more = CRITICAL.
+**Corporate Memphis / Alegria** is documented as a named anti-pattern in `styles/reference-anti-patterns.md` as a human-reference guide. The audit engine detects drift in code using signal accumulation across hardcoded heuristics (generic purple, bubbly containers, ambient shadows, blob decoration, illustration placeholders). Two signals = WARNING; three or more = CRITICAL.
 
 ---
 
