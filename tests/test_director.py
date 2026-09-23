@@ -621,5 +621,241 @@ class TestDesignDirector(unittest.TestCase):
             self.assertNotIn("ambient_shadow", cm[0]["offending_code"])
 
 
+class TestTokenEconomyRegressions(unittest.TestCase):
+    """Regression tests for the token-economy audit fixes.
+
+    Each test pins a previously-silent failure mode to stay loud, or pins
+    a de-duplicated value to stay in sync with its single source of truth.
+    """
+
+    def test_micro_spec_canvas_matches_style_pack(self):
+        """F13: every STYLE_METADATA canvas_hex must appear in its style pack.
+
+        The .md pack is the single source of truth; the engine's micro-spec
+        swatch must not drift (dark-minimal #08090A vs pack #09090B, etc.).
+        """
+        from director_engine import STYLE_METADATA, STYLES_DIR
+        for sid, meta in sorted(STYLE_METADATA.items()):
+            pack = (STYLES_DIR / f"{sid}.md").read_text(encoding="utf-8")
+            canvas = meta["micro_spec"]["canvas_hex"]
+            self.assertIn(
+                canvas.lower(), pack.lower(),
+                f"{sid}: micro_spec canvas {canvas} not found in styles/{sid}.md "
+                f"(pack is the source of truth — update STYLE_METADATA)",
+            )
+
+    def test_director_rejects_unknown_style(self):
+        """F2: typo'd style ids raise ValueError (never a silent wrong-style fallback)."""
+        from director_engine import (
+            SUPPORTED_STYLES,
+            create_design_spec,
+            generate_implementation_contract,
+            get_style_base,
+        )
+        for fn in (
+            lambda: get_style_base("quiet-luxury-TYPO"),
+            lambda: create_design_spec("quiet-luxury-TYPO"),
+            lambda: generate_implementation_contract(
+                {"chosen_primary_style": "quiet-luxury-TYPO", "layers": {}}, "x"),
+        ):
+            with self.assertRaises(ValueError) as ctx:
+                fn()
+            self.assertIn("Unknown style id", str(ctx.exception))
+            self.assertIn("quiet-luxury", str(ctx.exception))  # lists valid ids
+        # Valid ids (any case) still work
+        self.assertEqual(
+            create_design_spec("Quiet-Luxury")["layers"]["layout"],
+            "styles/quiet-luxury.md",
+        )
+        self.assertEqual(len(SUPPORTED_STYLES), 27)
+
+    def test_audit_nonexistent_target_raises(self):
+        """F1: auditing a path that does not exist raises (never PASSED)."""
+        from audit_code import DesignAuditor
+        with self.assertRaises(FileNotFoundError):
+            DesignAuditor("quiet-luxury").run_audit(
+                ROOT_DIR / "does-not-exist-xyz")
+
+    def test_audit_empty_dir_reports_error(self):
+        """F1: zero scannable files is an ERROR report, never a silent pass."""
+        import tempfile
+        from audit_code import DesignAuditor
+        with tempfile.TemporaryDirectory() as tmp:
+            report = DesignAuditor("quiet-luxury").run_audit(Path(tmp))
+        self.assertEqual(report["files_scanned"], 0)
+        self.assertTrue(report["status"].startswith("ERROR"))
+        self.assertNotIn("PASSED", report["status"])
+
+    def test_audit_unreadable_file_recorded_not_silent(self):
+        """F1: undecodable files are recorded in skipped_files (not silently
+        counted as scanned). Uses undecodable bytes so it holds for any user."""
+        import tempfile
+        from audit_code import DesignAuditor
+        with tempfile.TemporaryDirectory() as tmp:
+            # Seeded violations (rounded-lg/shadow-md) inside undecodable bytes:
+            # must be reported as SKIPPED, never as scanned-clean.
+            bad = Path(tmp) / "badbytes.html"
+            bad.write_bytes(b'<div class="rounded-lg shadow-md">\xff\xfe</div>')
+            report = DesignAuditor("quiet-luxury").run_audit(bad)
+        self.assertEqual(report["files_scanned"], 0)
+        self.assertEqual(report["files_skipped"], 1)
+        self.assertEqual(report["skipped_files"][0]["file"], str(bad))
+        self.assertIn("UnicodeDecodeError",
+                      report["skipped_files"][0]["reason"])
+        self.assertTrue(report["status"].startswith("ERROR"))
+
+    def test_audit_cli_exits_2_on_missing_target(self):
+        """F1: CLI exits 2 with a stderr error for a nonexistent target."""
+        import subprocess
+        import sys
+        proc = subprocess.run(
+            [sys.executable, str(ROOT_DIR / "skills" / "design-audit" / "audit_code.py"),
+             "quiet-luxury", str(ROOT_DIR / "does-not-exist-xyz")],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(proc.returncode, 2)
+        self.assertIn("does not exist", proc.stderr)
+
+    def test_missing_yaml_raises_with_path(self):
+        """F3: missing required YAML raises FileNotFoundError naming the file."""
+        import tempfile
+        from director_engine import _load_yaml_file
+        with tempfile.TemporaryDirectory() as tmp:
+            missing = str(Path(tmp) / "modifiers.yaml")
+            with self.assertRaises(FileNotFoundError) as ctx:
+                _load_yaml_file(Path(missing), "modifiers")
+            self.assertIn(missing, str(ctx.exception))
+
+    def test_empty_yaml_raises_with_path(self):
+        """F5: empty YAML raises ValueError naming the file (not AttributeError)."""
+        import tempfile
+        from director_engine import _load_yaml_file
+        with tempfile.TemporaryDirectory() as tmp:
+            empty = Path(tmp) / "modifiers.yaml"
+            empty.write_text("")
+            with self.assertRaises(ValueError) as ctx:
+                _load_yaml_file(empty, "modifiers")
+            self.assertIn(str(empty), str(ctx.exception))
+            self.assertIn("empty", str(ctx.exception))
+
+    def test_malformed_yaml_raises_with_path(self):
+        """F5: malformed YAML raises ValueError naming the file (not pathless ParserError)."""
+        import tempfile
+        from director_engine import _load_yaml_file
+        with tempfile.TemporaryDirectory() as tmp:
+            bad = Path(tmp) / "modifiers.yaml"
+            bad.write_text("modifiers:\n  surface: [unclosed\n    bad indent: : :\n")
+            with self.assertRaises(ValueError) as ctx:
+                _load_yaml_file(bad, "modifiers")
+            self.assertIn(str(bad), str(ctx.exception))
+
+    def test_yaml_failures_not_cached(self):
+        """F15: a failed YAML load must not poison later loads (no stale {})."""
+        import tempfile
+        from director_engine import _load_yaml_file
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "mods.yaml"
+            with self.assertRaises(FileNotFoundError):
+                _load_yaml_file(p, "modifiers")
+            p.write_text("modifiers:\n  surface: []\n")
+            self.assertEqual(_load_yaml_file(p, "modifiers"), {"surface": []})
+
+    def test_director_entrypoint_exits_2(self):
+        """F4: executing the engine directly prints usage to stderr, exits 2."""
+        import subprocess
+        import sys
+        proc = subprocess.run(
+            [sys.executable, str(ROOT_DIR / "skills" / "design-director" / "director_engine.py")],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(proc.returncode, 2)
+        self.assertIn("Available functions", proc.stderr)
+        proc_help = subprocess.run(
+            [sys.executable, str(ROOT_DIR / "skills" / "design-director" / "director_engine.py"),
+             "--help"],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(proc_help.returncode, 0)
+        self.assertIn("Available functions", proc_help.stdout)
+
+    def test_contract_caches_style_pack(self):
+        """F7: repeated contracts for one style read the pack file exactly once."""
+        import builtins
+        import director_engine as de
+        from director_engine import create_design_spec, generate_implementation_contract
+        de._STYLE_PACK_CACHE.clear()
+        spec = create_design_spec("swiss-editorial")
+        pack_opens = []
+        real_open = builtins.open
+
+        def counting_open(*args, **kwargs):
+            if args and str(args[0]).endswith(".md"):
+                pack_opens.append(str(args[0]))
+            return real_open(*args, **kwargs)
+
+        builtins.open = counting_open
+        try:
+            generate_implementation_contract(spec, "Build x.")
+            generate_implementation_contract(spec, "Build x.")
+        finally:
+            builtins.open = real_open
+        self.assertEqual(len(pack_opens), 1, f"pack re-read: {pack_opens}")
+
+    def test_layer_values_resolve_to_real_files(self):
+        """F12: every emitted .md layer value must exist (no dangling paths)."""
+        import yaml
+        from director_engine import (
+            SUPPORTED_STYLES,
+            create_design_spec,
+            refine_spec,
+        )
+        skill_dir = ROOT_DIR / "skills" / "design-director"
+        specs = [create_design_spec(sid) for sid in SUPPORTED_STYLES]
+        specs.append(refine_spec(create_design_spec("swiss-editorial"),
+                                 "more like Linear")["updated_spec"])
+        checked = 0
+        for spec in specs:
+            for layer, val in spec["layers"].items():
+                if val.endswith(".md"):
+                    checked += 1
+                    self.assertTrue(
+                        (skill_dir / val).exists(),
+                        f"dangling layer path: {layer}={val}",
+                    )
+        refs = yaml.safe_load(
+            (skill_dir / "reference-library.yaml").read_text(encoding="utf-8")
+        )["references"]
+        for ref in refs:
+            for layer, val in ref.get("mapped_style_layers", {}).items():
+                if isinstance(val, str) and val.endswith(".md"):
+                    checked += 1
+                    self.assertTrue(
+                        (skill_dir / val).exists(),
+                        f"dangling mapped path in {ref['id']}: {val}",
+                    )
+        self.assertGreater(checked, 100)
+
+    def test_style_signatures_match_engine(self):
+        """F10: domain YAML style_signatures must mirror STYLE_METADATA micro_spec."""
+        import yaml
+        from director_engine import STYLE_METADATA
+        data = yaml.safe_load(
+            (ROOT_DIR / "skills" / "design-director" / "styles"
+             / "domain-style-defaults.yaml").read_text(encoding="utf-8")
+        )
+        sigs = data["style_signatures"]
+        self.assertEqual(set(sigs), set(STYLE_METADATA))
+        for sid, meta in STYLE_METADATA.items():
+            ms = meta["micro_spec"]
+            self.assertEqual(
+                sigs[sid],
+                {"font": ms["display_font"], "canvas": ms["canvas_hex"],
+                 "surface": ms["surface_hex"], "accent": ms["accent_hex"],
+                 "accent2": ms["secondary_accent_hex"],
+                 "radius": ms["radius_rule"]},
+                f"style_signatures[{sid}] drifted from STYLE_METADATA",
+            )
+
+
 if __name__ == "__main__":
     unittest.main()

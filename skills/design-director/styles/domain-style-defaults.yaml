@@ -7,6 +7,8 @@ description: >
   THIS IS A LOOKUP TABLE — not a list of new foundation styles.
   These domain names do NOT appear in the foundation taxonomy (§3 of PRD.md).
   Adding them here keeps the Visual Signature axis and the Ideal Domain axis cleanly separated.
+  The style_signatures appendix at the end carries compact per-style font/hex/radius
+  so recommendations can render swatches without loading any style pack.
 
 # ─── How It Is Used ───────────────────────────────────────────────────────────
 # 1. extract_design_brief() identifies the product_type (domain).
@@ -219,3 +221,36 @@ domain_style_defaults:
         rationale: "Multi-panel real-time dashboard with semantic status indicators for ops-facing analytics."
       - style_id: dark-minimal
         rationale: "Premium dark analytics (Grafana, Datadog aesthetic) with focused single accent."
+
+# ─── Style Signatures (visual micro-spec per foundation) ───────────────────────
+# Compact per-style font/hex/radius so Phase-3 recommendations can render in-chat
+# swatches WITHOUT loading any style pack. Mirrors director_engine.STYLE_METADATA
+# (micro_spec); a unit test asserts they match — update both together.
+style_signatures:
+  art-deco: {font: "Cinzel", canvas: "#0E0E10", surface: "#16161A", accent: "#D4AF37", accent2: "#F3E5AB", radius: "0px"}
+  aurora-gradient: {font: "Syne", canvas: "#0B0F1A", surface: "#131827", accent: "#8B5CF6", accent2: "#06B6D4", radius: "16px - 24px"}
+  bauhaus: {font: "IBM Plex Sans", canvas: "#FFFFFF", surface: "#F4F4F4", accent: "#E03A3E", accent2: "#004B97", radius: "0px"}
+  claymorphism: {font: "Nunito", canvas: "#FFFBF5", surface: "#FFFFFF", accent: "#FFB5A7", accent2: "#C8E6FF", radius: "20px - 32px"}
+  command-center: {font: "Inter", canvas: "#0B0D11", surface: "#141820", accent: "#EF4444", accent2: "#22C55E", radius: "4px"}
+  cyberpunk: {font: "Rajdhani", canvas: "#060709", surface: "#0B0C14", accent: "#00F5FF", accent2: "#FF00A0", radius: "0px (8px chamfer)"}
+  dark-minimal: {font: "Inter", canvas: "#09090B", surface: "#111215", accent: "#5E6AD2", accent2: "#8B95A5", radius: "6px - 8px"}
+  data-native: {font: "JetBrains Mono", canvas: "#0D1117", surface: "#161B22", accent: "#3B82F6", accent2: "#22C55E", radius: "4px"}
+  digital-organic: {font: "Outfit", canvas: "#FAFAF8", surface: "#F0EFEB", accent: "#2D6A4F", accent2: "#D4A373", radius: "20px - 32px"}
+  glassmorphism: {font: "Plus Jakarta Sans", canvas: "#0A0A0F", surface: "#1E1E2E", accent: "#7C3AED", accent2: "#06B6D4", radius: "16px - 24px"}
+  high-fashion-editorial: {font: "Bodoni Moda", canvas: "#FFFFFF", surface: "#F8F8F8", accent: "#000000", accent2: "#E50000", radius: "0px"}
+  japanese-wabi-sabi: {font: "Noto Serif JP", canvas: "#FAF7F0", surface: "#F2ECE1", accent: "#2B2B28", accent2: "#A07E6A", radius: "0px"}
+  maximalist-dopamine: {font: "Syne", canvas: "#FFF500", surface: "#FFFFFF", accent: "#FF007F", accent2: "#00E5FF", radius: "4px - 8px"}
+  memphis-postmodern: {font: "Syne", canvas: "#FFFFFF", surface: "#FFFDEB", accent: "#FFE600", accent2: "#FF007F", radius: "0px"}
+  mid-century-modern: {font: "DM Serif Display", canvas: "#FDFBF7", surface: "#F4EFE6", accent: "#5B7053", accent2: "#D4973B", radius: "16px"}
+  minimal-modern: {font: "Inter", canvas: "#FFFFFF", surface: "#F8FAFC", accent: "#0F172A", accent2: "#2563EB", radius: "4px - 8px"}
+  neo-brutalism: {font: "Space Grotesk", canvas: "#FFFDF5", surface: "#FFFFFF", accent: "#FFE600", accent2: "#000000", radius: "0px - 4px"}
+  neumorphism: {font: "Inter", canvas: "#E0E5EC", surface: "#E0E5EC", accent: "#3B82F6", accent2: "#64748B", radius: "16px - 20px"}
+  organic-natural: {font: "Newsreader", canvas: "#F5F1E8", surface: "#EBE5D8", accent: "#4A5844", accent2: "#8C533C", radius: "16px - 24px"}
+  quiet-luxury: {font: "Cormorant Garamond", canvas: "#FBFBF9", surface: "#F4F1EA", accent: "#1C1A17", accent2: "#8A7258", radius: "0px"}
+  retro-americana: {font: "Alfa Slab One", canvas: "#F9F0DC", surface: "#EFE2C5", accent: "#C8391E", accent2: "#E8A126", radius: "0px - 4px"}
+  space-age-optimism: {font: "Space Grotesk", canvas: "#FAFAF8", surface: "#F0F0EE", accent: "#FF5C00", accent2: "#3A4B5C", radius: "24px - 32px"}
+  swiss-editorial: {font: "Playfair Display", canvas: "#FFFFFF", surface: "#F5F5F5", accent: "#111111", accent2: "#E30613", radius: "0px"}
+  terminal-cli: {font: "JetBrains Mono", canvas: "#000000", surface: "#0C0C0C", accent: "#00FF66", accent2: "#FFB000", radius: "0px"}
+  vaporwave: {font: "VT323", canvas: "#1F132B", surface: "#22093D", accent: "#FF71CE", accent2: "#01CDFE", radius: "4px"}
+  web-brutalism: {font: "Times New Roman", canvas: "#FFFFFF", surface: "#F0F0F0", accent: "#0000EE", accent2: "#551A8B", radius: "0px"}
+  y2k-frutiger-aero: {font: "Nunito", canvas: "#E8F4FD", surface: "#FFFFFF", accent: "#00E5FF", accent2: "#76FF03", radius: "16px - 24px"}

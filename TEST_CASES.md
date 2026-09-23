@@ -171,7 +171,7 @@ out = refine_spec(spec, "more like Linear")["updated_spec"]["layers"]
 print({k: out[k] for k in ("surfaces", "color", "motion")})
 EOF
 ```
-**Expected:** surfaces/color/motion now point at `dark-minimal/*` layers (reference-library driven, no percentage blending).
+**Expected:** surfaces/color/motion now point at `styles/dark-minimal.md` (reference-library driven, no percentage blending).
 
 ### C3. Domain routing has no substring false positives
 ```bash

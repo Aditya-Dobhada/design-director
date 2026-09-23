@@ -29,19 +29,38 @@ STYLES_DIR = _LOCAL_STYLES if _LOCAL_STYLES.exists() else Path(__file__).resolve
 MODIFIERS_PATH = STYLES_DIR / "modifiers.yaml"
 DOMAIN_DEFAULTS_PATH = STYLES_DIR / "domain-style-defaults.yaml"
 
+def _load_yaml_file(path: Path, top_key: str) -> Any:
+    """Loads a required YAML data file, failing loudly with the file path.
+
+    Missing files raise FileNotFoundError (never a silent empty fallback);
+    empty/malformed/wrong-schema files raise ValueError naming the file.
+    Only successful parses are returned, so callers only ever cache good data.
+    """
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Required data file not found: {path}\n"
+            f"The design-director skill installation appears incomplete — "
+            f"reinstall the skill (or restore the file) and retry."
+        )
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+    except yaml.YAMLError as e:
+        raise ValueError(f"Failed to parse YAML file: {path}: {e}") from e
+    if data is None:
+        raise ValueError(f"YAML file is empty: {path}")
+    if not isinstance(data, dict) or top_key not in data or data[top_key] is None:
+        raise ValueError(f"YAML file {path} is missing required top-level key '{top_key}'")
+    return data[top_key]
+
 _MODIFIERS_CACHE: dict[str, Any] | None = None
 
 def load_modifiers() -> dict[str, Any]:
     global _MODIFIERS_CACHE
     if _MODIFIERS_CACHE is not None:
         return _MODIFIERS_CACHE
-    if not MODIFIERS_PATH.exists():
-        _MODIFIERS_CACHE = {}
-        return _MODIFIERS_CACHE
-    with open(MODIFIERS_PATH, "r", encoding="utf-8") as f:
-        data = yaml.safe_load(f)
-        _MODIFIERS_CACHE = data.get("modifiers", {})
-        return _MODIFIERS_CACHE
+    _MODIFIERS_CACHE = _load_yaml_file(MODIFIERS_PATH, "modifiers")
+    return _MODIFIERS_CACHE
 
 _REFERENCE_LIBRARY_CACHE: list[dict[str, Any]] | None = None
 
@@ -49,13 +68,8 @@ def load_reference_library() -> list[dict[str, Any]]:
     global _REFERENCE_LIBRARY_CACHE
     if _REFERENCE_LIBRARY_CACHE is not None:
         return _REFERENCE_LIBRARY_CACHE
-    if not REFERENCE_LIBRARY_PATH.exists():
-        _REFERENCE_LIBRARY_CACHE = []
-        return _REFERENCE_LIBRARY_CACHE
-    with open(REFERENCE_LIBRARY_PATH, "r", encoding="utf-8") as f:
-        data = yaml.safe_load(f)
-        _REFERENCE_LIBRARY_CACHE = data.get("references", [])
-        return _REFERENCE_LIBRARY_CACHE
+    _REFERENCE_LIBRARY_CACHE = _load_yaml_file(REFERENCE_LIBRARY_PATH, "references")
+    return _REFERENCE_LIBRARY_CACHE
 
 def find_reference(query: str) -> dict[str, Any] | None:
     refs = load_reference_library()
@@ -284,13 +298,8 @@ def load_domain_style_defaults() -> dict[str, Any]:
     global _DOMAIN_DEFAULTS_CACHE
     if _DOMAIN_DEFAULTS_CACHE is not None:
         return _DOMAIN_DEFAULTS_CACHE
-    if not DOMAIN_DEFAULTS_PATH.exists():
-        _DOMAIN_DEFAULTS_CACHE = {}
-        return _DOMAIN_DEFAULTS_CACHE
-    with open(DOMAIN_DEFAULTS_PATH, "r", encoding="utf-8") as f:
-        data = yaml.safe_load(f)
-        _DOMAIN_DEFAULTS_CACHE = data.get("domain_style_defaults", {})
-        return _DOMAIN_DEFAULTS_CACHE
+    _DOMAIN_DEFAULTS_CACHE = _load_yaml_file(DOMAIN_DEFAULTS_PATH, "domain_style_defaults")
+    return _DOMAIN_DEFAULTS_CACHE
 
 STYLE_METADATA: dict[str, dict[str, Any]] = {
     "art-deco": {
@@ -302,12 +311,12 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         ],
         "micro_spec": {
             "display_font": "Cinzel",
-            "canvas_hex": "#0D0D11",
+            "canvas_hex": "#0E0E10",
             "surface_hex": "#16161A",
             "accent_hex": "#D4AF37",
             "secondary_accent_hex": "#F3E5AB",
             "radius_rule": "0px",
-            "swatches": ["#0D0D11", "#16161A", "#D4AF37", "#F3E5AB"],
+            "swatches": ["#0E0E10", "#16161A", "#D4AF37", "#F3E5AB"],
         },
     },
     "aurora-gradient": {
@@ -387,12 +396,12 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         ],
         "micro_spec": {
             "display_font": "Rajdhani",
-            "canvas_hex": "#050508",
+            "canvas_hex": "#060709",
             "surface_hex": "#0B0C14",
             "accent_hex": "#00F5FF",
             "secondary_accent_hex": "#FF00A0",
             "radius_rule": "0px (8px chamfer)",
-            "swatches": ["#050508", "#0B0C14", "#00F5FF", "#FF00A0"],
+            "swatches": ["#060709", "#0B0C14", "#00F5FF", "#FF00A0"],
         },
     },
     "dark-minimal": {
@@ -405,12 +414,12 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         ],
         "micro_spec": {
             "display_font": "Inter",
-            "canvas_hex": "#08090A",
+            "canvas_hex": "#09090B",
             "surface_hex": "#111215",
             "accent_hex": "#5E6AD2",
             "secondary_accent_hex": "#8B95A5",
             "radius_rule": "6px - 8px",
-            "swatches": ["#08090A", "#111215", "#5E6AD2", "#8B95A5"],
+            "swatches": ["#09090B", "#111215", "#5E6AD2", "#8B95A5"],
         },
     },
     "data-native": {
@@ -716,12 +725,12 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         ],
         "micro_spec": {
             "display_font": "VT323",
-            "canvas_hex": "#120422",
+            "canvas_hex": "#1F132B",
             "surface_hex": "#22093D",
             "accent_hex": "#FF71CE",
             "secondary_accent_hex": "#01CDFE",
             "radius_rule": "4px",
-            "swatches": ["#120422", "#22093D", "#FF71CE", "#01CDFE"],
+            "swatches": ["#1F132B", "#22093D", "#FF71CE", "#01CDFE"],
         },
     },
     "web-brutalism": {
@@ -750,33 +759,41 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         ],
         "micro_spec": {
             "display_font": "Nunito",
-            "canvas_hex": "#EBF7FF",
+            "canvas_hex": "#E8F4FD",
             "surface_hex": "#FFFFFF",
             "accent_hex": "#00E5FF",
             "secondary_accent_hex": "#76FF03",
             "radius_rule": "16px - 24px",
-            "swatches": ["#EBF7FF", "#FFFFFF", "#00E5FF", "#76FF03"],
+            "swatches": ["#E8F4FD", "#FFFFFF", "#00E5FF", "#76FF03"],
         },
     },
 }
 
 SUPPORTED_STYLES: list[str] = list(STYLE_METADATA.keys())
 
+def _validate_style_id(style_id: str) -> str:
+    """Rejects unknown/typo'd style IDs loudly instead of silently substituting another style."""
+    sid = (style_id or "").lower().strip()
+    if sid not in STYLE_METADATA:
+        raise ValueError(
+            f"Unknown style id '{style_id}'. "
+            f"Valid styles: {', '.join(sorted(SUPPORTED_STYLES))}"
+        )
+    return sid
+
 def get_style_base(style_id: str) -> dict[str, str]:
     """Resolves the canonical base spec layers for any supported style."""
-    sid = style_id if style_id in STYLE_METADATA else "swiss-editorial"
+    sid = _validate_style_id(style_id)
     meta = STYLE_METADATA[sid]
     return {
-        "layout": f"{sid}/layout.md",
-        "typography": f"{sid}/typography.md",
-        "surfaces": f"{sid}/tokens.md",
-        "color": f"{sid}/tokens.md",
-        "motion": f"{sid}/motion.md",
+        "layout": f"styles/{sid}.md",
+        "typography": f"styles/{sid}.md",
+        "surfaces": f"styles/{sid}.md",
+        "color": f"styles/{sid}.md",
+        "motion": f"styles/{sid}.md",
         "imagery": meta.get("imagery", "conceptual-duotone-linework"),
-        "components": f"{sid}/components.md",
+        "components": f"styles/{sid}.md",
     }
-
-style_bases: dict[str, dict[str, str]] = {sid: get_style_base(sid) for sid in STYLE_METADATA}
 
 def detect_domain_from_brief(brief: dict[str, Any]) -> str | None:
     """Matches a design brief to a domain key in domain-style-defaults.yaml."""
@@ -954,60 +971,60 @@ def _resolve_layers_from_reference(ref: dict[str, Any], direction: str) -> dict[
     # ── Foundation seeding ───────────────────────────────────────────────────
     prim = ref.get("primary_foundation")
     if direction == "more_like" and prim:
-        overrides["color"] = f"{prim}/tokens.md"
-        overrides["surfaces"] = f"{prim}/tokens.md"
-        overrides["motion"] = f"{prim}/motion.md"
+        overrides["color"] = f"styles/{prim}.md"
+        overrides["surfaces"] = f"styles/{prim}.md"
+        overrides["motion"] = f"styles/{prim}.md"
         return overrides
 
     # ── Mode / canvas ────────────────────────────────────────────────────────
     if direction == "more_like":
         if "dark" in mode or "obsidian" in palette_type:
-            overrides["color"] = "dark-minimal/tokens.md"
-            overrides["surfaces"] = "dark-minimal/tokens.md"
+            overrides["color"] = "styles/dark-minimal.md"
+            overrides["surfaces"] = "styles/dark-minimal.md"
         elif "warm" in mode or "warm" in palette_type or "earth" in palette_type or "linen" in palette_type:
-            overrides["color"] = "quiet-luxury/tokens.md"
-            overrides["surfaces"] = "quiet-luxury/tokens.md"
+            overrides["color"] = "styles/quiet-luxury.md"
+            overrides["surfaces"] = "styles/quiet-luxury.md"
         elif "monochrome" in palette_type and "stark" in palette_type:
-            overrides["color"] = "swiss-editorial/tokens.md"
-            overrides["surfaces"] = "swiss-editorial/tokens.md"
+            overrides["color"] = "styles/swiss-editorial.md"
+            overrides["surfaces"] = "styles/swiss-editorial.md"
         elif "saturated" in palette_type or "pop" in palette_type or "neon" in palette_type:
-            overrides["color"] = "neo-brutalism/tokens.md"
-            overrides["surfaces"] = "neo-brutalism/tokens.md"
+            overrides["color"] = "styles/neo-brutalism.md"
+            overrides["surfaces"] = "styles/neo-brutalism.md"
         elif "gradient" in palette_type or "fluid" in palette_type:
-            overrides["color"] = "y2k-frutiger-aero/tokens.md"
-            overrides["surfaces"] = "y2k-frutiger-aero/tokens.md"
+            overrides["color"] = "styles/y2k-frutiger-aero.md"
+            overrides["surfaces"] = "styles/y2k-frutiger-aero.md"
     else:  # less_like: invert the dominant signal
         if "dark" in mode:
-            overrides["color"] = "minimal-modern/tokens.md"
-            overrides["surfaces"] = "minimal-modern/tokens.md"
+            overrides["color"] = "styles/minimal-modern.md"
+            overrides["surfaces"] = "styles/minimal-modern.md"
         if "saturated" in palette_type or "neon" in palette_type:
-            overrides["color"] = "quiet-luxury/tokens.md"
-            overrides["surfaces"] = "quiet-luxury/tokens.md"
+            overrides["color"] = "styles/quiet-luxury.md"
+            overrides["surfaces"] = "styles/quiet-luxury.md"
 
     # ── Borders / surfaces (override color above if borders are more specific) ──
     if direction == "more_like":
         if "heavy" in borders or "thick" in borders or "3px" in borders or "4px" in borders:
-            overrides["surfaces"] = "neo-brutalism/tokens.md"
+            overrides["surfaces"] = "styles/neo-brutalism.md"
         elif "hairline" in borders or "0.5px" in borders or "subtle" in borders:
-            overrides["surfaces"] = "dark-minimal/tokens.md" if "dark" in mode else "swiss-editorial/tokens.md"
+            overrides["surfaces"] = "styles/dark-minimal.md" if "dark" in mode else "styles/swiss-editorial.md"
         elif "none" in borders or "zero" in borders or "flat" in borders:
-            overrides["surfaces"] = "swiss-editorial/tokens.md"
+            overrides["surfaces"] = "styles/swiss-editorial.md"
         if "hard" in shadows and "offset" in shadows:
-            overrides["surfaces"] = "neo-brutalism/tokens.md"
+            overrides["surfaces"] = "styles/neo-brutalism.md"
 
         typography = ref.get("typography", {})
         heading = typography.get("heading_font", "").lower()
         if any(k in heading for k in ["garamond", "serif", "canela", "fraunces", "suisse works"]):
-            overrides["typography"] = "quiet-luxury/typography.md"
+            overrides["typography"] = "styles/quiet-luxury.md"
         elif any(k in heading for k in ["slab", "condensed", "rockwell", "alfa"]):
-            overrides["typography"] = "retro-americana/typography.md"
+            overrides["typography"] = "styles/retro-americana.md"
         elif any(k in heading for k in ["mono", "consolas", "courier", "fixed"]):
-            overrides["typography"] = "terminal-cli/typography.md"
+            overrides["typography"] = "styles/terminal-cli.md"
 
         if motion_ms <= 120 or any(k in motion_char for k in ["snappy", "instant", "immediate", "fast"]):
-            overrides["motion"] = "swiss-editorial/motion.md"
+            overrides["motion"] = "styles/swiss-editorial.md"
         elif motion_ms >= 400 or any(k in motion_char for k in ["slow", "contemplative", "cinematic"]):
-            overrides["motion"] = "quiet-luxury/motion.md"
+            overrides["motion"] = "styles/quiet-luxury.md"
 
     return overrides
 
@@ -1058,9 +1075,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
     # ── 2. Named style family shortcuts ─────────────────────────────────────
     elif any(k in critique_lower for k in ["wabi", "sabi", "zen", "japanese"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "japanese-wabi-sabi/tokens.md",
-            "color": "japanese-wabi-sabi/tokens.md",
-            "motion": "japanese-wabi-sabi/motion.md",
+            "surfaces": "styles/japanese-wabi-sabi.md",
+            "color": "styles/japanese-wabi-sabi.md",
+            "motion": "styles/japanese-wabi-sabi.md",
         }, reasons={
             "surfaces": "Mingei craft shift: rice-paper surfaces and ink-wash dividers.",
             "color": "Natural pigments: charcoal ink stone, bamboo cream, and matcha accents.",
@@ -1068,9 +1085,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["bauhaus", "constructivist"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "bauhaus/tokens.md",
-            "color": "bauhaus/tokens.md",
-            "typography": "bauhaus/typography.md",
+            "surfaces": "styles/bauhaus.md",
+            "color": "styles/bauhaus.md",
+            "typography": "styles/bauhaus.md",
         }, reasons={
             "surfaces": "Constructivist functionalism: 0px radius, structural black outlines.",
             "color": "Pure primary triad: Red, Yellow, Blue on black and white.",
@@ -1078,9 +1095,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["space age", "space-age", "nasa"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "space-age-optimism/tokens.md",
-            "color": "space-age-optimism/tokens.md",
-            "layout": "space-age-optimism/layout.md",
+            "surfaces": "styles/space-age-optimism.md",
+            "color": "styles/space-age-optimism.md",
+            "layout": "styles/space-age-optimism.md",
         }, reasons={
             "surfaces": "Space Age shift: molded pod fiberglass containers (24px–40px radius).",
             "color": "Warm optical white with single NASA Mission Orange accent.",
@@ -1088,9 +1105,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["maximalist", "dopamine", "sticker"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "maximalist-dopamine/tokens.md",
-            "color": "maximalist-dopamine/tokens.md",
-            "components": "maximalist-dopamine/components.md",
+            "surfaces": "styles/maximalist-dopamine.md",
+            "color": "styles/maximalist-dopamine.md",
+            "components": "styles/maximalist-dopamine.md",
         }, reasons={
             "surfaces": "Maximalist shift: multi-colored hard offset drop shadows.",
             "color": "Colliding candy neon palette (Yellow, Magenta, Cyan, Lime).",
@@ -1098,9 +1115,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["memphis", "postmodern", "sottsass"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "memphis-postmodern/tokens.md",
-            "color": "memphis-postmodern/tokens.md",
-            "layout": "memphis-postmodern/layout.md",
+            "surfaces": "styles/memphis-postmodern.md",
+            "color": "styles/memphis-postmodern.md",
+            "layout": "styles/memphis-postmodern.md",
         }, reasons={
             "surfaces": "Memphis shift: flat graphic planes and polka-dot/diagonal hatch patterns.",
             "color": "Contrasting primaries and pastels on stark white canvas.",
@@ -1108,9 +1125,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["americana", "diner", "saul bass"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "retro-americana/tokens.md",
-            "color": "retro-americana/tokens.md",
-            "typography": "retro-americana/typography.md",
+            "surfaces": "styles/retro-americana.md",
+            "color": "styles/retro-americana.md",
+            "typography": "styles/retro-americana.md",
         }, reasons={
             "surfaces": "Retro Americana shift: ink-press borders and parchment paper canvas.",
             "color": "Warm incandescent palette: vermilion, neon amber, and deep carbon ink.",
@@ -1118,9 +1135,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif "digital" not in critique_lower and any(k in critique_lower for k in ["organic", "natural", "biophilic", "earthy"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "organic-natural/tokens.md",
-            "color": "organic-natural/tokens.md",
-            "typography": "organic-natural/typography.md",
+            "surfaces": "styles/organic-natural.md",
+            "color": "styles/organic-natural.md",
+            "typography": "styles/organic-natural.md",
         }, reasons={
             "surfaces": "Organic shift: river-stone rounding and bone-white canvas.",
             "color": "Natural earth palette: raw clay, moss green, and bone white.",
@@ -1129,10 +1146,10 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
 
     elif any(k in critique_lower for k in ["minimal modern", "clean modern", "notion"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "minimal-modern/tokens.md",
-            "color": "minimal-modern/tokens.md",
-            "typography": "minimal-modern/typography.md",
-            "motion": "minimal-modern/motion.md",
+            "surfaces": "styles/minimal-modern.md",
+            "color": "styles/minimal-modern.md",
+            "typography": "styles/minimal-modern.md",
+            "motion": "styles/minimal-modern.md",
         }, reasons={
             "surfaces": "Minimal Modern shift: 6-8px micro-radii and crisp 1px neutral borders.",
             "color": "Pristine neutral zinc canvas (#FAFAFA / #FFFFFF) with single functional accent.",
@@ -1141,10 +1158,10 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["dark minimal", "raycast", "linear"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "dark-minimal/tokens.md",
-            "color": "dark-minimal/tokens.md",
-            "typography": "dark-minimal/typography.md",
-            "motion": "dark-minimal/motion.md",
+            "surfaces": "styles/dark-minimal.md",
+            "color": "styles/dark-minimal.md",
+            "typography": "styles/dark-minimal.md",
+            "motion": "styles/dark-minimal.md",
         }, reasons={
             "surfaces": "Dark Minimal shift: obsidian canvas, translucent 1px hairlines, and 6-8px micro-radii.",
             "color": "Obsidian deep charcoal (#09090B) with single electric violet/indigo accent.",
@@ -1153,10 +1170,10 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["terminal", "tui", "cli", "ascii"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "terminal-cli/tokens.md",
-            "color": "terminal-cli/tokens.md",
-            "typography": "terminal-cli/typography.md",
-            "motion": "terminal-cli/motion.md",
+            "surfaces": "styles/terminal-cli.md",
+            "color": "styles/terminal-cli.md",
+            "typography": "styles/terminal-cli.md",
+            "motion": "styles/terminal-cli.md",
         }, reasons={
             "surfaces": "Terminal CLI shift: 0px radius, pitch black canvas, and ASCII box-drawing borders.",
             "color": "Phosphor monochrome: amber/emerald on black canvas.",
@@ -1165,10 +1182,10 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["web brutalism", "raw web", "raw html"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "web-brutalism/tokens.md",
-            "color": "web-brutalism/tokens.md",
-            "typography": "web-brutalism/typography.md",
-            "components": "web-brutalism/components.md",
+            "surfaces": "styles/web-brutalism.md",
+            "color": "styles/web-brutalism.md",
+            "typography": "styles/web-brutalism.md",
+            "components": "styles/web-brutalism.md",
         }, reasons={
             "surfaces": "Web Brutalism shift: raw document HTML, 0px radius, and standard table borders.",
             "color": "Stark black/white contrast with default browser blue links (#0000EE).",
@@ -1177,9 +1194,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["art deco", "gatsby"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "art-deco/tokens.md",
-            "color": "art-deco/tokens.md",
-            "typography": "art-deco/typography.md",
+            "surfaces": "styles/art-deco.md",
+            "color": "styles/art-deco.md",
+            "typography": "styles/art-deco.md",
         }, reasons={
             "surfaces": "Art Deco shift: stepped geometric symmetry, dual gold hairlines, and 0px radius.",
             "color": "Caviar black (#0E0E10) and burnished gold (#D4AF37) luxury metallics.",
@@ -1187,9 +1204,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["mid century", "eames", "palm springs"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "mid-century-modern/tokens.md",
-            "color": "mid-century-modern/tokens.md",
-            "typography": "mid-century-modern/typography.md",
+            "surfaces": "styles/mid-century-modern.md",
+            "color": "styles/mid-century-modern.md",
+            "typography": "styles/mid-century-modern.md",
         }, reasons={
             "surfaces": "Mid-Century Modern shift: warm architectural parchment and 16-24px atomic pod curves.",
             "color": "California modernist palette: terracotta, olive moss, mustard, and walnut.",
@@ -1197,9 +1214,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["vaporwave", "vapor"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "vaporwave/tokens.md",
-            "color": "vaporwave/tokens.md",
-            "typography": "vaporwave/typography.md",
+            "surfaces": "styles/vaporwave.md",
+            "color": "styles/vaporwave.md",
+            "typography": "styles/vaporwave.md",
         }, reasons={
             "surfaces": "Vaporwave shift: Windows 95 dialog bevels and pastel cyan/pink drop shadows.",
             "color": "Twilight lavender horizon with pastel pink (#FF71CE) and cyan (#01CDFE) glows.",
@@ -1207,9 +1224,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["high fashion", "runway", "couture", "vogue"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "high-fashion-editorial/tokens.md",
-            "color": "high-fashion-editorial/tokens.md",
-            "typography": "high-fashion-editorial/typography.md",
+            "surfaces": "styles/high-fashion-editorial.md",
+            "color": "styles/high-fashion-editorial.md",
+            "typography": "styles/high-fashion-editorial.md",
         }, reasons={
             "surfaces": "High Fashion Editorial shift: knife-edge 0px radius, razor hairlines, and zero drop shadows.",
             "color": "Stark high-contrast monochrome (#0A0A0A / #FFFFFF).",
@@ -1217,9 +1234,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["glassmorphism", "frosted panel", "glass panel", "backdrop blur"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "glassmorphism/tokens.md",
-            "color": "glassmorphism/tokens.md",
-            "motion": "glassmorphism/motion.md",
+            "surfaces": "styles/glassmorphism.md",
+            "color": "styles/glassmorphism.md",
+            "motion": "styles/glassmorphism.md",
         }, reasons={
             "surfaces": "Glassmorphism shift: rgba translucent panels with backdrop-filter blur and 1px specular hairlines.",
             "color": "Dark obsidian base with electric violet or cyan glass accent layering.",
@@ -1227,17 +1244,17 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["neumorphism", "neumorphic", "soft extrude", "extruded"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "neumorphism/tokens.md",
-            "color": "neumorphism/tokens.md",
+            "surfaces": "styles/neumorphism.md",
+            "color": "styles/neumorphism.md",
         }, reasons={
             "surfaces": "Neumorphism shift: dual soft shadow extrusion (light/dark), no borders, canvas-matched surface color.",
             "color": "Monochromatic mid-tone canvas with matched UI elements and subdued desaturated accent.",
         })
     elif any(k in critique_lower for k in ["claymorphism", "clay", "pastel 3d", "chunky rounded"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "claymorphism/tokens.md",
-            "color": "claymorphism/tokens.md",
-            "typography": "claymorphism/typography.md",
+            "surfaces": "styles/claymorphism.md",
+            "color": "styles/claymorphism.md",
+            "typography": "styles/claymorphism.md",
         }, reasons={
             "surfaces": "Claymorphism shift: heavy rounding (20–32px), layered clay inner shadow, pastel element fills.",
             "color": "Warm cream canvas with soft pastel element colors (coral, sky, mint, lemon).",
@@ -1245,10 +1262,10 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["cyberpunk", "neon hud", "hud", "cyber", "sci-fi", "scifi", "high-voltage"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "cyberpunk/tokens.md",
-            "color": "cyberpunk/tokens.md",
-            "typography": "cyberpunk/typography.md",
-            "motion": "cyberpunk/motion.md",
+            "surfaces": "styles/cyberpunk.md",
+            "color": "styles/cyberpunk.md",
+            "typography": "styles/cyberpunk.md",
+            "motion": "styles/cyberpunk.md",
         }, reasons={
             "surfaces": "Cyberpunk shift: obsidian canvas, chamfer corner clips, and neon HUD brackets.",
             "color": "High-voltage neon palette: electric cyan (#00F5FF), neon magenta, and obsidian canvas.",
@@ -1257,9 +1274,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["data native", "data-native", "dense data", "tabular analytics", "analytics", "dense tabular", "data dashboard", "tabular analytics dashboard"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "data-native/tokens.md",
-            "color": "data-native/tokens.md",
-            "typography": "data-native/typography.md",
+            "surfaces": "styles/data-native.md",
+            "color": "styles/data-native.md",
+            "typography": "styles/data-native.md",
         }, reasons={
             "surfaces": "Data-Native shift: hairline 1px dividers, zero decorative fills, ultra-compact 32px rows.",
             "color": "Dark #0D1117 canvas with single blue/green accent for positive delta values only.",
@@ -1267,10 +1284,10 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["y2k", "frutiger aero", "frutiger-aero", "glossy aero", "aqua gloss"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "y2k-frutiger-aero/tokens.md",
-            "color": "y2k-frutiger-aero/tokens.md",
-            "typography": "y2k-frutiger-aero/typography.md",
-            "motion": "y2k-frutiger-aero/motion.md",
+            "surfaces": "styles/y2k-frutiger-aero.md",
+            "color": "styles/y2k-frutiger-aero.md",
+            "typography": "styles/y2k-frutiger-aero.md",
+            "motion": "styles/y2k-frutiger-aero.md",
         }, reasons={
             "surfaces": "Frutiger Aero shift: glossy specular glassmorphism, pill containers, and aqua gradients.",
             "color": "Sky gradient canvas with aqua and lime specular highlights.",
@@ -1279,9 +1296,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["neo brutalism", "neo-brutalism", "chunky border", "offset shadow"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "neo-brutalism/tokens.md",
-            "color": "neo-brutalism/tokens.md",
-            "components": "neo-brutalism/components.md",
+            "surfaces": "styles/neo-brutalism.md",
+            "color": "styles/neo-brutalism.md",
+            "components": "styles/neo-brutalism.md",
         }, reasons={
             "surfaces": "Neo-Brutalism shift: chunky 3px black borders and 4px solid black offset shadows.",
             "color": "High-saturation poster color accents on stark white/cream canvas.",
@@ -1289,9 +1306,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["quiet luxury", "quiet-luxury", "old money", "alabaster"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "quiet-luxury/tokens.md",
-            "color": "quiet-luxury/tokens.md",
-            "typography": "quiet-luxury/typography.md",
+            "surfaces": "styles/quiet-luxury.md",
+            "color": "styles/quiet-luxury.md",
+            "typography": "styles/quiet-luxury.md",
         }, reasons={
             "surfaces": "Quiet Luxury shift: alabaster canvas, razor stone dividers, and zero border radius.",
             "color": "Understated alabaster, warm ecru, and deep charcoal/espresso.",
@@ -1299,10 +1316,10 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["swiss editorial", "swiss-editorial", "international typographic"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "swiss-editorial/tokens.md",
-            "color": "swiss-editorial/tokens.md",
-            "typography": "swiss-editorial/typography.md",
-            "layout": "swiss-editorial/layout.md",
+            "surfaces": "styles/swiss-editorial.md",
+            "color": "styles/swiss-editorial.md",
+            "typography": "styles/swiss-editorial.md",
+            "layout": "styles/swiss-editorial.md",
         }, reasons={
             "surfaces": "Swiss Editorial shift: 0px radius, razor hairlines, and strict asymmetric grid.",
             "color": "Stark monochrome canvas with single Swiss Red (#E30613) accent.",
@@ -1311,9 +1328,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["command center", "command-center", "multi panel", "ops panel", "devops"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "command-center/tokens.md",
-            "color": "command-center/tokens.md",
-            "layout": "command-center/layout.md",
+            "surfaces": "styles/command-center.md",
+            "color": "styles/command-center.md",
+            "layout": "styles/command-center.md",
         }, reasons={
             "surfaces": "Command Center shift: near-black panels, 1px structural borders, semantic status indicators.",
             "color": "Near-black #0B0D11 with red/amber/green semantic status palette.",
@@ -1321,9 +1338,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["aurora", "aurora gradient", "ai gradient", "atmospheric gradient"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "aurora-gradient/tokens.md",
-            "color": "aurora-gradient/tokens.md",
-            "motion": "aurora-gradient/motion.md",
+            "surfaces": "styles/aurora-gradient.md",
+            "color": "styles/aurora-gradient.md",
+            "motion": "styles/aurora-gradient.md",
         }, reasons={
             "surfaces": "Aurora Gradient shift: dark #0B0F1A base with soft radial aurora glow overlays.",
             "color": "Atmospheric violet/pink/cyan gradient palette at restrained opacity; no hard neon.",
@@ -1331,9 +1348,9 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         })
     elif any(k in critique_lower for k in ["digital organic", "digital-organic", "biomorphic", "blob", "organic tech"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "digital-organic/tokens.md",
-            "color": "digital-organic/tokens.md",
-            "typography": "digital-organic/typography.md",
+            "surfaces": "styles/digital-organic.md",
+            "color": "styles/digital-organic.md",
+            "typography": "styles/digital-organic.md",
         }, reasons={
             "surfaces": "Digital Organic shift: CSS blob shapes with asymmetric border-radius and natural gradient fills.",
             "color": "Warm earthy palette (sage, moss, sand, gold) combined with thin monospace data typography.",
@@ -1345,31 +1362,31 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
         if is_less_like:
             if "quiet-luxury" in current_spec["chosen_primary_style"]:
                 _apply_layers(updated_spec, current_spec, changes_made, {
-                    "typography": "quiet-luxury/typography.md",
-                    "color": "quiet-luxury/tokens.md",
+                    "typography": "styles/quiet-luxury.md",
+                    "color": "styles/quiet-luxury.md",
                 }, reasons={
                     "typography": "Eliminated standard corporate sans; instituted authoritative literary serif hierarchy.",
                     "color": "Alabaster and deep espresso — no corporate navy or generic Tailwind grays.",
                 })
             else:
                 _apply_layers(updated_spec, current_spec, changes_made, {
-                    "typography": "swiss-editorial/typography.md",
-                    "surfaces": "neo-brutalism/tokens.md",
+                    "typography": "styles/swiss-editorial.md",
+                    "surfaces": "styles/neo-brutalism.md",
                 }, reasons={
                     "typography": "High-contrast editorial sans instead of rounded corporate defaults.",
                     "surfaces": "Replaced timid gray-bordered corporate cards with tangible, purposeful border contrast.",
                 })
     elif "playful" in critique_lower or "tactile" in critique_lower:
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "surfaces": "neo-brutalism/tokens.md",
-            "components": "neo-brutalism/components.md",
+            "surfaces": "styles/neo-brutalism.md",
+            "components": "styles/neo-brutalism.md",
         }, reasons={
             "surfaces": "Physical paper cards with 3px solid black outlines and 4px solid offset shadows.",
             "components": "Physical button switch behavior: depression translation on active click.",
         })
     elif "too dark" in critique_lower or "light mode" in critique_lower or "make it light" in critique_lower:
         _apply_layers(updated_spec, current_spec, changes_made, {
-            "color": "swiss-editorial/tokens.md",
+            "color": "styles/swiss-editorial.md",
         }, reasons={
             "color": "Switched canvas to crisp high-contrast light mode (#FFFFFF / #F8F8F6).",
         })
@@ -1378,13 +1395,13 @@ def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
     else:
         if "font" in critique_lower or "typography" in critique_lower:
             _apply_layers(updated_spec, current_spec, changes_made, {
-                "typography": "swiss-editorial/typography.md",
+                "typography": "styles/swiss-editorial.md",
             }, reasons={
                 "typography": "Refined typographic scale to high-contrast asymmetric Swiss hierarchy.",
             })
         elif "shadow" in critique_lower or "border" in critique_lower or "surface" in critique_lower:
             _apply_layers(updated_spec, current_spec, changes_made, {
-                "surfaces": "swiss-editorial/tokens.md",
+                "surfaces": "styles/swiss-editorial.md",
             }, reasons={
                 "surfaces": "Cleaned surfaces to 0px border-radius and crisp hairlines.",
             })
@@ -1421,6 +1438,8 @@ def _apply_layers(
             "reason": reasons.get(layer, "")
         })
 
+_STYLE_PACK_CACHE: dict[str, str] = {}
+
 def generate_implementation_contract(
     spec: dict[str, Any],
     product_spec: str,
@@ -1431,26 +1450,30 @@ def generate_implementation_contract(
     Assembles the Design Spec + Style Pack rules + active modifiers + tech stack
     into a binding contract for the coding agent.
     """
-    primary_style = spec.get("chosen_primary_style", "swiss-editorial")
+    primary_style = _validate_style_id(spec.get("chosen_primary_style", "swiss-editorial"))
     layers = spec.get("layers", {})
     
-    # Load specific style tokens and anti-patterns
+    # Load specific style tokens and anti-patterns (pack text cached per process).
+    # Styles ship as flat packs (styles/<style_id>.md); a missing pack for a
+    # valid style id is an installation problem, never an empty ban list.
     style_file = STYLES_DIR / f"{primary_style}.md"
-    style_dir = STYLES_DIR / primary_style
     anti_patterns = []
-    
-    if style_file.exists():
+
+    if primary_style in _STYLE_PACK_CACHE:
+        content = _STYLE_PACK_CACHE[primary_style]
+    else:
+        if not style_file.exists():
+            raise FileNotFoundError(
+                f"Style pack not found: {style_file}\n"
+                f"The design-director skill installation appears incomplete — "
+                f"reinstall the skill (or restore the file) and retry."
+            )
         with open(style_file, "r", encoding="utf-8") as f:
             content = f.read()
-            if "## Mandatory Anti-Patterns" in content:
-                anti_patterns_block = content.split("## Mandatory Anti-Patterns")[1].split("\n\n---\n\n")[0]
-                anti_patterns = [line.strip() for line in anti_patterns_block.split("\n") if line.strip().startswith("-")]
-    elif (style_dir / "SKILL.md").exists():
-        with open(style_dir / "SKILL.md", "r", encoding="utf-8") as f:
-            skill_md = f.read()
-            if "## Mandatory Anti-Patterns" in skill_md:
-                anti_patterns_block = skill_md.split("## Mandatory Anti-Patterns")[1]
-                anti_patterns = [line.strip() for line in anti_patterns_block.split("\n") if line.strip().startswith("-")]
+        _STYLE_PACK_CACHE[primary_style] = content
+    if "## Mandatory Anti-Patterns" in content:
+        anti_patterns_block = content.split("## Mandatory Anti-Patterns")[1].split("\n\n---\n\n")[0]
+        anti_patterns = [line.strip() for line in anti_patterns_block.split("\n") if line.strip().startswith("-")]
 
     # Load modifier specs if specified
     active_modifier_blocks = []
@@ -1515,3 +1538,35 @@ Upon code generation, the post-implementation `design-audit` will statically sca
 Deviations in border-radius, shadow blur, font substitutions, or color values will be flagged as audit failures.
 """
     return contract
+
+
+if __name__ == "__main__":
+    import sys
+
+    _USAGE = """director_engine.py is an import-only reasoning engine (no CLI subcommands).
+Import it instead of executing it:
+
+    import sys; sys.path.insert(0, 'skills/design-director')
+    from director_engine import (
+        extract_design_brief, recommend_styles, create_design_spec,
+        refine_spec, generate_implementation_contract,
+    )
+
+Available functions:
+  extract_design_brief(context_text)      PRD/README text -> structured Design Brief
+  recommend_styles(brief)                 Design Brief -> 2-4 candidate styles + micro-specs
+  create_design_spec(style_id)            style id -> layered Design Spec (validates id)
+  refine_spec(spec, critique)             free-text critique -> layer-scoped diff
+  generate_implementation_contract(...)   spec + product spec -> DESIGN_CONTRACT text
+  find_reference(query)                   brand name -> reference-library entry
+  load_modifiers() / load_domain_style_defaults() / load_reference_library()
+
+For the runnable audit CLI, use: python3 skills/design-audit/audit_code.py <style_id> <target>
+See TEST_CASES.md section C for copy-pasteable pipeline examples."""
+
+    if len(sys.argv) == 2 and sys.argv[1] in ("-h", "--help"):
+        print(_USAGE)
+        sys.exit(0)
+    print(f"error: {sys.argv[0]} takes no direct invocation\n", file=sys.stderr)
+    print(_USAGE, file=sys.stderr)
+    sys.exit(2)

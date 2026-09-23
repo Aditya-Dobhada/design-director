@@ -56,5 +56,6 @@ The audit outputs a structured qualitative report:
 - `PASSED WITH WARNINGS`: 0 critical, minor stylistic variances
 - `FAILED: Moderate Spec Deviations`: 1–3 critical deviations
 - `FAILED: Severe Contract Breach`: >3 critical deviations
+- `ERROR: No files scanned`: nonexistent path, empty target, or unreadable files (CLI exits 2; see `skipped_files` for reasons) — never a silent pass
 
 For each violation, the report provides the exact file path, line number, layer, offending code snippet, and remediation instruction.

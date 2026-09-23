@@ -35,11 +35,11 @@ references:
       traits: [keyboard-first, obsessive-craft, understated, engineer-grade, fast]
       anti_traits: [playful, pastel, bloated, friendly-corporate, round-bubbly]
     mapped_style_layers:
-      layout: dark-minimal/layout.md
-      typography: dark-minimal/typography.md
-      surfaces: dark-minimal/tokens.md
-      color: dark-minimal/tokens.md
-      motion: dark-minimal/motion.md
+      layout: styles/dark-minimal.md
+      typography: styles/dark-minimal.md
+      surfaces: styles/dark-minimal.md
+      color: styles/dark-minimal.md
+      motion: styles/dark-minimal.md
       imagery: isometric-vector-dark
     shift_rules:
       when_requested_more_like:
@@ -136,11 +136,11 @@ references:
       traits: [developer-beloved, polished, luminous, trustworthy, expansive]
       anti_traits: [harsh, messy, noisy, low-contrast, aggressive]
     mapped_style_layers:
-      layout: minimal-modern/layout.md
-      typography: minimal-modern/typography.md
-      surfaces: minimal-modern/tokens.md
-      color: minimal-modern/tokens.md
-      motion: minimal-modern/motion.md
+      layout: styles/minimal-modern.md
+      typography: styles/minimal-modern.md
+      surfaces: styles/minimal-modern.md
+      color: styles/minimal-modern.md
+      motion: styles/minimal-modern.md
       imagery: geometric-vector-interactive
 
   - id: apple

@@ -29,19 +29,26 @@ class DesignAuditor:
         self.target_style = target_style.lower()
         self.modifiers = [m.lower() for m in (modifiers or [])]
         self.violations: list[dict[str, Any]] = []
+        self.skipped_files: list[dict[str, Any]] = []  # unreadable files + reasons (never silent)
         self._memphis_signals: dict[str, list] = {}  # per-file Corporate Memphis signal accumulator
 
-    def audit_file(self, file_path: Path):
+    def audit_file(self, file_path: Path) -> bool:
+        """Audits one file. Returns True if scanned, False if skipped (reason recorded)."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-        except Exception:
-            return
+        except Exception as e:
+            self.skipped_files.append({
+                "file": str(file_path),
+                "reason": f"{type(e).__name__}: {e}",
+            })
+            return False
 
         for idx, line in enumerate(lines, 1):
             self._check_line(file_path, idx, line)
         # Post-file: evaluate accumulated Corporate Memphis signals
         self._check_corporate_memphis_drift(file_path)
+        return True
 
     def _check_line(self, file_path: Path, line_no: int, line: str):
         # Skip pure comment lines (HTML <!-- ... --> or CSS /* / //) to avoid
@@ -372,18 +379,20 @@ class DesignAuditor:
 
     def run_audit(self, target_dir: Path) -> dict[str, Any]:
         valid_extensions = [".html", ".jsx", ".tsx", ".vue", ".svelte", ".css"]
+        if not target_dir.exists():
+            raise FileNotFoundError(f"Audit target does not exist: {target_dir}")
         files_scanned = 0
-        
+
         if target_dir.is_file():
-            self.audit_file(target_dir)
-            files_scanned = 1
+            if self.audit_file(target_dir):
+                files_scanned = 1
         else:
             for root, _, files in os.walk(target_dir):
                 for f in files:
                     fp = Path(root) / f
                     if fp.suffix in valid_extensions:
-                        self.audit_file(fp)
-                        files_scanned += 1
+                        if self.audit_file(fp):
+                            files_scanned += 1
 
         total_violations = len(self.violations)
         critical_count = sum(1 for v in self.violations if v["severity"] == "CRITICAL")
@@ -396,7 +405,14 @@ class DesignAuditor:
             layer_summary[l] = layer_summary.get(l, 0) + 1
 
         # Qualitative adherence status (no artificial numeric score!)
-        if critical_count == 0 and warning_count == 0:
+        # Zero files scanned is an ERROR, never a pass — a typo'd path or an
+        # unreadable target must not report "PASSED: Full Spec Adherence".
+        if files_scanned == 0:
+            if self.skipped_files:
+                status = f"ERROR: No files scanned ({len(self.skipped_files)} file(s) unreadable — see skipped_files)"
+            else:
+                status = "ERROR: No scannable files found (expected .html/.jsx/.tsx/.vue/.svelte/.css)"
+        elif critical_count == 0 and warning_count == 0:
             status = "PASSED: Full Spec Adherence"
         elif critical_count == 0:
             status = "PASSED WITH WARNINGS: Minor Stylistic Variances"
@@ -408,6 +424,8 @@ class DesignAuditor:
         return {
             "target_style": self.target_style,
             "files_scanned": files_scanned,
+            "files_skipped": len(self.skipped_files),
+            "skipped_files": self.skipped_files,
             "status": status,
             "summary": {
                 "total_violations": total_violations,
@@ -420,6 +438,7 @@ class DesignAuditor:
 
 if __name__ == "__main__":
     import argparse
+    import sys
     parser = argparse.ArgumentParser(description="Design Audit Static Analysis Engine")
     parser.add_argument("style_id", help="Target design style ID (e.g. minimal-modern)")
     parser.add_argument("target", help="Target directory or file to audit")
@@ -435,5 +454,11 @@ if __name__ == "__main__":
 
     mods = [m.strip() for m in args.modifiers.split(",") if m.strip()]
     auditor = DesignAuditor(style_id, modifiers=mods)
-    report = auditor.run_audit(Path(args.target))
+    try:
+        report = auditor.run_audit(Path(args.target))
+    except FileNotFoundError as e:
+        parser.error(str(e))
     print(json.dumps(report, indent=2))
+    if report["files_scanned"] == 0:
+        print(f"error: {report['status']}: {args.target}", file=sys.stderr)
+        sys.exit(2)
