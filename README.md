@@ -165,8 +165,6 @@ Add a `.claude-plugin/marketplace.json` (and `.github/plugin.json` for Copilot C
 - **SkillsMP / LobeHub**: crawlers index any public GitHub repo containing `SKILL.md` files — nothing to do beyond publishing the repo.
 - **anthropics/skills**: Anthropic's official skills repo accepts community PRs for high-visibility distribution.
 
-Before announcing widely: add a `LICENSE` at the repo root (required by most directories), and keep CI green (`.github/workflows/ci.yml`).
-
 ---
 
 ## Testing & Quality Assurance
@@ -185,3 +183,10 @@ npm run test:e2e:pipeline
 # Run browser DOM computed style audit (Playwright)
 npm run test:e2e:browser
 ```
+
+---
+
+## License
+
+[MIT](LICENSE) © 2026 Aditya Dobhada.
+

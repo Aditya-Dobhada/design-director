@@ -2,6 +2,7 @@
   "name": "design-director",
   "version": "2.0.0",
   "description": "Multi-agent design system director: design briefs, 27 foundational style packs, orthogonal modifiers, layered specs, and post-implementation audits.",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "test:unit": "python3 -m unittest discover -s tests -p 'test_director.py' -v",
