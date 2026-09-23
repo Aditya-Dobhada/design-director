@@ -33,7 +33,7 @@ Design Director prevents coding agents (Cursor, Claude Code, Antigravity) from c
 
 ### Token-Optimized Design
 - **Lean Entry Point:** `skills/design-director/SKILL.md` is strictly capped under **1,200 tokens**.
-- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`styles/<style_id>.md`, ~2.2k tokens) when generating the contract. The 11 other styles are never loaded into prompt context.
+- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`styles/<style_id>.md`, ~2.2k tokens) when generating the contract. The other 19 styles are never loaded into prompt context.
 - **Project-Scoped:** Generates `DESIGN_CONTRACT.md` in the local workspace. Never mutates global system configurations.
 
 ---
@@ -110,12 +110,12 @@ python3 skills/design-audit/audit_code.py swiss-editorial ./index.html
 
 ## Testing & Quality Assurance
 
-All 32 test cases run in CI:
+All 42 test cases run in CI:
 ```bash
 # Run unit tests (brief extraction, contract generation, reference mapping)
 npm run test:unit
 
-# Run pipeline integration tests on unseen PRDs
+# Run pipeline integration tests on unseen PRDs (and audit all 20 gallery previews)
 npm run test:e2e:pipeline
 
 # Run browser DOM computed style audit (Playwright)

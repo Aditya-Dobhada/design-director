@@ -40,7 +40,7 @@ PRD / README / Codebase Context
 
 ### Token Economy & Zero-Bloat Guardrails
 - **Lean Router Skill:** `skills/design-director/SKILL.md` is capped under **1,200 tokens**.
-- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`styles/<style_id>.md`, ~2.2k tokens) when generating the contract. The 11 other styles are never loaded into prompt context.
+- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`styles/<style_id>.md`, ~2.2k tokens) when generating the contract. The other 19 styles are never loaded into prompt context.
 - **Project-Scoped Enforcement:** Outputs a local, project-level `DESIGN_CONTRACT.md`. Never mutates global system configurations.
 
 ---
@@ -126,27 +126,40 @@ design-director/
 │   ├── design-director/
 │   │   ├── SKILL.md            # Conversational director skill (<1.2k tokens)
 │   │   ├── director_engine.py  # Programmatic engine (for deterministic pipelines)
-│   │   └── reference-library.yaml
+│   │   └── reference-library.yaml # 26 reference brand influences mapped to foundations
 │   └── design-audit/
 │       ├── SKILL.md            # Audit skill prompt
-│       └── audit_code.py       # Standalone static linter
+│       └── audit_code.py       # Standalone static linter with modifier whitelists
 │
-├── styles/                     # 12 consolidated, single-file style packs
-│   ├── quiet-luxury.md
+├── styles/                     # 20 consolidated style packs + modifiers specification
+│   ├── modifiers.yaml          # Surface, imagery, typography, and motion dimensions
+│   ├── minimal-modern.md
+│   ├── dark-minimal.md
 │   ├── swiss-editorial.md
-│   ├── neo-brutalism.md
-│   └── ... (9 other styles)
+│   ├── terminal-cli.md
+│   ├── web-brutalism.md
+│   ├── art-deco.md
+│   ├── mid-century-modern.md
+│   ├── vaporwave.md
+│   ├── high-fashion-editorial.md
+│   └── ... (11 other foundation style packs)
 │
-├── gallery/                    # 13 standalone HTML visual previews
-│   ├── quiet_luxury.html
-│   ├── swiss_editorial.html
-│   └── ... (11 other styles + baseline)
+├── gallery/                    # 20 standalone HTML visual previews (canonical "Aurelia" product)
+│   ├── minimal_modern.html
+│   ├── dark_minimal.html
+│   ├── terminal_cli.html
+│   ├── web_brutalism.html
+│   ├── art_deco.html
+│   ├── mid_century_modern.html
+│   ├── vaporwave.html
+│   ├── high_fashion_editorial.html
+│   └── ... (12 other canonical previews)
 │
-├── tests/                      # CI verification suites
+├── tests/                      # CI verification suites (42 automated tests)
 │   ├── fixtures/               # Seeded code and test PRDs
-│   ├── test_director.py        # 10 unit tests
+│   ├── test_director.py        # 12 unit tests (specs, contracts, modifiers, routing)
 │   └── e2e/
-│       ├── test_pipeline_e2e.py    # 22 pipeline integration tests
+│       ├── test_pipeline_e2e.py    # 30 pipeline tests (audits all 20 gallery previews)
 │       └── browser_dom_audit.spec.js # Playwright DOM computed style audit
 │
 ├── package.json
@@ -157,6 +170,6 @@ design-director/
 
 ## 6. Verification & Quality Standards
 
-- **Unit Testing:** 10/10 tests passing via `npm run test:unit`.
-- **Pipeline Integration Testing:** 22/22 tests passing via `npm run test:e2e:pipeline`.
+- **Unit Testing:** 12/12 tests passing via `npm run test:unit` (validating brief extraction, 20-foundation specs, modifier contracts, multi-defensible routing, and layer-scoped refinements).
+- **Pipeline Integration Testing:** 30/30 tests passing via `npm run test:e2e:pipeline` (statically auditing all 20 gallery HTML fixtures with 0 critical violations).
 - **Browser DOM Audit:** Headless Chromium testing via Playwright asserting computed CSS values (`borderRadius === 0px`, `boxShadow === none`, font loading, and contrast luminance).
