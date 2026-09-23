@@ -501,6 +501,93 @@ class TestDesignDirector(unittest.TestCase):
             self.assertFalse(any(v["severity"] == "CRITICAL" for v in neu_cm))
             self.assertTrue(any(v["severity"] == "CRITICAL" for v in mem_cm))
 
+    def test_domain_routing_substring_false_positives(self):
+        """Regression: keyword matching must use word boundaries. Substrings previously
+        misrouted: st-ART-up -> Creator, CRE-ate -> Real Estate, re-VENUE -> Events,
+        prev-EVENT -> Events, agri-CULTURE -> Creator."""
+        b = extract_design_brief("Build me a website for my startup.")
+        self.assertEqual(b["product_type"], "Web Application",
+                         "'startup' (contains 'art') misrouted to a domain bucket")
+
+        b = extract_design_brief("A dashboard to create invoices and track revenue per account.")
+        self.assertEqual(b["product_type"], "Web Application",
+                         "'create'/'revenue' misrouted to Real Estate or Events")
+
+        b = extract_design_brief("A firewall appliance that helps prevent intrusions.")
+        self.assertEqual(b["product_type"], "Web Application",
+                         "'prevent' misrouted to Events/Entertainment")
+
+        b = extract_design_brief("Software for modern agriculture cooperatives.")
+        self.assertEqual(b["product_type"], "Web Application",
+                         "'agriculture' (contains 'culture') misrouted to Creator")
+
+    def test_audit_cli_rejects_unknown_style(self):
+        """Regression: a typo'd style id must hard-fail in the CLI, not silently report PASSED with zero rules."""
+        import subprocess
+        import sys
+        from audit_code import VALID_STYLES
+
+        # Sync guard: the auditor's CLI whitelist must match the director's taxonomy exactly.
+        self.assertEqual(set(VALID_STYLES), set(SUPPORTED_STYLES))
+
+        fixture = ROOT_DIR / "tests" / "fixtures" / "seeded_code" / "deviant_quiet_luxury.html"
+        proc = subprocess.run(
+            [sys.executable, str(ROOT_DIR / "skills" / "design-audit" / "audit_code.py"),
+             "quiet-luxury-TYPO", str(fixture)],
+            capture_output=True, text=True
+        )
+        self.assertNotEqual(proc.returncode, 0, "CLI accepted an unknown style id")
+        self.assertIn("Unknown style id", proc.stderr)
+
+    def test_illustration_placeholder_comment_signal(self):
+        """Regression: `<!-- illustration: ... -->` comments are a documented Corporate Memphis
+        signal and must survive the comment-line skip guard; doc comments must still be ignored."""
+        import tempfile
+        from pathlib import Path
+
+        # illustration comment + purple accent = 2 signals -> WARNING memphis drift
+        slop_html = '''<!-- illustration: friendly hero characters waving -->
+<div class="p-4"><span class="text-purple-600">Welcome</span></div>
+'''
+        # A contract-doc comment quoting banned utilities must NOT create violations.
+        doc_html = '''<!-- NEVER use rounded-lg, shadow-md, or bg-blue-600 per DESIGN_CONTRACT.md -->
+<div class="p-4 rounded-none">Compliant</div>
+'''
+        with tempfile.TemporaryDirectory() as tmpdir:
+            p_slop = Path(tmpdir) / "slop.html"
+            p_slop.write_text(slop_html)
+            p_doc = Path(tmpdir) / "doc.html"
+            p_doc.write_text(doc_html)
+
+            rep_slop = DesignAuditor("minimal-modern").run_audit(p_slop)
+            cm = [v for v in rep_slop["violations"] if v["type"] == "corporate_memphis_drift"]
+            self.assertTrue(cm, "Illustration placeholder comment did not contribute a Memphis signal")
+            self.assertIn("illustration_placeholder", cm[0]["offending_code"])
+            self.assertEqual(cm[0]["severity"], "WARNING")
+
+            rep_doc = DesignAuditor("quiet-luxury").run_audit(p_doc)
+            self.assertEqual(rep_doc["summary"]["total_violations"], 0,
+                             "Documentation comment produced false positives")
+
+    def test_ambient_shadow_word_boundary(self):
+        """Regression: ambient_shadow signal must not fire on substrings like `dropshadow-md`
+        (double-backslash regex bug previously matched inside words)."""
+        import tempfile
+        from pathlib import Path
+
+        # purple + bubbly = 2 signals -> WARNING. A false ambient_shadow hit would make it CRITICAL.
+        html = '''<div class="card rounded-2xl dropshadow-md"><span class="text-purple-600">x</span></div>
+'''
+        with tempfile.TemporaryDirectory() as tmpdir:
+            p = Path(tmpdir) / "boundary.html"
+            p.write_text(html)
+            rep = DesignAuditor("minimal-modern").run_audit(p)
+            cm = [v for v in rep["violations"] if v["type"] == "corporate_memphis_drift"]
+            self.assertTrue(cm)
+            self.assertEqual(cm[0]["severity"], "WARNING",
+                             "ambient_shadow fired inside the word 'dropshadow-md'")
+            self.assertNotIn("ambient_shadow", cm[0]["offending_code"])
+
 
 if __name__ == "__main__":
     unittest.main()

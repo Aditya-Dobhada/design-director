@@ -126,7 +126,7 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
         futuristic_institutional = "Futuristic / Avant-Garde"
 
     # ── 3. EdTech / Learning ─────────────────────────────────────────────────
-    elif any(k in text_lower for k in ["learning", "education", "student", "teacher", "course", "curriculum", "lesson", "quiz", "edtech", "academy", "tutoring", "classroom", "lms"]):
+    elif re.search(r'\b(learning|education|student|students|teacher|teachers|course|courses|curriculum|curricula|lesson|lessons|quiz|quizzes|edtech|academy|academies|tutoring|classroom|classrooms|lms)\b', text_lower):
         product_type = "EdTech / Learning Platform"
         audience = "Students, Educators, and Learning Institutions"
         traits = ["clear", "encouraging", "structured", "accessible"]
@@ -138,7 +138,7 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
         futuristic_institutional = "Contemporary Modern"
 
     # ── 4. Healthcare / Clinical ─────────────────────────────────────────────
-    elif any(k in text_lower for k in ["patient", "clinical", "medical", "health", "ehr", "hipaa", "hospital", "physician", "diagnosis", "pharmacy", "telehealth", "wellness"]):
+    elif re.search(r'\b(patient|patients|clinical|medical|health|healthcare|healthtech|ehr|hipaa|hospital|hospitals|physician|physicians|diagnosis|pharmacy|telehealth|wellness)\b', text_lower):
         product_type = "Healthcare / Clinical Platform"
         audience = "Clinical Staff, Patients, and Healthcare Administrators"
         traits = ["trustworthy", "calm", "legible", "compliant"]
@@ -151,7 +151,7 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
 
     # ── 5. Logistics / Operations / Supply Chain ──────────────────────────────
     # Must come before Legal to prevent "compliance alerts" in freight PRDs from matching Legal.
-    elif any(k in text_lower for k in ["logistics", "supply chain", "warehouse", "fleet", "freight", "shipping", "dispatch", "inventory", "fulfilment", "depot", "hos violation"]):
+    elif re.search(r'\b(logistics|supply chain|warehouse|warehouses|fleet|fleets|freight|shipping|dispatch|dispatchers|inventory|fulfilment|fulfillment|depot|depots|hos violations?)\b', text_lower):
         product_type = "Enterprise Operations Platform"
         audience = "Operations Teams, Logistics Managers, and Enterprise Administrators"
         traits = ["dependable", "functional", "efficient", "clear"]
@@ -163,7 +163,7 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
         futuristic_institutional = "Contemporary Modern"
 
     # ── 6. Legal / Compliance ────────────────────────────────────────────────
-    elif any(k in text_lower for k in ["legal", "law firm", "contract", "compliance", "regulatory", "litigation", "counsel", "attorney", "paralegal", "due diligence"]):
+    elif re.search(r'\b(legal|law firms?|contracts?|compliance|regulatory|litigation|counsel|attorneys?|paralegals?|due diligence)\b', text_lower):
         product_type = "Legal / Compliance Platform"
         audience = "Attorneys, Legal Operations Teams, and Compliance Officers"
         traits = ["authoritative", "meticulous", "precise", "institutional"]
@@ -175,7 +175,7 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
         futuristic_institutional = "Institutional / Traditional"
 
     # ── 7. Ecological / Organic / Sustainability ─────────────────────────────
-    elif any(k in text_lower for k in ["organic", "nature", "botanical", "climate", "sustainable", "sustainability", "ecology", "earth", "biophilic", "regenerative", "conservation"]):
+    elif re.search(r'\b(organic|nature|botanical|botanicals|climate|sustainable|sustainability|ecology|earth|biophilic|regenerative|conservation)\b', text_lower):
         product_type = "Ecological / Organic Living"
         audience = "Conscious Consumers, Environmental Stewards, and Botanical Enthusiasts"
         traits = ["grounded", "authentic", "mindful", "tactile"]
@@ -187,7 +187,7 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
         futuristic_institutional = "Contemporary Modern"
 
     # ── 8. Architecture / Spatial Design ─────────────────────────────────────
-    elif any(k in text_lower for k in ["architect", "architecture", "interior design", "furniture", "mid-century", "eames", "building"]):
+    elif re.search(r'\b(architect|architects|architecture|architectural|interior design|furniture|mid-century|eames|building|buildings)\b', text_lower):
         product_type = "Architecture & Spatial Design"
         audience = "Architects, Designers, and Spatial Curators"
         traits = ["architectural", "geometric", "crafted", "warm"]
@@ -201,7 +201,7 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
     # ── 9. Luxury / Premium Consumer ─────────────────────────────────────────
     # Must come before Creator so "boutique" and "artisanal" don't fall into the
     # Creator bucket (which sets Accessible/Mass Appeal premium positioning).
-    elif any(k in text_lower for k in ["luxury", "boutique", "premium", "exclusive", "bespoke", "couture", "artisanal", "high-end", "atelier"]):
+    elif re.search(r'\b(luxury|boutique|premium|exclusive|bespoke|couture|artisanal|high-end|atelier)\b', text_lower):
         product_type = "Luxury / Premium Consumer"
         audience = "Affluent Consumers Seeking Premium Experiences"
         traits = ["refined", "understated", "exclusive", "crafted"]
@@ -212,8 +212,8 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
         premium_accessible = "Ultra Premium"
         futuristic_institutional = "Contemporary Modern"
 
-    # ── 9. Creator / Commerce / Cultural ─────────────────────────────────────
-    elif any(k in text_lower for k in ["creator", "commerce", "art", "music", "zine", "indie", "marketplace", "storefront", "streetwear", "fashion", "culture", "editorial"]):
+    # ── 10. Creator / Commerce / Cultural ────────────────────────────────────
+    elif re.search(r'\b(creator|creators|commerce|art|arts|music|zine|zines|indie|marketplace|marketplaces|storefront|storefronts|streetwear|fashion|culture|editorial)\b', text_lower):
         product_type = "Creator Marketplace / Community"
         audience = "Independent Creators, Artists, and Cultural Enthusiasts"
         traits = ["unapologetic", "expressive", "tactile", "energetic"]
@@ -224,8 +224,8 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
         premium_accessible = "Accessible / Mass Appeal"
         futuristic_institutional = "Contemporary Modern"
 
-    # ── 10. Real Estate / Property ────────────────────────────────────────────
-    elif any(k in text_lower for k in ["real estate", "property", "listing", "mortgage", "broker", "mls", "rental", "cre", "proptech"]):
+    # ── 11. Real Estate / Property ────────────────────────────────────────────
+    elif re.search(r'\b(real estate|property|properties|listing|listings|mortgage|mortgages|broker|brokers|mls|rental|rentals|cre|proptech)\b', text_lower):
         product_type = "Real Estate / Property Platform"
         audience = "Home Buyers, Property Investors, and Real Estate Agents"
         traits = ["trustworthy", "clear", "aspirational", "approachable"]
@@ -236,8 +236,8 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
         premium_accessible = "Refined Professional"
         futuristic_institutional = "Contemporary Modern"
 
-    # ── 11. Events / Entertainment / Community ────────────────────────────────
-    elif any(k in text_lower for k in ["event", "concert", "ticket", "venue", "entertainment", "community", "social", "gaming", "esports", "streaming"]):
+    # ── 12. Events / Entertainment / Community ────────────────────────────────
+    elif re.search(r'\b(event|events|concert|concerts|ticket|tickets|venue|venues|entertainment|community|social|gaming|esports|streaming)\b', text_lower):
         product_type = "Events / Entertainment Platform"
         audience = "General Consumers and Community Members"
         traits = ["energetic", "social", "vibrant", "accessible"]
@@ -248,7 +248,7 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
         premium_accessible = "Accessible / Mass Appeal"
         futuristic_institutional = "Contemporary Modern"
 
-    # ── 12. Generic SaaS / Web Application ───────────────────────────────────
+    # ── 13. Generic SaaS / Web Application ───────────────────────────────────
     else:
         product_type = "Web Application"
         audience = "General Users"

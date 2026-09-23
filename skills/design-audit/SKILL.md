@@ -22,6 +22,8 @@ python3 skills/design-audit/audit_code.py dark-minimal ./src --modifiers frosted
 python3 skills/design-audit/audit_code.py neo-brutalism ./index.html
 ```
 
+Unknown or misspelled `style_id` values are rejected with exit code 2 and the list of the 27 valid styles — a typo can never silently "pass" an audit.
+
 ---
 
 ## What It Checks

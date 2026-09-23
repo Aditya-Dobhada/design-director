@@ -3,3 +3,4 @@ __pycache__/
 *$py.class
 .DS_Store
 .design_state.json
+node_modules/

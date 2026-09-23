@@ -10,6 +10,19 @@ import re
 from pathlib import Path
 from typing import Any
 
+# Canonical foundation style IDs. Keep in sync with director_engine.SUPPORTED_STYLES
+# and the style packs in styles/<style_id>.md. Used by the CLI to reject unknown
+# or misspelled style IDs instead of silently reporting "PASSED" with zero rules.
+VALID_STYLES = frozenset([
+    "swiss-editorial", "neo-brutalism", "y2k-frutiger-aero", "quiet-luxury",
+    "cyberpunk", "retro-americana", "memphis-postmodern", "space-age-optimism",
+    "japanese-wabi-sabi", "bauhaus", "organic-natural", "maximalist-dopamine",
+    "minimal-modern", "dark-minimal", "terminal-cli", "web-brutalism",
+    "art-deco", "mid-century-modern", "vaporwave", "high-fashion-editorial",
+    "glassmorphism", "neumorphism", "claymorphism",
+    "data-native", "command-center", "aurora-gradient", "digital-organic",
+])
+
 
 class DesignAuditor:
     def __init__(self, target_style: str, modifiers: list[str] | None = None):
@@ -36,6 +49,11 @@ class DesignAuditor:
         stripped = line.strip()
         if (stripped.startswith('<!--') or stripped.startswith('//') or
                 stripped.startswith('*') or stripped.startswith('/*')):
+            # Exception: `<!-- illustration: ... -->` placeholder comments are a
+            # documented Corporate Memphis signal (see styles/reference-anti-patterns.md),
+            # so accumulate it before skipping the rest of the line checks.
+            if re.match(r'<!--\s*illustration\b', stripped, re.IGNORECASE):
+                self._memphis_signals.setdefault(str(file_path), []).append(("illustration_placeholder", line_no))
             return
 
         # 1. Border-Radius Violations
@@ -303,9 +321,9 @@ class DesignAuditor:
         if any(k in line for k in ["card", "panel", "container", "section"]):
             if re.search(r'\b(rounded-2xl|rounded-3xl)\b', line):
                 self._memphis_signals[str(file_path)].append(("bubbly_container", line_no))
-        if re.search(r'(?<![\\w-])(shadow-(?:md|lg|xl|2xl))(?![\\w-])', line):
+        if re.search(r'(?<![\w-])(shadow-(?:md|lg|xl|2xl))(?![\w-])', line):
             self._memphis_signals[str(file_path)].append(("ambient_shadow", line_no))
-        if re.search(r'(<!--\s*illustration|blob|organic.shape|bg-blob)', line, re.IGNORECASE):
+        if re.search(r'(<!--\s*illustration|\[illustration[^\]]*\]|blob|organic.shape|bg-blob)', line, re.IGNORECASE):
             self._memphis_signals[str(file_path)].append(("illustration_placeholder", line_no))
 
     def _check_corporate_memphis_drift(self, file_path: Path):
@@ -408,7 +426,14 @@ if __name__ == "__main__":
     parser.add_argument("--modifiers", "-m", help="Comma-separated list of active modifiers (e.g. frosted-glass,subtle-grain)", default="")
     args = parser.parse_args()
 
+    style_id = args.style_id.lower().strip()
+    if style_id not in VALID_STYLES:
+        parser.error(
+            f"Unknown style id '{args.style_id}'. "
+            f"Valid styles: {', '.join(sorted(VALID_STYLES))}"
+        )
+
     mods = [m.strip() for m in args.modifiers.split(",") if m.strip()]
-    auditor = DesignAuditor(args.style_id, modifiers=mods)
+    auditor = DesignAuditor(style_id, modifiers=mods)
     report = auditor.run_audit(Path(args.target))
     print(json.dumps(report, indent=2))

@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python deps (PyYAML for director_engine)
+        run: pip install -r requirements.txt
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright
+        run: npm install
+
+      - name: Unit tests (briefs, specs, contracts, routing, audit regressions)
+        run: npm run test:unit
+
+      - name: Pipeline e2e tests (unseen PRDs + gallery audits)
+        run: npm run test:e2e:pipeline
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Browser DOM computed-style audit
+        run: npm run test:e2e:browser

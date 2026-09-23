@@ -1,6 +1,6 @@
 ---
 name: design-director
-description: Conversational design reasoning engine. Analyzes project context (PRD, README, codebase), runs a targeted 3-question intake interview when context is thin, presents 2-3 tailored visual directions across 20 foundations with in-chat swatches, preview links, and orthogonal modifiers, and generates a binding DESIGN_CONTRACT.md for coding agents.
+description: Conversational design reasoning engine. Analyzes project context (PRD, README, codebase), runs a targeted 3-question intake interview when context is thin, presents 2-3 tailored visual directions across 27 foundations with in-chat swatches, preview links, and orthogonal modifiers, and generates a binding DESIGN_CONTRACT.md for coding agents.
 ---
 
 # Design Director
@@ -8,7 +8,7 @@ description: Conversational design reasoning engine. Analyzes project context (P
 A design reasoning engine that establishes an intentional, implementation-ready visual language before frontend code is generated. It prevents coding agents from collapsing into generic Tailwind SaaS defaults (`Inter`, `rounded-lg`, `shadow-sm`, `bg-blue-600`).
 
 ## Token Economy Rules
-1. **Never load all styles at once.** The 20 style guides live in `styles/<style_id>.md`. Read **only the single chosen style file** when generating the final contract.
+1. **Never load all styles at once.** The 27 style guides live in `styles/<style_id>.md`. Read **only the single chosen style file** when generating the final contract.
 2. **Never load reference libraries into prompt context.** The brief mapping rules below provide all necessary refinement context.
 3. **Keep contracts project-scoped.** Write `DESIGN_CONTRACT.md` to the project root. Never attempt to mutate global or system-level configuration.
 
@@ -30,13 +30,13 @@ Inspect available project files: `README.md`, `PRD.md`, `SPEC.md`, `package.json
   3. **Visual Constraints:** Strict dark mode, WCAG AAA readability, or specific brand colors?
 
 ### Phase 3: Recommendations (2–3 Candidate Directions)
-Select the 2–3 strongest fits from the 20 foundational styles. Present each direction with:
+Select the 2–3 strongest fits from the 27 foundational styles. Present each direction with:
 1. **In-Chat Visual Micro-Spec:** Display font, canvas hex, accent hex, and radius rule directly in the response.
 2. **Local Preview Link:** Provide a clickable link to `gallery/<style_id>.html`.
 3. **Honest Trade-offs:** The specific operational limitation of the style.
 
 #### Foundation Style Taxonomy
-See `PRD.md` §3 and `styles/domain-style-defaults.yaml` for the complete 27-foundation style taxonomy, visual signatures, and domain defaults. Live visual previews for all styles are in [`gallery/<style_id>.html`](file:///gallery/).
+See `PRD.md` §3 and `styles/domain-style-defaults.yaml` for the complete 27-foundation style taxonomy, visual signatures, and domain defaults. Live visual previews for all styles are in `gallery/<style_id>.html`.
 
 ### Phase 4: Critique, Refinements & Modifiers
 When the user requests refinements or surface treatments, apply orthogonal modifiers from `styles/modifiers.yaml`:
