@@ -633,11 +633,14 @@ class TestTokenEconomyRegressions(unittest.TestCase):
 
         The .md pack is the single source of truth; the engine's micro-spec
         swatch must not drift (dark-minimal #08090A vs pack #09090B, etc.).
+        Styles without a flat canvas (e.g. gradient-based y2k-frutiger-aero) are exempt.
         """
         from director_engine import STYLE_METADATA, STYLES_DIR
         for sid, meta in sorted(STYLE_METADATA.items()):
             pack = (STYLES_DIR / f"{sid}.md").read_text(encoding="utf-8")
-            canvas = meta["micro_spec"]["canvas_hex"]
+            canvas = meta["micro_spec"].get("canvas_hex")
+            if not canvas or not canvas.startswith("#"):
+                continue
             self.assertIn(
                 canvas.lower(), pack.lower(),
                 f"{sid}: micro_spec canvas {canvas} not found in styles/{sid}.md "

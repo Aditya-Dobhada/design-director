@@ -546,7 +546,7 @@
     },
     "y2k-frutiger-aero": {
       "font": "Nunito",
-      "canvas": "#E8F4FD",
+      "canvas": "gradient-based, no flat canvas",
       "surface": "#FFFFFF",
       "accent": "#00E5FF",
       "accent2": "#76FF03",

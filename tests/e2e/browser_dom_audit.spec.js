@@ -267,9 +267,23 @@ test.describe('y2k-frutiger-aero DOM audit', () => {
   });
 
   test('page is light mode (not dark)', async ({ page }) => {
-    const bg = await page.evaluate(() =>
-      window.getComputedStyle(document.body).backgroundColor
-    );
+    const { bg, bgImage } = await page.evaluate(() => {
+      const s = window.getComputedStyle(document.body);
+      return { bg: s.backgroundColor, bgImage: s.backgroundImage };
+    });
+    // Y2K Frutiger Aero uses a gradient canvas rather than a flat background color
+    if (bgImage && bgImage.includes('gradient')) {
+      const rgbMatches = bgImage.match(/rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)/g) ?? [];
+      if (rgbMatches.length > 0) {
+        const luminances = rgbMatches.map(str => {
+          const [cr, cg, cb] = (str.match(/\d+/g) ?? ['0', '0', '0']).map(Number);
+          return 0.2126 * cr + 0.7152 * cg + 0.0722 * cb;
+        });
+        const avgLuminance = luminances.reduce((acc, v) => acc + v, 0) / luminances.length;
+        expect(avgLuminance, 'Y2K gradient must be light mode (avg luminance > 150)').toBeGreaterThan(150);
+        return;
+      }
+    }
     const [r, g, b] = (bg.match(/\d+/g) ?? ['0', '0', '0']).map(Number);
     const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
     expect(luminance, 'Y2K must be light mode (luminance > 150)').toBeGreaterThan(150);

@@ -215,3 +215,7 @@ additionally needs a Chromium download — skip it in network-restricted sandbox
 4. **Corporate Memphis signals are hand-duplicated** between `audit_code.py` and
    `skills/design-director/styles/reference-anti-patterns.md` (see NOTE comment in the source) — keep them in sync
    if you edit either.
+5. **Noted sibling drifts (follow-up backlog):**
+   - `dark-minimal` surface/accent minor divergence between style pack and engine micro-spec.
+   - `cyberpunk.html` gallery fixture inline style hardcoding.
+   - Reference library Linear entry mapped style layers alignment.

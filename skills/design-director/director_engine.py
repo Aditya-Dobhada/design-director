@@ -758,12 +758,12 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         ],
         "micro_spec": {
             "display_font": "Nunito",
-            "canvas_hex": "#E8F4FD",
+            "canvas_hex": "gradient-based, no flat canvas",
             "surface_hex": "#FFFFFF",
             "accent_hex": "#00E5FF",
             "secondary_accent_hex": "#76FF03",
             "radius_rule": "16px - 24px",
-            "swatches": ["#E8F4FD", "#FFFFFF", "#00E5FF", "#76FF03"],
+            "swatches": ["gradient-based, no flat canvas", "#FFFFFF", "#00E5FF", "#76FF03"],
         },
     },
 }
@@ -893,9 +893,22 @@ def format_micro_spec_svg(micro_spec: dict[str, Any]) -> str:
     else:
         rx = "2"
 
+    if c_hex and not c_hex.startswith("#"):
+        c_rect = (
+            f'  <defs>\n'
+            f'    <linearGradient id="canvas-grad" x1="0%" y1="0%" x2="100%" y2="100%">\n'
+            f'      <stop offset="0%" stop-color="{a1_hex}"/>\n'
+            f'      <stop offset="100%" stop-color="{a2_hex}"/>\n'
+            f'    </linearGradient>\n'
+            f'  </defs>\n'
+            f'  <rect x="2" y="3" width="28" height="28" rx="3" fill="url(#canvas-grad)" stroke="#444444" stroke-width="1"/>\n'
+        )
+    else:
+        c_rect = f'  <rect x="2" y="3" width="28" height="28" rx="3" fill="{c_hex}" stroke="#444444" stroke-width="1"/>\n'
+
     return (
         f'<svg width="100%" height="34" viewBox="0 0 380 34" fill="none" xmlns="http://www.w3.org/2000/svg">\n'
-        f'  <rect x="2" y="3" width="28" height="28" rx="3" fill="{c_hex}" stroke="#444444" stroke-width="1"/>\n'
+        f'{c_rect}'
         f'  <rect x="36" y="3" width="28" height="28" rx="3" fill="{s_hex}" stroke="#444444" stroke-width="1"/>\n'
         f'  <rect x="70" y="3" width="28" height="28" rx="3" fill="{a1_hex}" stroke="#444444" stroke-width="1"/>\n'
         f'  <rect x="104" y="3" width="28" height="28" rx="3" fill="{a2_hex}" stroke="#444444" stroke-width="1"/>\n'
@@ -914,7 +927,8 @@ def format_micro_spec_text(micro_spec: dict[str, Any]) -> str:
     a1_hex = micro_spec.get("accent_hex", "")
     a2_hex = micro_spec.get("secondary_accent_hex", "")
     radius_rule = micro_spec.get("radius_rule", "")
-    return f"`{c_hex}` `{s_hex}` `{a1_hex}` `{a2_hex}` | Radius: `{radius_rule}` | Font: **{font}**"
+    c_part = f"*{c_hex}*" if (c_hex and not c_hex.startswith("#")) else f"`{c_hex}`"
+    return f"{c_part} `{s_hex}` `{a1_hex}` `{a2_hex}` | Radius: `{radius_rule}` | Font: **{font}**"
 
 
 def create_design_spec(style_id: str, custom_layers: dict[str, str] | None = None) -> dict[str, Any]:
