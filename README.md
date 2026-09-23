@@ -115,9 +115,9 @@ Or with specific intent:
 The agent will:
 1. Scan your project files.
 2. Ask up to 3 diagnostic questions if context is sparse.
-3. Recommend 2–3 directions with in-chat swatches and clickable local links to `skills/design-director/gallery/*.html`.
+3. Recommend 2–3 directions with an in-chat visual micro-spec (inline SVG strip, font, swatches, radius rule) and portable relative links to `skills/design-director/gallery/*.html`.
 4. Apply any critique ("more like Linear", "warmer tones").
-5. Output `DESIGN_CONTRACT.md`.
+5. Output `DESIGN_CONTRACT.md` (and optionally offer a tailored single-file preview matching the product domain).
 
 ### 2. Post-Implementation Audit
 After code generation, verify that the contract was followed:

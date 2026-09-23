@@ -30,10 +30,25 @@ Inspect available project files: `README.md`, `PRD.md`, `SPEC.md`, `package.json
   3. **Visual Constraints:** Strict dark mode, WCAG AAA readability, or specific brand colors?
 
 ### Phase 3: Recommendations (2–3 Candidate Directions)
-Select the 2–3 strongest fits from the 27 foundational styles. Present each direction with:
-1. **In-Chat Visual Micro-Spec:** Display font, canvas hex, accent hex, and radius rule directly in the response.
-2. **Local Preview Link:** Provide a clickable link to `gallery/<style_id>.html` inside this skill folder.
-3. **Honest Trade-offs:** The specific operational limitation of the style.
+Select the 2–3 strongest fits from the 27 foundational styles. For each candidate direction, present:
+
+1. **In-Chat Visual Micro-Spec (Inline in Message):**
+   Generate a compact inline visual strip directly in the chat response (do NOT create files or full HTML mockups for candidates — keep it cheap and lightweight):
+   - **Inline Visual Strip:** An inline `<svg width="100%" height="36" viewBox="0 0 380 36" fill="none" xmlns="http://www.w3.org/2000/svg">` containing:
+     - 4 palette swatch rectangles (`width="28" height="28"`) for Canvas, Surface, Primary Accent, and Secondary Accent.
+     - 1 outlined radius-sample shape (`width="28" height="28"`, matching the style's exact border radius rule: `rx="0"` for sharp, `rx="6"` for restrained, `rx="16"` for organic/pod).
+     - Display font specimen text (`<text font-family="..." font-size="13">`).
+   - **Swatch & Token Summary:**
+     `[⬛ #canvas] [⬛ #surface] [🟨 #accent1] [🟨 #accent2] | Radius: <rule> | Font: **<Display Font>**`
+     - Display Font & Body Font
+     - Canvas & Surface hexes
+     - Accent hexes
+     - Radius Rule
+     - Recommended Modifiers (from `styles/modifiers.yaml`)
+2. **Portable Preview Link:**
+   Provide a project-relative markdown link to the foundation gallery file, e.g. `[<style_id>.html](skills/design-director/gallery/<style_id>.html)` or `[<style_id>.html](.agents/skills/design-director/gallery/<style_id>.html)` based on the installation path.
+   **CRITICAL:** Never output hardcoded absolute `file:///` URLs — links must remain portable across different machines and shared repositories.
+3. **Honest Trade-offs:** The specific operational limitation or aesthetic risk of the style.
 
 #### Foundation Style Taxonomy
 See `styles/domain-style-defaults.yaml` (inside this skill) for the complete 27-foundation style taxonomy, visual signatures, and domain defaults. Live visual previews for all styles are in `gallery/<style_id>.html`.
@@ -54,3 +69,5 @@ Once confirmed:
    - **`## Mandatory Anti-Patterns`**: The explicit `NEVER` constraints from the style pack.
    - Audit whitelist rules for declared modifiers.
 3. Hand off `DESIGN_CONTRACT.md` to the coding agent for enforcement.
+4. **Tailored Preview (Optional / Opt-in Only):**
+   Once a style is selected (not at the 3-candidate stage), offer the user the option to generate ONE tailored single-file preview (e.g. `preview_<style_id>.html` in project root) demonstrating their chosen style, active modifiers, and custom palette applied to their actual product domain. Only generate this if the user explicitly opts in.

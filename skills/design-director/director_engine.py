@@ -311,6 +311,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "High visual ornamentation and strict symmetry may feel too ornate for purely utilitarian data tables."
         ],
+        "micro_spec": {
+            "display_font": "Cinzel",
+            "canvas_hex": "#0D0D11",
+            "surface_hex": "#16161A",
+            "accent_hex": "#D4AF37",
+            "secondary_accent_hex": "#F3E5AB",
+            "radius_rule": "0px",
+            "swatches": ["#0D0D11", "#16161A", "#D4AF37", "#F3E5AB"],
+        },
     },
     "aurora-gradient": {
         "default_reasoning": "Soft atmospheric multi-color gradients over obsidian canvas create an ethereal, calm, futuristic AI environment.",
@@ -318,6 +327,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Atmospheric gradient overlays require dedicated dark canvas to maintain sufficient text legibility."
         ],
+        "micro_spec": {
+            "display_font": "Syne",
+            "canvas_hex": "#0B0F1A",
+            "surface_hex": "#131827",
+            "accent_hex": "#8B5CF6",
+            "secondary_accent_hex": "#06B6D4",
+            "radius_rule": "16px - 24px",
+            "swatches": ["#0B0F1A", "#131827", "#8B5CF6", "#06B6D4"],
+        },
     },
     "bauhaus": {
         "default_reasoning": "Form strictly follows function: 8px constructivist grid and functional geometric typography mirror modernist architectural heritage.",
@@ -325,6 +343,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Primary color blocks can feel austere or unyielding for softer lifestyle contexts."
         ],
+        "micro_spec": {
+            "display_font": "IBM Plex Sans",
+            "canvas_hex": "#FFFFFF",
+            "surface_hex": "#F4F4F4",
+            "accent_hex": "#E03A3E",
+            "secondary_accent_hex": "#004B97",
+            "radius_rule": "0px",
+            "swatches": ["#FFFFFF", "#F4F4F4", "#E03A3E", "#004B97"],
+        },
     },
     "claymorphism": {
         "default_reasoning": "Voluminous rounded clay geometry (20-32px), layered inner highlights, and friendly pastel fills communicate approachable, tactile warmth.",
@@ -332,6 +359,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Voluminous 20-32px rounded clay geometry and pastel fills consume high padding and reduce screen density."
         ],
+        "micro_spec": {
+            "display_font": "Nunito",
+            "canvas_hex": "#FFFBF5",
+            "surface_hex": "#FFFFFF",
+            "accent_hex": "#FFB5A7",
+            "secondary_accent_hex": "#C8E6FF",
+            "radius_rule": "20px - 32px",
+            "swatches": ["#FFFBF5", "#FFFFFF", "#FFB5A7", "#C8E6FF"],
+        },
     },
     "command-center": {
         "default_reasoning": "Near-black multi-panel operational grid with strict semantic status indicators (healthy/warning/critical) built for incident response.",
@@ -339,6 +375,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "High information density and multi-panel ops layout can overwhelm casual or non-technical operators."
         ],
+        "micro_spec": {
+            "display_font": "Inter",
+            "canvas_hex": "#0B0D11",
+            "surface_hex": "#141820",
+            "accent_hex": "#EF4444",
+            "secondary_accent_hex": "#22C55E",
+            "radius_rule": "4px",
+            "swatches": ["#0B0D11", "#141820", "#EF4444", "#22C55E"],
+        },
     },
     "cyberpunk": {
         "default_reasoning": "Obsidian canvas, monospace telemetry, and neon HUD brackets provide an immersive, high-voltage environment ideal for real-time monitoring streams.",
@@ -346,6 +391,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "High sensory intensity is unsuitable for calm documentation or administrative configuration flows."
         ],
+        "micro_spec": {
+            "display_font": "Rajdhani",
+            "canvas_hex": "#050508",
+            "surface_hex": "#0B0C14",
+            "accent_hex": "#00F5FF",
+            "secondary_accent_hex": "#FF00A0",
+            "radius_rule": "0px (8px chamfer)",
+            "swatches": ["#050508", "#0B0C14", "#00F5FF", "#FF00A0"],
+        },
     },
     "dark-minimal": {
         "default_reasoning": "Obsidian canvas (#09090B), hairline translucent borders, 6-8px micro-radii, and a single electric accent create a calm, focused, high-density environment ideal for modern developer tools, AI command surfaces, and telemetry.",
@@ -354,6 +408,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
             "Low-sensory dark canvas requires disciplined contrast checking in bright daylight environments.",
             "Requires strict micro-typography hierarchy to prevent dense data from blurring together."
         ],
+        "micro_spec": {
+            "display_font": "Inter",
+            "canvas_hex": "#08090A",
+            "surface_hex": "#111215",
+            "accent_hex": "#5E6AD2",
+            "secondary_accent_hex": "#8B95A5",
+            "radius_rule": "6px - 8px",
+            "swatches": ["#08090A", "#111215", "#5E6AD2", "#8B95A5"],
+        },
     },
     "data-native": {
         "default_reasoning": "Ultra-dense monospace numerical hierarchy, 32px compact table rows, and disciplined status dots maximize information density for deep analytics.",
@@ -361,6 +424,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Ultra-dense monospace numerical hierarchy leaves minimal room for expressive brand personality."
         ],
+        "micro_spec": {
+            "display_font": "JetBrains Mono",
+            "canvas_hex": "#0D1117",
+            "surface_hex": "#161B22",
+            "accent_hex": "#3B82F6",
+            "secondary_accent_hex": "#22C55E",
+            "radius_rule": "4px",
+            "swatches": ["#0D1117", "#161B22", "#3B82F6", "#22C55E"],
+        },
     },
     "digital-organic": {
         "default_reasoning": "Living biomorphic blob geometry, natural gradient fills, and humanist typography bridge organic living systems with modern digital precision.",
@@ -368,6 +440,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Asymmetric organic blob containers and earthy palettes require disciplined asset art-direction."
         ],
+        "micro_spec": {
+            "display_font": "Outfit",
+            "canvas_hex": "#FAFAF8",
+            "surface_hex": "#F0EFEB",
+            "accent_hex": "#2D6A4F",
+            "secondary_accent_hex": "#D4A373",
+            "radius_rule": "20px - 32px",
+            "swatches": ["#FAFAF8", "#F0EFEB", "#2D6A4F", "#D4A373"],
+        },
     },
     "glassmorphism": {
         "default_reasoning": "Translucent frosted glass panels over dark canvas with specular 1px hairlines provide OS-native depth cues.",
@@ -375,6 +456,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Multi-layer backdrop blur and translucent panels can cause GPU performance overhead on lower-end devices."
         ],
+        "micro_spec": {
+            "display_font": "Plus Jakarta Sans",
+            "canvas_hex": "#0A0A0F",
+            "surface_hex": "#1E1E2E",
+            "accent_hex": "#7C3AED",
+            "secondary_accent_hex": "#06B6D4",
+            "radius_rule": "16px - 24px",
+            "swatches": ["#0A0A0F", "#1E1E2E", "#7C3AED", "#06B6D4"],
+        },
     },
     "high-fashion-editorial": {
         "default_reasoning": "Monumental Bodoni display headlines, micro-grotesque metadata, razor-thin hairlines, and asymmetric runway grids bring high-drama couture sophistication.",
@@ -383,6 +473,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
             "Severe typographic scale contrast requires strict editorial discipline and short, punchy copy.",
             "Zero drop shadows and knife-edge corners demand immaculate layout composition."
         ],
+        "micro_spec": {
+            "display_font": "Bodoni Moda",
+            "canvas_hex": "#FFFFFF",
+            "surface_hex": "#F8F8F8",
+            "accent_hex": "#000000",
+            "secondary_accent_hex": "#E50000",
+            "radius_rule": "0px",
+            "swatches": ["#FFFFFF", "#F8F8F8", "#000000", "#E50000"],
+        },
     },
     "japanese-wabi-sabi": {
         "default_reasoning": "Handmade ceramic warmth, ink wash textures, and profound empty space reflect environmental humility and artisanal mindfulness.",
@@ -390,6 +489,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Asymmetric unhurried layouts require disciplined content curation."
         ],
+        "micro_spec": {
+            "display_font": "Noto Serif JP",
+            "canvas_hex": "#FAF7F0",
+            "surface_hex": "#F2ECE1",
+            "accent_hex": "#2B2B28",
+            "secondary_accent_hex": "#A07E6A",
+            "radius_rule": "0px",
+            "swatches": ["#FAF7F0", "#F2ECE1", "#2B2B28", "#A07E6A"],
+        },
     },
     "maximalist-dopamine": {
         "default_reasoning": "Sticker-bomb badges, candy neon explosions, and chaotic typography shifts create hyper-sensory joy for youth culture, streetwear, and drops.",
@@ -397,6 +505,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Visual density and colliding hues can cause fatigue during prolonged administrative tasks."
         ],
+        "micro_spec": {
+            "display_font": "Syne",
+            "canvas_hex": "#FFF500",
+            "surface_hex": "#FFFFFF",
+            "accent_hex": "#FF007F",
+            "secondary_accent_hex": "#00E5FF",
+            "radius_rule": "4px - 8px",
+            "swatches": ["#FFF500", "#FFFFFF", "#FF007F", "#00E5FF"],
+        },
     },
     "memphis-postmodern": {
         "default_reasoning": "Ettore Sottsass pattern collisions (polka dots, diagonal hatch, squiggles) celebrate creative freedom and intentional kitsch.",
@@ -404,6 +521,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Ornamental pattern fills require careful layering to avoid competing with actual creator products."
         ],
+        "micro_spec": {
+            "display_font": "Syne",
+            "canvas_hex": "#FFFFFF",
+            "surface_hex": "#FFFDEB",
+            "accent_hex": "#FFE600",
+            "secondary_accent_hex": "#FF007F",
+            "radius_rule": "0px",
+            "swatches": ["#FFFFFF", "#FFFDEB", "#FFE600", "#FF007F"],
+        },
     },
     "mid-century-modern": {
         "default_reasoning": "Warm architectural parchment, atomic pod curves (16-24px), terracotta and olive palette, and modernist geometric typography celebrate organic materials and structural clarity.",
@@ -412,6 +538,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
             "Warm color blocks and organic radii reduce raw tabular line density.",
             "Requires high-quality photography and intentional spatial balance."
         ],
+        "micro_spec": {
+            "display_font": "DM Serif Display",
+            "canvas_hex": "#FDFBF7",
+            "surface_hex": "#F4EFE6",
+            "accent_hex": "#5B7053",
+            "secondary_accent_hex": "#D4973B",
+            "radius_rule": "16px",
+            "swatches": ["#FDFBF7", "#F4EFE6", "#5B7053", "#D4973B"],
+        },
     },
     "minimal-modern": {
         "default_reasoning": "Clean neutral zinc canvas, 6-8px micro-radii, crisp 1px borders, and disciplined typography (Geist/Inter) elevate standard SaaS workflows with modern restraint and high whitespace clarity.",
@@ -419,6 +554,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Subtle aesthetic requires disciplined typographic hierarchy to avoid feeling generic if content is sparse."
         ],
+        "micro_spec": {
+            "display_font": "Inter",
+            "canvas_hex": "#FFFFFF",
+            "surface_hex": "#F8FAFC",
+            "accent_hex": "#0F172A",
+            "secondary_accent_hex": "#2563EB",
+            "radius_rule": "4px - 8px",
+            "swatches": ["#FFFFFF", "#F8FAFC", "#0F172A", "#2563EB"],
+        },
     },
     "neo-brutalism": {
         "default_reasoning": "Chunky solid black outlines, hard offset shadows, and saturated color pops communicate authentic grassroots energy, anti-corporate rebellion, and tactile physicality.",
@@ -426,6 +570,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "High visual volume can overwhelm subtle product imagery or art if colors compete directly."
         ],
+        "micro_spec": {
+            "display_font": "Space Grotesk",
+            "canvas_hex": "#FFFDF5",
+            "surface_hex": "#FFFFFF",
+            "accent_hex": "#FFE600",
+            "secondary_accent_hex": "#000000",
+            "radius_rule": "0px - 4px",
+            "swatches": ["#FFFDF5", "#FFFFFF", "#FFE600", "#000000"],
+        },
     },
     "neumorphism": {
         "default_reasoning": "Canvas-matched monochromatic surfaces with dual light/dark soft extruded shadows create tactile physical controls without hard borders.",
@@ -433,6 +586,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Low contrast between extruded surface shapes and canvas requires strict accessibility verification."
         ],
+        "micro_spec": {
+            "display_font": "Inter",
+            "canvas_hex": "#E0E5EC",
+            "surface_hex": "#E0E5EC",
+            "accent_hex": "#3B82F6",
+            "secondary_accent_hex": "#64748B",
+            "radius_rule": "16px - 20px",
+            "swatches": ["#E0E5EC", "#E0E5EC", "#3B82F6", "#64748B"],
+        },
     },
     "organic-natural": {
         "default_reasoning": "Earth and botanical pigment palette (clay, moss, sap), river-stone pod containers, and living-system geometry authentically connect users to nature and regenerative craft.",
@@ -441,6 +603,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
             "Organic rounded geometry consumes more padding and reduces raw data density.",
             "Requires careful contrast calibration to ensure accessible contrast on linen backgrounds."
         ],
+        "micro_spec": {
+            "display_font": "Newsreader",
+            "canvas_hex": "#F5F1E8",
+            "surface_hex": "#EBE5D8",
+            "accent_hex": "#4A5844",
+            "secondary_accent_hex": "#8C533C",
+            "radius_rule": "16px - 24px",
+            "swatches": ["#F5F1E8", "#EBE5D8", "#4A5844", "#8C533C"],
+        },
     },
     "quiet-luxury": {
         "default_reasoning": "Understated alabaster palette, immaculate serif typography, and generous whitespace convey deep institutional trust, bespoke advisory craft, and financial gravitas without screaming.",
@@ -449,6 +620,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
             "Generous whitespace reduces immediate above-the-fold information density.",
             "Zero border-radius and pale stone dividers require rigorous content discipline to prevent looking sparse or unstyled on smaller screens."
         ],
+        "micro_spec": {
+            "display_font": "Cormorant Garamond",
+            "canvas_hex": "#FBFBF9",
+            "surface_hex": "#F4F1EA",
+            "accent_hex": "#1C1A17",
+            "secondary_accent_hex": "#8A7258",
+            "radius_rule": "0px",
+            "swatches": ["#FBFBF9", "#F4F1EA", "#1C1A17", "#8A7258"],
+        },
     },
     "retro-americana": {
         "default_reasoning": "Evokes National Parks heritage, WPA conservation posters, and rustic outdoorsmanship.",
@@ -456,6 +636,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Heavy ink borders and slab serifs lean nostalgic rather than contemporary biophilic."
         ],
+        "micro_spec": {
+            "display_font": "Alfa Slab One",
+            "canvas_hex": "#F9F0DC",
+            "surface_hex": "#EFE2C5",
+            "accent_hex": "#C8391E",
+            "secondary_accent_hex": "#E8A126",
+            "radius_rule": "0px - 4px",
+            "swatches": ["#F9F0DC", "#EFE2C5", "#C8391E", "#E8A126"],
+        },
     },
     "space-age-optimism": {
         "default_reasoning": "Warm optical white canvas, molded pod curves (24-40px), and single Mission Orange accent celebrate discovery and aerospace optimism.",
@@ -463,6 +652,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Generous 24-40px pod container radii reduce maximum tabular information density."
         ],
+        "micro_spec": {
+            "display_font": "Space Grotesk",
+            "canvas_hex": "#FAFAF8",
+            "surface_hex": "#F0F0EE",
+            "accent_hex": "#FF5C00",
+            "secondary_accent_hex": "#3A4B5C",
+            "radius_rule": "24px - 32px",
+            "swatches": ["#FAFAF8", "#F0F0EE", "#FF5C00", "#3A4B5C"],
+        },
     },
     "swiss-editorial": {
         "default_reasoning": "Rigorous asymmetric grid, razor-sharp hairlines, and high-contrast typography give financial data objective clarity and architectural prestige.",
@@ -471,6 +669,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
             "Stark monochrome palette can feel overly sterile or clinical if not softened with an intentional warm accent.",
             "Demands high typographic discipline in tabular layouts."
         ],
+        "micro_spec": {
+            "display_font": "Playfair Display",
+            "canvas_hex": "#FFFFFF",
+            "surface_hex": "#F5F5F5",
+            "accent_hex": "#111111",
+            "secondary_accent_hex": "#E30613",
+            "radius_rule": "0px",
+            "swatches": ["#FFFFFF", "#F5F5F5", "#111111", "#E30613"],
+        },
     },
     "terminal-cli": {
         "default_reasoning": "100% monospace typography, amber/emerald phosphors on black, ASCII box-drawing borders, and zero-blur elevation deliver authentic Unix command-line utility and keyboard-first speed.",
@@ -478,6 +685,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Complete absence of proportional typography or rounded corners can feel stark or intimidating to non-technical users."
         ],
+        "micro_spec": {
+            "display_font": "JetBrains Mono",
+            "canvas_hex": "#000000",
+            "surface_hex": "#0C0C0C",
+            "accent_hex": "#00FF66",
+            "secondary_accent_hex": "#FFB000",
+            "radius_rule": "0px",
+            "swatches": ["#000000", "#0C0C0C", "#00FF66", "#FFB000"],
+        },
     },
     "vaporwave": {
         "default_reasoning": "Pastel sunset gradients, Windows 95 dialog chrome, and classical Roman statues celebrate retro-digital net art and nostalgia.",
@@ -485,6 +701,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Heavy retro-digital styling is polarizing for conventional commercial storefronts."
         ],
+        "micro_spec": {
+            "display_font": "VT323",
+            "canvas_hex": "#120422",
+            "surface_hex": "#22093D",
+            "accent_hex": "#FF71CE",
+            "secondary_accent_hex": "#01CDFE",
+            "radius_rule": "4px",
+            "swatches": ["#120422", "#22093D", "#FF71CE", "#01CDFE"],
+        },
     },
     "web-brutalism": {
         "default_reasoning": "Raw browser-default HTML, Courier typography, blue underlined links, and 0px radius strip all decorative distraction.",
@@ -492,6 +717,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "Raw default browser styling and unstyled controls can feel unpolished or harsh for conventional consumer apps."
         ],
+        "micro_spec": {
+            "display_font": "Times New Roman",
+            "canvas_hex": "#FFFFFF",
+            "surface_hex": "#F0F0F0",
+            "accent_hex": "#0000EE",
+            "secondary_accent_hex": "#551A8B",
+            "radius_rule": "0px",
+            "swatches": ["#FFFFFF", "#F0F0F0", "#0000EE", "#551A8B"],
+        },
     },
     "y2k-frutiger-aero": {
         "default_reasoning": "Glossy aqua-to-lime specular glassmorphism, pill containers, and vibrant optimism evoke late-90s/early-2000s consumer software.",
@@ -499,6 +733,15 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         "tradeoffs": [
             "High glossy complexity and skeuomorphic gradients require custom asset rendering and careful contrast calibration."
         ],
+        "micro_spec": {
+            "display_font": "Nunito",
+            "canvas_hex": "#EBF7FF",
+            "surface_hex": "#FFFFFF",
+            "accent_hex": "#00E5FF",
+            "secondary_accent_hex": "#76FF03",
+            "radius_rule": "16px - 24px",
+            "swatches": ["#EBF7FF", "#FFFFFF", "#00E5FF", "#76FF03"],
+        },
     },
 }
 
@@ -560,7 +803,8 @@ def recommend_styles(brief: dict[str, Any]) -> list[dict[str, Any]]:
                 "id": sid,
                 "fit_rating": fit_ratings.get(idx, "Good fit"),
                 "reasoning": item.get("rationale") or meta.get("default_reasoning", ""),
-                "tradeoffs": meta.get("tradeoffs", ["Specific operational tradeoffs require disciplined asset and layout pairing."])
+                "tradeoffs": meta.get("tradeoffs", ["Specific operational tradeoffs require disciplined asset and layout pairing."]),
+                "micro_spec": meta.get("micro_spec", {}),
             })
         return recs
 
@@ -575,9 +819,54 @@ def recommend_styles(brief: dict[str, Any]) -> list[dict[str, Any]]:
             "id": sid,
             "fit_rating": fit_ratings.get(idx, "Good fit"),
             "reasoning": meta.get("default_reasoning", ""),
-            "tradeoffs": meta.get("tradeoffs", ["Requires disciplined typographic hierarchy and layout pairing."])
+            "tradeoffs": meta.get("tradeoffs", ["Requires disciplined typographic hierarchy and layout pairing."]),
+            "micro_spec": meta.get("micro_spec", {}),
         })
     return recs
+
+def format_micro_spec_svg(micro_spec: dict[str, Any]) -> str:
+    """Generates a compact inline SVG strip for in-chat micro-spec visualization."""
+    if not micro_spec:
+        return ""
+    font = micro_spec.get("display_font", "sans-serif")
+    c_hex = micro_spec.get("canvas_hex", "#000000")
+    s_hex = micro_spec.get("surface_hex", "#111111")
+    a1_hex = micro_spec.get("accent_hex", "#3B82F6")
+    a2_hex = micro_spec.get("secondary_accent_hex", "#60A5FA")
+    radius_rule = micro_spec.get("radius_rule", "0px")
+
+    if "0px" in radius_rule:
+        rx = "0"
+    elif any(k in radius_rule for k in ["16px", "20px", "24px", "32px", "40px", "pill"]):
+        rx = "12"
+    elif any(k in radius_rule for k in ["6px", "8px", "10px", "12px"]):
+        rx = "6"
+    else:
+        rx = "2"
+
+    return (
+        f'<svg width="100%" height="34" viewBox="0 0 380 34" fill="none" xmlns="http://www.w3.org/2000/svg">\n'
+        f'  <rect x="2" y="3" width="28" height="28" rx="3" fill="{c_hex}" stroke="#444444" stroke-width="1"/>\n'
+        f'  <rect x="36" y="3" width="28" height="28" rx="3" fill="{s_hex}" stroke="#444444" stroke-width="1"/>\n'
+        f'  <rect x="70" y="3" width="28" height="28" rx="3" fill="{a1_hex}" stroke="#444444" stroke-width="1"/>\n'
+        f'  <rect x="104" y="3" width="28" height="28" rx="3" fill="{a2_hex}" stroke="#444444" stroke-width="1"/>\n'
+        f'  <rect x="144" y="3" width="28" height="28" rx="{rx}" fill="none" stroke="{a1_hex}" stroke-width="2"/>\n'
+        f'  <text x="184" y="22" font-family="{font}, system-ui, sans-serif" font-size="14" font-weight="600" fill="{a1_hex}">{font} ({radius_rule})</text>\n'
+        f'</svg>'
+    )
+
+def format_micro_spec_text(micro_spec: dict[str, Any]) -> str:
+    """Generates a markdown text swatch line for in-chat micro-spec presentation."""
+    if not micro_spec:
+        return ""
+    font = micro_spec.get("display_font", "")
+    c_hex = micro_spec.get("canvas_hex", "")
+    s_hex = micro_spec.get("surface_hex", "")
+    a1_hex = micro_spec.get("accent_hex", "")
+    a2_hex = micro_spec.get("secondary_accent_hex", "")
+    radius_rule = micro_spec.get("radius_rule", "")
+    return f"`{c_hex}` `{s_hex}` `{a1_hex}` `{a2_hex}` | Radius: `{radius_rule}` | Font: **{font}**"
+
 
 def create_design_spec(style_id: str, custom_layers: dict[str, str] | None = None) -> dict[str, Any]:
     """

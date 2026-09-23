@@ -26,6 +26,8 @@ from director_engine import (
     create_design_spec,
     extract_design_brief,
     find_reference,
+    format_micro_spec_svg,
+    format_micro_spec_text,
     generate_implementation_contract,
     recommend_styles,
     refine_spec,
@@ -78,6 +80,36 @@ class TestDesignDirector(unittest.TestCase):
             self.assertTrue(len(r["tradeoffs"]) >= 1, f"Missing tradeoffs for {r['name']}")
             # Must have justification reasoning
             self.assertTrue(len(r["reasoning"]) > 20)
+            # Must include visual micro_spec metadata
+            self.assertIn("micro_spec", r)
+            ms = r["micro_spec"]
+            self.assertTrue(len(ms.get("display_font", "")) > 0)
+            self.assertTrue(len(ms.get("swatches", [])) >= 4)
+            self.assertTrue(len(ms.get("radius_rule", "")) > 0)
+
+    def test_micro_spec_formatting(self):
+        """Verifies in-chat micro-spec inline SVG and markdown text formatting."""
+        ms = {
+            "display_font": "Cinzel",
+            "canvas_hex": "#0E0E10",
+            "surface_hex": "#16161A",
+            "accent_hex": "#D4AF37",
+            "secondary_accent_hex": "#F3E5AB",
+            "radius_rule": "0px",
+            "swatches": ["#0E0E10", "#16161A", "#D4AF37", "#F3E5AB"],
+        }
+        svg = format_micro_spec_svg(ms)
+        self.assertIn("<svg", svg)
+        self.assertIn("#D4AF37", svg)
+        self.assertIn("Cinzel", svg)
+        self.assertIn('rx="0"', svg)
+
+        text = format_micro_spec_text(ms)
+        self.assertIn("#0E0E10", text)
+        self.assertIn("#D4AF37", text)
+        self.assertIn("Cinzel", text)
+        self.assertIn("0px", text)
+
 
     def test_reference_library(self):
         """Criterion 6.3: Reference library maps at least 10 test reference terms to concrete properties."""
