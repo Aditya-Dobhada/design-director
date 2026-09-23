@@ -1,3 +1,3 @@
-# director_engine.py parses styles/*.yaml (modifiers, domain defaults, reference library).
+# director_engine.py parses yaml (modifiers, domain defaults, reference library).
 # audit_code.py is dependency-free (stdlib only).
 PyYAML>=6.0

@@ -27,7 +27,7 @@ from director_engine import (
     recommend_styles,
 )
 
-GALLERY_DIR = str(ROOT_DIR / "gallery")
+GALLERY_DIR = str(ROOT_DIR / "skills" / "design-director" / "gallery")
 
 
 # ── Unseen PRDs (not used in any unit-test fixture) ────────────────────────

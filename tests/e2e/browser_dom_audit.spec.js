@@ -21,7 +21,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const GALLERY_DIR = path.resolve(__dirname, '../../gallery');
+const GALLERY_DIR = path.resolve(__dirname, '../../skills/design-director/gallery');
 
 /** Helper: file:// URL for a gallery HTML file */
 function p2url(filename) {

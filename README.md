@@ -34,48 +34,48 @@ Design Director prevents coding agents (Cursor, Claude Code, Antigravity) from c
 
 ### Token-Optimized Design
 - **Lean Entry Point:** `skills/design-director/SKILL.md` is strictly capped under **1,200 tokens**.
-- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`styles/<style_id>.md`, range: 1,205–3,669 tokens across the 27 styles) when generating the contract. The other 26 styles are never loaded into prompt context.
+- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`skills/design-director/styles/<style_id>.md`, range: 1,205–3,669 tokens across the 27 styles) when generating the contract. The other 26 styles are never loaded into prompt context.
 - **Project-Scoped:** Generates `DESIGN_CONTRACT.md` in the local workspace. Never mutates global system configurations.
 
 ---
 
 ## Visual Style Gallery
 
-Live HTML implementations for all 27 foundations are available in [`gallery/`](gallery/):
+Live HTML implementations for all 27 foundations are available in [`skills/design-director/gallery/`](skills/design-director/gallery/):
 
 | Family | Style ID | Name | Visual Signature | Key Hex Values | Preview Reference |
 |---|---|---|---|---|---|
-| **Modern** | `minimal-modern` | **Minimal Modern** | High whitespace, neutral slate, 4–8px radius, Sohne/Inter | `#FFFFFF`, `#0F172A`, `#2563EB` | [minimal_modern.html](gallery/minimal_modern.html) |
-| **Modern** | `dark-minimal` | **Dark Minimal** | Obsidian dark canvas, hairline borders, muted slate, Inter | `#08090A`, `#111215`, `#5E6AD2` | [dark_minimal.html](gallery/dark_minimal.html) |
-| **Modern** | `swiss-editorial` | **Swiss / Editorial** | Pure white, Playfair Display 600, Swiss red, asymmetric 4+8 grid | `#FFFFFF`, `#111111`, `#E30613` | [swiss_editorial.html](gallery/swiss_editorial.html) |
-| **Historical** | `bauhaus` | **Bauhaus** | Constructivist 8px grid, primary triad accents, IBM Plex Sans 700 lc | `#FFFFFF`, `#E03A3E`, `#004B97` | [bauhaus.html](gallery/bauhaus.html) |
-| **Historical** | `art-deco` | **Art Deco** | Obsidian & rich gold, stepped geometry, hairpin borders, 0px radius | `#0D0D11`, `#D4AF37`, `#F3E5AB` | [art_deco.html](gallery/art_deco.html) |
-| **Historical** | `mid-century-modern` | **Mid-Century Modern** | Warm olive & mustard, teak brown, organic curved pods (16px) | `#FDFBF7`, `#5B7053`, `#D4973B` | [mid_century_modern.html](gallery/mid_century_modern.html) |
-| **Retro** | `retro-americana` | **Retro Americana** | Cream parchment, vermilion, Saul Bass geometry, Alfa Slab One | `#F9F0DC`, `#C8391E`, `#E8A126` | [retro_americana.html](gallery/retro_americana.html) |
-| **Retro** | `terminal-cli` | **Terminal / CLI** | Fixed pitch amber/green phosphor, 0px radius, character cell borders | `#000000`, `#00FF66`, `#FFB000` | [terminal_cli.html](gallery/terminal_cli.html) |
-| **Retro** | `y2k-frutiger-aero` | **Y2K / Frutiger Aero** | Glossy specular glassmorphism, aqua-to-lime gradients, Nunito 800 | Gradient `#00E5FF`→`#76FF03` | [y2k_frutiger_aero.html](gallery/y2k_frutiger_aero.html) |
-| **Futuristic** | `cyberpunk` | **Cyberpunk** | Obsidian dark mode, cyan HUD, Rajdhani 700 + Mono, 8px chamfers | `#050508`, `#00F5FF`, `#FF00A0` | [cyberpunk.html](gallery/cyberpunk.html) |
-| **Futuristic** | `space-age-optimism` | **Space Age Optimism** | Warm optical white, molded fiberglass pods (32px), NASA Mission Orange | `#FAFAF8`, `#FF5C00`, `#3A4B5C` | [space_age_optimism.html](gallery/space_age_optimism.html) |
-| **Futuristic** | `aurora-gradient` | **Aurora Gradient** | Soft atmospheric violet/pink/cyan gradients over dark base | `#0B0F1A`, `#8B5CF6`, `#06B6D4` | [aurora_gradient.html](gallery/aurora_gradient.html) |
-| **Organic** | `japanese-wabi-sabi` | **Japanese Wabi-Sabi** | Rice paper, charcoal ink wash, Mingei craft, Noto Serif JP 300 | `#FAF7F0`, `#2B2B28`, `#A07E6A` | [japanese_wabi_sabi.html](gallery/japanese_wabi_sabi.html) |
-| **Organic** | `organic-natural` | **Organic Natural** | Bone canvas, living earth pigments (clay, moss, sap), river-stone pods | `#F5F1E8`, `#4A5844`, `#8C533C` | [organic_natural.html](gallery/organic_natural.html) |
-| **Organic** | `digital-organic` | **Digital Organic** | Organic CSS blobs, natural gradients, technological typography | `#FAFAF8`, `#2D6A4F`, `#D4A373` | [digital_organic.html](gallery/digital_organic.html) |
-| **Experimental** | `neo-brutalism` | **Neo-Brutalism** | 3px solid ink borders, 4px solid black offset shadows, Space Grotesk | `#FFFDF5`, `#FFE600`, `#000000` | [neo_brutalism.html](gallery/neo_brutalism.html) |
-| **Experimental** | `web-brutalism` | **Web Brutalism** | Default browser box-model, pure raw HTML typography, unstyled blue links | `#FFFFFF`, `#0000EE`, `#551A8B` | [web_brutalism.html](gallery/web_brutalism.html) |
-| **Experimental** | `memphis-postmodern` | **Memphis Postmodern** | Polka dots, diagonal hatch patterns, geometric squiggles, Syne 800 | `#FFFFFF`, `#FFE600`, `#FF007F` | [memphis_postmodern.html](gallery/memphis_postmodern.html) |
-| **Experimental** | `maximalist-dopamine` | **Maximalist Dopamine** | Acid yellow, colliding candy neon hues, multi-color drop shadows | `#FFF500`, `#FF007F`, `#00E5FF` | [maximalist_dopamine.html](gallery/maximalist_dopamine.html) |
-| **Experimental** | `vaporwave` | **Vaporwave** | Sunset purple-pink gradients, wireframe horizons, retro aesthetic | `#120422`, `#FF71CE`, `#01CDFE` | [vaporwave.html](gallery/vaporwave.html) |
-| **Luxury** | `quiet-luxury` | **Quiet Luxury** | Warm alabaster, Cormorant Garamond 300, 0px radius, hairline dividers | `#FBFBF9`, `#1C1A17`, `#8A7258` | [quiet_luxury.html](gallery/quiet_luxury.html) |
-| **Luxury** | `high-fashion-editorial` | **High Fashion Editorial** | Stark runway broadsheet, stark all-caps, razor 0px lines, flash contrast | `#FFFFFF`, `#000000`, `#E50000` | [high_fashion_editorial.html](gallery/high_fashion_editorial.html) |
-| **Tactile** | `glassmorphism` | **Glassmorphism** | Frosted translucent panels, backdrop-blur, 1px rgba borders, layered depth | `#0A0A0F`, `rgba(255,255,255,0.08)`, `#7C3AED` | [glassmorphism.html](gallery/glassmorphism.html) |
-| **Tactile** | `neumorphism` | **Neumorphism** | Soft extruded UI, canvas-matched surfaces, dual soft shadow (light+dark) | `#E0E5EC`, shadow pair | [neumorphism.html](gallery/neumorphism.html) |
-| **Tactile** | `claymorphism` | **Claymorphism** | 3D pastel clay, heavy rounding (20–32px), soft inner shadows, pastel fills | `#FFFBF5`, `#FFB5A7`, `#C8E6FF` | [claymorphism.html](gallery/claymorphism.html) |
-| **Utility** | `data-native` | **Data-Native** | Dense tables, JetBrains Mono numerics, 11px labels, restrained chroma | `#0D1117`, `#3B82F6`, `#22C55E` | [data_native.html](gallery/data_native.html) |
-| **Utility** | `command-center` | **Command Center** | Multi-panel layouts, red/amber/green status indicators, compact Inter | `#0B0D11`, `#EF4444`, `#22C55E` | [command_center.html](gallery/command_center.html) |
+| **Modern** | `minimal-modern` | **Minimal Modern** | High whitespace, neutral slate, 4–8px radius, Sohne/Inter | `#FFFFFF`, `#0F172A`, `#2563EB` | [minimal_modern.html](skills/design-director/gallery/minimal_modern.html) |
+| **Modern** | `dark-minimal` | **Dark Minimal** | Obsidian dark canvas, hairline borders, muted slate, Inter | `#08090A`, `#111215`, `#5E6AD2` | [dark_minimal.html](skills/design-director/gallery/dark_minimal.html) |
+| **Modern** | `swiss-editorial` | **Swiss / Editorial** | Pure white, Playfair Display 600, Swiss red, asymmetric 4+8 grid | `#FFFFFF`, `#111111`, `#E30613` | [swiss_editorial.html](skills/design-director/gallery/swiss_editorial.html) |
+| **Historical** | `bauhaus` | **Bauhaus** | Constructivist 8px grid, primary triad accents, IBM Plex Sans 700 lc | `#FFFFFF`, `#E03A3E`, `#004B97` | [bauhaus.html](skills/design-director/gallery/bauhaus.html) |
+| **Historical** | `art-deco` | **Art Deco** | Obsidian & rich gold, stepped geometry, hairpin borders, 0px radius | `#0D0D11`, `#D4AF37`, `#F3E5AB` | [art_deco.html](skills/design-director/gallery/art_deco.html) |
+| **Historical** | `mid-century-modern` | **Mid-Century Modern** | Warm olive & mustard, teak brown, organic curved pods (16px) | `#FDFBF7`, `#5B7053`, `#D4973B` | [mid_century_modern.html](skills/design-director/gallery/mid_century_modern.html) |
+| **Retro** | `retro-americana` | **Retro Americana** | Cream parchment, vermilion, Saul Bass geometry, Alfa Slab One | `#F9F0DC`, `#C8391E`, `#E8A126` | [retro_americana.html](skills/design-director/gallery/retro_americana.html) |
+| **Retro** | `terminal-cli` | **Terminal / CLI** | Fixed pitch amber/green phosphor, 0px radius, character cell borders | `#000000`, `#00FF66`, `#FFB000` | [terminal_cli.html](skills/design-director/gallery/terminal_cli.html) |
+| **Retro** | `y2k-frutiger-aero` | **Y2K / Frutiger Aero** | Glossy specular glassmorphism, aqua-to-lime gradients, Nunito 800 | Gradient `#00E5FF`→`#76FF03` | [y2k_frutiger_aero.html](skills/design-director/gallery/y2k_frutiger_aero.html) |
+| **Futuristic** | `cyberpunk` | **Cyberpunk** | Obsidian dark mode, cyan HUD, Rajdhani 700 + Mono, 8px chamfers | `#050508`, `#00F5FF`, `#FF00A0` | [cyberpunk.html](skills/design-director/gallery/cyberpunk.html) |
+| **Futuristic** | `space-age-optimism` | **Space Age Optimism** | Warm optical white, molded fiberglass pods (32px), NASA Mission Orange | `#FAFAF8`, `#FF5C00`, `#3A4B5C` | [space_age_optimism.html](skills/design-director/gallery/space_age_optimism.html) |
+| **Futuristic** | `aurora-gradient` | **Aurora Gradient** | Soft atmospheric violet/pink/cyan gradients over dark base | `#0B0F1A`, `#8B5CF6`, `#06B6D4` | [aurora_gradient.html](skills/design-director/gallery/aurora_gradient.html) |
+| **Organic** | `japanese-wabi-sabi` | **Japanese Wabi-Sabi** | Rice paper, charcoal ink wash, Mingei craft, Noto Serif JP 300 | `#FAF7F0`, `#2B2B28`, `#A07E6A` | [japanese_wabi_sabi.html](skills/design-director/gallery/japanese_wabi_sabi.html) |
+| **Organic** | `organic-natural` | **Organic Natural** | Bone canvas, living earth pigments (clay, moss, sap), river-stone pods | `#F5F1E8`, `#4A5844`, `#8C533C` | [organic_natural.html](skills/design-director/gallery/organic_natural.html) |
+| **Organic** | `digital-organic` | **Digital Organic** | Organic CSS blobs, natural gradients, technological typography | `#FAFAF8`, `#2D6A4F`, `#D4A373` | [digital_organic.html](skills/design-director/gallery/digital_organic.html) |
+| **Experimental** | `neo-brutalism` | **Neo-Brutalism** | 3px solid ink borders, 4px solid black offset shadows, Space Grotesk | `#FFFDF5`, `#FFE600`, `#000000` | [neo_brutalism.html](skills/design-director/gallery/neo_brutalism.html) |
+| **Experimental** | `web-brutalism` | **Web Brutalism** | Default browser box-model, pure raw HTML typography, unstyled blue links | `#FFFFFF`, `#0000EE`, `#551A8B` | [web_brutalism.html](skills/design-director/gallery/web_brutalism.html) |
+| **Experimental** | `memphis-postmodern` | **Memphis Postmodern** | Polka dots, diagonal hatch patterns, geometric squiggles, Syne 800 | `#FFFFFF`, `#FFE600`, `#FF007F` | [memphis_postmodern.html](skills/design-director/gallery/memphis_postmodern.html) |
+| **Experimental** | `maximalist-dopamine` | **Maximalist Dopamine** | Acid yellow, colliding candy neon hues, multi-color drop shadows | `#FFF500`, `#FF007F`, `#00E5FF` | [maximalist_dopamine.html](skills/design-director/gallery/maximalist_dopamine.html) |
+| **Experimental** | `vaporwave` | **Vaporwave** | Sunset purple-pink gradients, wireframe horizons, retro aesthetic | `#120422`, `#FF71CE`, `#01CDFE` | [vaporwave.html](skills/design-director/gallery/vaporwave.html) |
+| **Luxury** | `quiet-luxury` | **Quiet Luxury** | Warm alabaster, Cormorant Garamond 300, 0px radius, hairline dividers | `#FBFBF9`, `#1C1A17`, `#8A7258` | [quiet_luxury.html](skills/design-director/gallery/quiet_luxury.html) |
+| **Luxury** | `high-fashion-editorial` | **High Fashion Editorial** | Stark runway broadsheet, stark all-caps, razor 0px lines, flash contrast | `#FFFFFF`, `#000000`, `#E50000` | [high_fashion_editorial.html](skills/design-director/gallery/high_fashion_editorial.html) |
+| **Tactile** | `glassmorphism` | **Glassmorphism** | Frosted translucent panels, backdrop-blur, 1px rgba borders, layered depth | `#0A0A0F`, `rgba(255,255,255,0.08)`, `#7C3AED` | [glassmorphism.html](skills/design-director/gallery/glassmorphism.html) |
+| **Tactile** | `neumorphism` | **Neumorphism** | Soft extruded UI, canvas-matched surfaces, dual soft shadow (light+dark) | `#E0E5EC`, shadow pair | [neumorphism.html](skills/design-director/gallery/neumorphism.html) |
+| **Tactile** | `claymorphism` | **Claymorphism** | 3D pastel clay, heavy rounding (20–32px), soft inner shadows, pastel fills | `#FFFBF5`, `#FFB5A7`, `#C8E6FF` | [claymorphism.html](skills/design-director/gallery/claymorphism.html) |
+| **Utility** | `data-native` | **Data-Native** | Dense tables, JetBrains Mono numerics, 11px labels, restrained chroma | `#0D1117`, `#3B82F6`, `#22C55E` | [data_native.html](skills/design-director/gallery/data_native.html) |
+| **Utility** | `command-center` | **Command Center** | Multi-panel layouts, red/amber/green status indicators, compact Inter | `#0B0D11`, `#EF4444`, `#22C55E` | [command_center.html](skills/design-director/gallery/command_center.html) |
 
 ---
 
-## Modifiers Architecture (`styles/modifiers.yaml`)
+## Modifiers Architecture (`skills/design-director/styles/modifiers.yaml`)
 
 Rather than multiplying the foundation taxonomy into combinations, orthogonal visual treatments are composed as **Modifiers**. Six independent dimensions:
 
@@ -90,11 +90,11 @@ Rather than multiplying the foundation taxonomy into combinations, orthogonal vi
 
 ## Anti-Pattern References
 
-**Corporate Memphis / Alegria** is documented as a named anti-pattern in `styles/reference-anti-patterns.md` as a human-reference guide. The audit engine detects drift in code using signal accumulation across hardcoded heuristics (generic purple, bubbly containers, ambient shadows, blob decoration, illustration placeholders). Two signals = WARNING; three or more = CRITICAL.
+**Corporate Memphis / Alegria** is documented as a named anti-pattern in `skills/design-director/styles/reference-anti-patterns.md` as a human-reference guide. The audit engine detects drift in code using signal accumulation across hardcoded heuristics (generic purple, bubbly containers, ambient shadows, blob decoration, illustration placeholders). Two signals = WARNING; three or more = CRITICAL.
 
 ---
 
-## Domain-Style Defaults (`styles/domain-style-defaults.yaml`)
+## Domain-Style Defaults (`skills/design-director/styles/domain-style-defaults.yaml`)
 
 Maps 20+ product domains (fintech, healthcare, legal, government, edtech, devops, e-commerce, real estate, hospitality, AI products, biotech, creative tools, media, social, analytics) to 2–3 recommended foundation-style IDs. Used by the diagnostic interview's candidate shortlisting logic. Not a list of new foundation styles.
 
@@ -115,7 +115,7 @@ Or with specific intent:
 The agent will:
 1. Scan your project files.
 2. Ask up to 3 diagnostic questions if context is sparse.
-3. Recommend 2–3 directions with in-chat swatches and clickable local links to `gallery/*.html`.
+3. Recommend 2–3 directions with in-chat swatches and clickable local links to `skills/design-director/gallery/*.html`.
 4. Apply any critique ("more like Linear", "warmer tones").
 5. Output `DESIGN_CONTRACT.md`.
 
@@ -135,7 +135,7 @@ python3 skills/design-audit/audit_code.py swiss-editorial ./index.html
 
 Both skills follow the open [Agent Skills](https://agentskills.io/specification) format (`SKILL.md` + supporting files), so they work across Claude Code, Cursor, Codex CLI, GitHub Copilot, Gemini CLI, VS Code, Zed, and any agent that reads `SKILL.md`.
 
-> **Packaging note:** `design-audit` is fully self-contained. `design-director` additionally reads `styles/` and links `gallery/` from the repo root — when installing into an agent, keep those directories reachable (clone the repo, or install from the repo root so the skill and its supporting folders travel together).
+> **Packaging note:** Both `design-audit` and `design-director` are fully self-contained skills. `design-director` embeds its 27 style guides (`styles/`), orthogonal modifiers, domain defaults, and visual previews (`gallery/`) directly inside its skill directory, making it installable on its own (e.g. via `npx skills add`) without needing the rest of the repo.
 
 ### Use in Claude Code
 ```bash

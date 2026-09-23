@@ -17,7 +17,8 @@ from typing import Any
 import yaml
 
 REFERENCE_LIBRARY_PATH = Path(__file__).parent / "reference-library.yaml"
-STYLES_DIR = Path(__file__).resolve().parent.parent.parent / "styles"
+_LOCAL_STYLES = Path(__file__).resolve().parent / "styles"
+STYLES_DIR = _LOCAL_STYLES if _LOCAL_STYLES.exists() else Path(__file__).resolve().parent.parent.parent / "styles"
 MODIFIERS_PATH = STYLES_DIR / "modifiers.yaml"
 DOMAIN_DEFAULTS_PATH = STYLES_DIR / "domain-style-defaults.yaml"
 

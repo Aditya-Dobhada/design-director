@@ -151,7 +151,7 @@ class TestDesignDirector(unittest.TestCase):
 
     def test_style_packs_completeness_and_anti_patterns(self):
         """Criterion 6.6: All 27 style packs contain complete tokens, typography, and negative constraints."""
-        styles_dir = ROOT_DIR / "styles"
+        styles_dir = ROOT_DIR / "skills" / "design-director" / "styles"
 
         for style in SUPPORTED_STYLES:
             style_file = styles_dir / f"{style}.md"
@@ -307,7 +307,7 @@ class TestDesignDirector(unittest.TestCase):
 
     def test_new_7_styles_packs_completeness(self):
         """Criterion 6.6 extended: All 7 new style packs contain complete tokens and NEVER constraints."""
-        styles_dir = ROOT_DIR / "styles"
+        styles_dir = ROOT_DIR / "skills" / "design-director" / "styles"
         new_styles = [
             "glassmorphism", "neumorphism", "claymorphism",
             "data-native", "command-center", "aurora-gradient", "digital-organic",
@@ -327,7 +327,7 @@ class TestDesignDirector(unittest.TestCase):
 
     def test_new_7_styles_gallery_previews(self):
         """Verifies all 7 new gallery HTML files exist and have a DESIGN CONTRACT comment."""
-        gallery_dir = ROOT_DIR / "gallery"
+        gallery_dir = ROOT_DIR / "skills" / "design-director" / "gallery"
         expected_gallery_files = [
             "glassmorphism.html",
             "neumorphism.html",
@@ -376,7 +376,7 @@ class TestDesignDirector(unittest.TestCase):
     def test_domain_style_defaults_yaml(self):
         """Verifies domain-style-defaults.yaml exists and maps key domains to valid style IDs."""
         import yaml
-        domain_defaults_path = ROOT_DIR / "styles" / "domain-style-defaults.yaml"
+        domain_defaults_path = ROOT_DIR / "skills" / "design-director" / "styles" / "domain-style-defaults.yaml"
         self.assertTrue(domain_defaults_path.exists(), "domain-style-defaults.yaml missing")
         with open(domain_defaults_path, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f)

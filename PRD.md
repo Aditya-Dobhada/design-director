@@ -26,7 +26,7 @@ PRD / README / Codebase Context
    [Skill 1: design-director]
    ├── Context Analysis
    ├── Diagnostic Interview Gate (max 3 questions if context is thin)
-   ├── Domain-Style Lookup (styles/domain-style-defaults.yaml)
+   ├── Domain-Style Lookup (skills/design-director/styles/domain-style-defaults.yaml)
    ├── Curated Style Recommendations (2–3 candidates with gallery links)
    └── Contract Handoff (DESIGN_CONTRACT.md generation)
                │
@@ -41,48 +41,48 @@ PRD / README / Codebase Context
 
 ### Token Economy & Zero-Bloat Guardrails
 - **Lean Router Skill:** `skills/design-director/SKILL.md` is capped under **1,200 tokens**.
-- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`styles/<style_id>.md`, range: 1,205–3,669 tokens across the 27 styles) when generating the contract. The other 26 styles are never loaded into prompt context.
+- **On-Demand Loading:** The agent loads **only the single chosen style pack** (`skills/design-director/styles/<style_id>.md`, range: 1,205–3,669 tokens across the 27 styles) when generating the contract. The other 26 styles are never loaded into prompt context.
 - **Project-Scoped Enforcement:** Outputs a local, project-level `DESIGN_CONTRACT.md`. Never mutates global system configurations.
 
 ---
 
 ## 3. Supported Design Taxonomy (27 Foundations across 8 Families)
 
-Each foundation style is delivered as a consolidated, self-contained specification in [`styles/<style_id>.md`](styles/) with complete tokens, typography, component geometry, and mandatory `NEVER` anti-patterns:
+Each foundation style is delivered as a consolidated, self-contained specification in [`skills/design-director/styles/<style_id>.md`](skills/design-director/styles/) with complete tokens, typography, component geometry, and mandatory `NEVER` anti-patterns:
 
 | Family | Style ID | Name | Visual Signature | Ideal Domain | Gallery Preview |
 |---|---|---|---|---|---|
-| **Modern** | `minimal-modern` | **Minimal Modern** | High whitespace, neutral slate, 4–8px radius, Sohne/Inter | SaaS, productivity, developer tooling | [minimal_modern.html](gallery/minimal_modern.html) |
-| **Modern** | `dark-minimal` | **Dark Minimal** | Obsidian dark canvas, hairline borders, muted slate, Inter | Developer consoles, terminal tooling, dark SaaS | [dark_minimal.html](gallery/dark_minimal.html) |
-| **Modern** | `swiss-editorial` | **Swiss / Editorial** | Pure white (`#FFFFFF`), Playfair 600, Swiss red (`#E30613`), 4+8 asymmetric grid | Media, architecture, dense data broadsheets | [swiss_editorial.html](gallery/swiss_editorial.html) |
-| **Historical** | `bauhaus` | **Bauhaus** | Constructivist 8px grid, primary triad (`#E03A3E`/`#FFD100`/`#004B97`), IBM Plex Sans | Engineering, industrial software, tools | [bauhaus.html](gallery/bauhaus.html) |
-| **Historical** | `art-deco` | **Art Deco** | Obsidian & rich gold, stepped geometry, hairpin borders, 0px radius | Luxury hospitality, prestige fintech, editorial | [art_deco.html](gallery/art_deco.html) |
-| **Historical** | `mid-century-modern` | **Mid-Century Modern** | Warm olive & mustard, teak brown, organic curved pods (16px) | Architecture, curated retail, lifestyle | [mid_century_modern.html](gallery/mid_century_modern.html) |
-| **Retro** | `retro-americana` | **Retro Americana** | Cream parchment (`#F9F0DC`), vermilion (`#C8391E`), Saul Bass geometry, slab type | Food, heritage brands, national parks | [retro_americana.html](gallery/retro_americana.html) |
-| **Retro** | `terminal-cli` | **Terminal / CLI** | Fixed pitch amber/green phosphor, 0px radius, character cell borders | Devops telemetry, network monitoring, hacking consoles | [terminal_cli.html](gallery/terminal_cli.html) |
-| **Retro** | `y2k-frutiger-aero` | **Y2K / Frutiger Aero** | Glossy specular glassmorphism, aqua-to-lime gradients, Nunito 800 | Consumer productivity, playful apps | [y2k_frutiger_aero.html](gallery/y2k_frutiger_aero.html) |
-| **Futuristic** | `cyberpunk` | **Cyberpunk** | Obsidian dark (`#050508`), cyan HUD (`#00F5FF`), Rajdhani 700, chamfers | CLI telemetry, terminals, security consoles | [cyberpunk.html](gallery/cyberpunk.html) |
-| **Futuristic** | `space-age-optimism` | **Space Age Optimism** | Warm optical white (`#FAFAF8`), molded pods (32px), NASA orange (`#FF5C00`) | Edtech, aerospace, optimistic platforms | [space_age_optimism.html](gallery/space_age_optimism.html) |
-| **Futuristic** | `aurora-gradient` | **Aurora Gradient** | Soft multi-color atmospheric gradients (`#8B5CF6`/`#EC4899`/`#06B6D4`) over dark base | AI products, creative tools, generative platforms | [aurora_gradient.html](gallery/aurora_gradient.html) |
-| **Organic** | `japanese-wabi-sabi` | **Japanese Wabi-Sabi** | Rice paper (`#FAF7F0`), charcoal ink wash, Mingei craft, Noto Serif JP 300 | Mindfulness, tea/craft, contemplative apps | [japanese_wabi_sabi.html](gallery/japanese_wabi_sabi.html) |
-| **Organic** | `organic-natural` | **Organic Natural** | Bone canvas (`#F5F1E8`), living earth pigments (clay, moss, sap), river-stone pods | Sustainability, climate, botanicals | [organic_natural.html](gallery/organic_natural.html) |
-| **Organic** | `digital-organic` | **Digital Organic** | Organic blobs + technological typography + natural gradients | AI/wellness/biotech, living-system interfaces | [digital_organic.html](gallery/digital_organic.html) |
-| **Experimental** | `neo-brutalism` | **Neo-Brutalism** | 3px solid ink borders, 4px solid black offset shadows, Space Grotesk | Creator platforms, dev tools, zines | [neo_brutalism.html](gallery/neo_brutalism.html) |
-| **Experimental** | `web-brutalism` | **Web Brutalism** | Default browser box-model, pure raw HTML typography, unstyled blue links | Web archives, hacker forums, anti-design manifestos | [web_brutalism.html](gallery/web_brutalism.html) |
-| **Experimental** | `memphis-postmodern` | **Memphis Postmodern** | Polka dots, diagonal hatch patterns, geometric squiggles, Syne 800 | Drops, fashion, experimental portfolios | [memphis_postmodern.html](gallery/memphis_postmodern.html) |
-| **Experimental** | `maximalist-dopamine` | **Maximalist Dopamine** | Acid yellow (`#FFF500`), colliding neon hues, multi-color drop shadows | Streetwear, music, youth culture | [maximalist_dopamine.html](gallery/maximalist_dopamine.html) |
-| **Experimental** | `vaporwave` | **Vaporwave** | Sunset purple-pink gradients, wireframe horizons, retro aesthetic | Creative platforms, synthwave, digital audio | [vaporwave.html](gallery/vaporwave.html) |
-| **Luxury** | `quiet-luxury` | **Quiet Luxury** | Alabaster (`#FBFBF9`), Cormorant Garamond 300, 0px radius, hairline dividers | Private wealth, high-end advisory, luxury | [quiet_luxury.html](gallery/quiet_luxury.html) |
-| **Luxury** | `high-fashion-editorial` | **High Fashion Editorial** | Stark runway broadsheet, stark all-caps, razor 0px lines, flash contrast | Haute couture, avant-garde design, high fashion | [high_fashion_editorial.html](gallery/high_fashion_editorial.html) |
-| **Tactile** | `glassmorphism` | **Glassmorphism** | Frosted translucent panels, backdrop-blur (16–24px), 1px rgba borders, layered depth | OS-level UI, media/creative dashboards, overlay-heavy apps | [glassmorphism.html](gallery/glassmorphism.html) |
-| **Tactile** | `neumorphism` | **Neumorphism** | Soft extruded UI, canvas-matched surfaces, dual soft shadow (light+dark), no borders | Settings/control panels, IoT/hardware companion apps | [neumorphism.html](gallery/neumorphism.html) |
-| **Tactile** | `claymorphism` | **Claymorphism** | 3D pastel clay-like elements (20–32px radius), soft inner shadows, pastel element fills | Consumer mobile apps, wellness/kids products | [claymorphism.html](gallery/claymorphism.html) |
-| **Utility** | `data-native` | **Data-Native** | Dense tables, monospace numerics (JetBrains Mono), 11–12px labels, restrained chroma | Analytics, finance, telemetry, BI tools | [data_native.html](gallery/data_native.html) |
-| **Utility** | `command-center` | **Command Center** | Multi-panel layouts, semantic status indicators (red/amber/green), compact Inter typography | DevOps, security, infrastructure operations | [command_center.html](gallery/command_center.html) |
+| **Modern** | `minimal-modern` | **Minimal Modern** | High whitespace, neutral slate, 4–8px radius, Sohne/Inter | SaaS, productivity, developer tooling | [minimal_modern.html](skills/design-director/gallery/minimal_modern.html) |
+| **Modern** | `dark-minimal` | **Dark Minimal** | Obsidian dark canvas, hairline borders, muted slate, Inter | Developer consoles, terminal tooling, dark SaaS | [dark_minimal.html](skills/design-director/gallery/dark_minimal.html) |
+| **Modern** | `swiss-editorial` | **Swiss / Editorial** | Pure white (`#FFFFFF`), Playfair 600, Swiss red (`#E30613`), 4+8 asymmetric grid | Media, architecture, dense data broadsheets | [swiss_editorial.html](skills/design-director/gallery/swiss_editorial.html) |
+| **Historical** | `bauhaus` | **Bauhaus** | Constructivist 8px grid, primary triad (`#E03A3E`/`#FFD100`/`#004B97`), IBM Plex Sans | Engineering, industrial software, tools | [bauhaus.html](skills/design-director/gallery/bauhaus.html) |
+| **Historical** | `art-deco` | **Art Deco** | Obsidian & rich gold, stepped geometry, hairpin borders, 0px radius | Luxury hospitality, prestige fintech, editorial | [art_deco.html](skills/design-director/gallery/art_deco.html) |
+| **Historical** | `mid-century-modern` | **Mid-Century Modern** | Warm olive & mustard, teak brown, organic curved pods (16px) | Architecture, curated retail, lifestyle | [mid_century_modern.html](skills/design-director/gallery/mid_century_modern.html) |
+| **Retro** | `retro-americana` | **Retro Americana** | Cream parchment (`#F9F0DC`), vermilion (`#C8391E`), Saul Bass geometry, slab type | Food, heritage brands, national parks | [retro_americana.html](skills/design-director/gallery/retro_americana.html) |
+| **Retro** | `terminal-cli` | **Terminal / CLI** | Fixed pitch amber/green phosphor, 0px radius, character cell borders | Devops telemetry, network monitoring, hacking consoles | [terminal_cli.html](skills/design-director/gallery/terminal_cli.html) |
+| **Retro** | `y2k-frutiger-aero` | **Y2K / Frutiger Aero** | Glossy specular glassmorphism, aqua-to-lime gradients, Nunito 800 | Consumer productivity, playful apps | [y2k_frutiger_aero.html](skills/design-director/gallery/y2k_frutiger_aero.html) |
+| **Futuristic** | `cyberpunk` | **Cyberpunk** | Obsidian dark (`#050508`), cyan HUD (`#00F5FF`), Rajdhani 700, chamfers | CLI telemetry, terminals, security consoles | [cyberpunk.html](skills/design-director/gallery/cyberpunk.html) |
+| **Futuristic** | `space-age-optimism` | **Space Age Optimism** | Warm optical white (`#FAFAF8`), molded pods (32px), NASA orange (`#FF5C00`) | Edtech, aerospace, optimistic platforms | [space_age_optimism.html](skills/design-director/gallery/space_age_optimism.html) |
+| **Futuristic** | `aurora-gradient` | **Aurora Gradient** | Soft multi-color atmospheric gradients (`#8B5CF6`/`#EC4899`/`#06B6D4`) over dark base | AI products, creative tools, generative platforms | [aurora_gradient.html](skills/design-director/gallery/aurora_gradient.html) |
+| **Organic** | `japanese-wabi-sabi` | **Japanese Wabi-Sabi** | Rice paper (`#FAF7F0`), charcoal ink wash, Mingei craft, Noto Serif JP 300 | Mindfulness, tea/craft, contemplative apps | [japanese_wabi_sabi.html](skills/design-director/gallery/japanese_wabi_sabi.html) |
+| **Organic** | `organic-natural` | **Organic Natural** | Bone canvas (`#F5F1E8`), living earth pigments (clay, moss, sap), river-stone pods | Sustainability, climate, botanicals | [organic_natural.html](skills/design-director/gallery/organic_natural.html) |
+| **Organic** | `digital-organic` | **Digital Organic** | Organic blobs + technological typography + natural gradients | AI/wellness/biotech, living-system interfaces | [digital_organic.html](skills/design-director/gallery/digital_organic.html) |
+| **Experimental** | `neo-brutalism` | **Neo-Brutalism** | 3px solid ink borders, 4px solid black offset shadows, Space Grotesk | Creator platforms, dev tools, zines | [neo_brutalism.html](skills/design-director/gallery/neo_brutalism.html) |
+| **Experimental** | `web-brutalism` | **Web Brutalism** | Default browser box-model, pure raw HTML typography, unstyled blue links | Web archives, hacker forums, anti-design manifestos | [web_brutalism.html](skills/design-director/gallery/web_brutalism.html) |
+| **Experimental** | `memphis-postmodern` | **Memphis Postmodern** | Polka dots, diagonal hatch patterns, geometric squiggles, Syne 800 | Drops, fashion, experimental portfolios | [memphis_postmodern.html](skills/design-director/gallery/memphis_postmodern.html) |
+| **Experimental** | `maximalist-dopamine` | **Maximalist Dopamine** | Acid yellow (`#FFF500`), colliding neon hues, multi-color drop shadows | Streetwear, music, youth culture | [maximalist_dopamine.html](skills/design-director/gallery/maximalist_dopamine.html) |
+| **Experimental** | `vaporwave` | **Vaporwave** | Sunset purple-pink gradients, wireframe horizons, retro aesthetic | Creative platforms, synthwave, digital audio | [vaporwave.html](skills/design-director/gallery/vaporwave.html) |
+| **Luxury** | `quiet-luxury` | **Quiet Luxury** | Alabaster (`#FBFBF9`), Cormorant Garamond 300, 0px radius, hairline dividers | Private wealth, high-end advisory, luxury | [quiet_luxury.html](skills/design-director/gallery/quiet_luxury.html) |
+| **Luxury** | `high-fashion-editorial` | **High Fashion Editorial** | Stark runway broadsheet, stark all-caps, razor 0px lines, flash contrast | Haute couture, avant-garde design, high fashion | [high_fashion_editorial.html](skills/design-director/gallery/high_fashion_editorial.html) |
+| **Tactile** | `glassmorphism` | **Glassmorphism** | Frosted translucent panels, backdrop-blur (16–24px), 1px rgba borders, layered depth | OS-level UI, media/creative dashboards, overlay-heavy apps | [glassmorphism.html](skills/design-director/gallery/glassmorphism.html) |
+| **Tactile** | `neumorphism` | **Neumorphism** | Soft extruded UI, canvas-matched surfaces, dual soft shadow (light+dark), no borders | Settings/control panels, IoT/hardware companion apps | [neumorphism.html](skills/design-director/gallery/neumorphism.html) |
+| **Tactile** | `claymorphism` | **Claymorphism** | 3D pastel clay-like elements (20–32px radius), soft inner shadows, pastel element fills | Consumer mobile apps, wellness/kids products | [claymorphism.html](skills/design-director/gallery/claymorphism.html) |
+| **Utility** | `data-native` | **Data-Native** | Dense tables, monospace numerics (JetBrains Mono), 11–12px labels, restrained chroma | Analytics, finance, telemetry, BI tools | [data_native.html](skills/design-director/gallery/data_native.html) |
+| **Utility** | `command-center` | **Command Center** | Multi-panel layouts, semantic status indicators (red/amber/green), compact Inter typography | DevOps, security, infrastructure operations | [command_center.html](skills/design-director/gallery/command_center.html) |
 
 ---
 
-## 3.1 Modifiers Architecture (`styles/modifiers.yaml`)
+## 3.1 Modifiers Architecture (`skills/design-director/styles/modifiers.yaml`)
 
 Rather than multiplying styles combinatorially, six orthogonal modifier dimensions compose cleanly over any foundation:
 
@@ -95,13 +95,13 @@ Rather than multiplying styles combinatorially, six orthogonal modifier dimensio
 
 ---
 
-## 3.2 Anti-Pattern References (`styles/reference-anti-patterns.md`)
+## 3.2 Anti-Pattern References (`skills/design-director/styles/reference-anti-patterns.md`)
 
-**Corporate Memphis / Alegria** is documented as a named anti-pattern (not a selectable style). `styles/reference-anti-patterns.md` serves as a human-reference document detailing the design history, visual indicators, and remediation guidelines for this pattern. The `design-audit` engine (`audit_code.py`) statically implements and enforces drift detection via hardcoded rule heuristics (`_check_line()` and `_check_corporate_memphis_drift()`) using signal accumulation across purple accents, bubbly containers, ambient shadow saturation, gradient blob decoration, and illustration placeholders (2 signals = WARNING; 3+ = CRITICAL).
+**Corporate Memphis / Alegria** is documented as a named anti-pattern (not a selectable style). `skills/design-director/styles/reference-anti-patterns.md` serves as a human-reference document detailing the design history, visual indicators, and remediation guidelines for this pattern. The `design-audit` engine (`audit_code.py`) statically implements and enforces drift detection via hardcoded rule heuristics (`_check_line()` and `_check_corporate_memphis_drift()`) using signal accumulation across purple accents, bubbly containers, ambient shadow saturation, gradient blob decoration, and illustration placeholders (2 signals = WARNING; 3+ = CRITICAL).
 
 ---
 
-## 3.3 Domain-Style Defaults (`styles/domain-style-defaults.yaml`)
+## 3.3 Domain-Style Defaults (`skills/design-director/styles/domain-style-defaults.yaml`)
 
 A lookup table mapping common product domains (fintech, healthcare, legal, government, edtech, devops, ecommerce, real estate, hospitality, AI products, biotech, creative tools, media, social, analytics) to 2–3 recommended foundation-style IDs. Consumed by the diagnostic interview logic (§4.1) when a domain is detected or stated. This is a routing table, not a list of new foundation styles, and domain names do not appear in the §3 taxonomy table.
 
@@ -112,13 +112,13 @@ A lookup table mapping common product domains (fintech, healthcare, legal, gover
 ### 4.1 Context Analysis & Diagnostic Interview
 - Inspects project files (`README.md`, `PRD.md`, `package.json`, source code).
 - Detects product domain, audience, and workflow density.
-- Consults `styles/domain-style-defaults.yaml` for domain-aware candidate shortlisting.
+- Consults `skills/design-director/styles/domain-style-defaults.yaml` for domain-aware candidate shortlisting.
 - **Interview Gate:** If the domain or density is ambiguous, asks up to 3 targeted questions before guessing.
 
 ### 4.2 Recommendation & Visual Previews
 - Recommends 2–3 candidate styles tailored to the domain.
 - Displays an **in-chat visual micro-spec** (display font, primary hex swatches, radius rule) directly in chat.
-- Provides clickable links to live standalone HTML preview files in [`gallery/`](gallery/).
+- Provides clickable links to live standalone HTML preview files in [`skills/design-director/gallery/`](skills/design-director/gallery/).
 - Details honest operational trade-offs for each candidate style.
 
 ### 4.3 Critique & Layer Refinement
@@ -151,44 +151,43 @@ design-director/
 │   ├── design-director/
 │   │   ├── SKILL.md            # Conversational director skill (<1.2k tokens)
 │   │   ├── director_engine.py  # Programmatic engine (for deterministic pipelines)
-│   │   └── reference-library.yaml # 26 reference brand influences mapped to foundations
+│   │   ├── reference-library.yaml # 26 reference brand influences mapped to foundations
+│   │   ├── styles/             # 27 consolidated style packs + modifiers + references
+│   │   │   ├── modifiers.yaml  # Surface, imagery, typography, motion, density, and layout dimensions
+│   │   │   ├── domain-style-defaults.yaml  # Domain → style ID lookup table (consumed by §4.1)
+│   │   │   ├── reference-anti-patterns.md  # Corporate Memphis / Alegria anti-pattern reference
+│   │   │   ├── minimal-modern.md
+│   │   │   ├── dark-minimal.md
+│   │   │   ├── swiss-editorial.md
+│   │   │   ├── terminal-cli.md
+│   │   │   ├── web-brutalism.md
+│   │   │   ├── art-deco.md
+│   │   │   ├── mid-century-modern.md
+│   │   │   ├── vaporwave.md
+│   │   │   ├── high-fashion-editorial.md
+│   │   │   ├── glassmorphism.md        # Tactile family
+│   │   │   ├── neumorphism.md          # Tactile family
+│   │   │   ├── claymorphism.md         # Tactile family
+│   │   │   ├── data-native.md          # Utility family
+│   │   │   ├── command-center.md       # Utility family
+│   │   │   ├── aurora-gradient.md      # Futuristic family
+│   │   │   ├── digital-organic.md      # Organic family
+│   │   │   └── ... (11 other foundation style packs)
+│   │   └── gallery/            # 27 standalone HTML visual previews (canonical "Aurelia" product)
+│   │       ├── minimal_modern.html
+│   │       ├── dark_minimal.html
+│   │       ├── glassmorphism.html
+│   │       ├── neumorphism.html
+│   │       ├── claymorphism.html
+│   │       ├── data_native.html
+│   │       ├── command_center.html
+│   │       ├── aurora_gradient.html
+│   │       ├── digital_organic.html
+│   │       └── ... (18 other canonical previews)
+│   │
 │   └── design-audit/
 │       ├── SKILL.md            # Audit skill prompt
 │       └── audit_code.py       # Standalone static linter with modifier whitelists + Memphis detection
-│
-├── styles/                     # 27 consolidated style packs + modifiers + references
-│   ├── modifiers.yaml          # Surface, imagery, typography, motion, density, and layout dimensions
-│   ├── domain-style-defaults.yaml  # Domain → style ID lookup table (consumed by §4.1)
-│   ├── reference-anti-patterns.md  # Corporate Memphis / Alegria anti-pattern reference
-│   ├── minimal-modern.md
-│   ├── dark-minimal.md
-│   ├── swiss-editorial.md
-│   ├── terminal-cli.md
-│   ├── web-brutalism.md
-│   ├── art-deco.md
-│   ├── mid-century-modern.md
-│   ├── vaporwave.md
-│   ├── high-fashion-editorial.md
-│   ├── glassmorphism.md        # Tactile family
-│   ├── neumorphism.md          # Tactile family
-│   ├── claymorphism.md         # Tactile family
-│   ├── data-native.md          # Utility family
-│   ├── command-center.md       # Utility family
-│   ├── aurora-gradient.md      # Futuristic family
-│   ├── digital-organic.md      # Organic family
-│   └── ... (11 other foundation style packs)
-│
-├── gallery/                    # 27 standalone HTML visual previews (canonical "Aurelia" product)
-│   ├── minimal_modern.html
-│   ├── dark_minimal.html
-│   ├── glassmorphism.html
-│   ├── neumorphism.html
-│   ├── claymorphism.html
-│   ├── data_native.html
-│   ├── command_center.html
-│   ├── aurora_gradient.html
-│   ├── digital_organic.html
-│   └── ... (18 other canonical previews)
 │
 ├── tests/                      # CI verification suites
 │   ├── fixtures/               # Seeded code and test PRDs

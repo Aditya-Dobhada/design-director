@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 # Canonical foundation style IDs. Keep in sync with director_engine.SUPPORTED_STYLES
-# and the style packs in styles/<style_id>.md. Used by the CLI to reject unknown
+# and the style packs in skills/design-director/styles/<style_id>.md. Used by the CLI to reject unknown
 # or misspelled style IDs instead of silently reporting "PASSED" with zero rules.
 VALID_STYLES = frozenset([
     "swiss-editorial", "neo-brutalism", "y2k-frutiger-aero", "quiet-luxury",
@@ -50,7 +50,7 @@ class DesignAuditor:
         if (stripped.startswith('<!--') or stripped.startswith('//') or
                 stripped.startswith('*') or stripped.startswith('/*')):
             # Exception: `<!-- illustration: ... -->` placeholder comments are a
-            # documented Corporate Memphis signal (see styles/reference-anti-patterns.md),
+            # documented Corporate Memphis signal (see skills/design-director/styles/reference-anti-patterns.md),
             # so accumulate it before skipping the rest of the line checks.
             if re.match(r'<!--\s*illustration\b', stripped, re.IGNORECASE):
                 self._memphis_signals.setdefault(str(file_path), []).append(("illustration_placeholder", line_no))
@@ -310,7 +310,7 @@ class DesignAuditor:
                         })
 
         # NOTE: These detection signals are duplicated by hand from
-        # styles/reference-anti-patterns.md (Corporate Memphis section).
+        # skills/design-director/styles/reference-anti-patterns.md (Corporate Memphis section).
         # If you add/change a signal here, update that file too, and vice versa —
         # they are not wired together programmatically.
         # 7. Corporate Memphis / Alegria Drift Detection (cross-cutting, all styles)

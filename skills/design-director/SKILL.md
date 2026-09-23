@@ -8,7 +8,7 @@ description: Conversational design reasoning engine. Analyzes project context (P
 A design reasoning engine that establishes an intentional, implementation-ready visual language before frontend code is generated. It prevents coding agents from collapsing into generic Tailwind SaaS defaults (`Inter`, `rounded-lg`, `shadow-sm`, `bg-blue-600`).
 
 ## Token Economy Rules
-1. **Never load all styles at once.** The 27 style guides live in `styles/<style_id>.md`. Read **only the single chosen style file** when generating the final contract.
+1. **Never load all styles at once.** The 27 style guides live in `styles/<style_id>.md` inside this skill folder. Read **only the single chosen style file** when generating the final contract.
 2. **Never load reference libraries into prompt context.** The brief mapping rules below provide all necessary refinement context.
 3. **Keep contracts project-scoped.** Write `DESIGN_CONTRACT.md` to the project root. Never attempt to mutate global or system-level configuration.
 
@@ -32,21 +32,21 @@ Inspect available project files: `README.md`, `PRD.md`, `SPEC.md`, `package.json
 ### Phase 3: Recommendations (2–3 Candidate Directions)
 Select the 2–3 strongest fits from the 27 foundational styles. Present each direction with:
 1. **In-Chat Visual Micro-Spec:** Display font, canvas hex, accent hex, and radius rule directly in the response.
-2. **Local Preview Link:** Provide a clickable link to `gallery/<style_id>.html`.
+2. **Local Preview Link:** Provide a clickable link to `gallery/<style_id>.html` inside this skill folder.
 3. **Honest Trade-offs:** The specific operational limitation of the style.
 
 #### Foundation Style Taxonomy
-See `PRD.md` §3 and `styles/domain-style-defaults.yaml` for the complete 27-foundation style taxonomy, visual signatures, and domain defaults. Live visual previews for all styles are in `gallery/<style_id>.html`.
+See `styles/domain-style-defaults.yaml` (inside this skill) for the complete 27-foundation style taxonomy, visual signatures, and domain defaults. Live visual previews for all styles are in `gallery/<style_id>.html`.
 
 ### Phase 4: Critique, Refinements & Modifiers
-When the user requests refinements or surface treatments, apply orthogonal modifiers from `styles/modifiers.yaml`:
+When the user requests refinements or surface treatments, apply orthogonal modifiers from `styles/modifiers.yaml` inside this skill:
 - **Surface Modifiers:** `frosted-glass` (backdrop blur + specular hairlines), `subtle-grain` (SVG noise texture), `crt-scanlines` (horizontal CRT lines), `fine-paper` (linen texture), `chrome-specular` (luminous border gradient).
 - **Motion Profiles:** `micro-snappy` (120ms ease-out), `fluid-spring` (350ms spring), `inert` (0ms / transitions disabled).
 - **Brand Influences:** Map requests like "more like Linear" or "more like Stripe" as influence vectors (e.g. shift to `dark-minimal` with `micro-snappy` motion and `frosted-glass` surfaces).
 
 ### Phase 5: Implementation Contract Handoff
 Once confirmed:
-1. Load `styles/<style_id>.md` (and only that style file).
+1. Load `styles/<style_id>.md` from this skill folder (and only that style file).
 2. Generate `DESIGN_CONTRACT.md` in the project root containing:
    - Target foundation name and token variables (CSS variables & Tailwind mappings).
    - Active orthogonal modifiers (`Surface`, `Motion`, `Imagery`, `Typography`).

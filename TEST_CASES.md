@@ -31,7 +31,7 @@ python3 skills/design-audit/audit_code.py neo-brutalism  tests/fixtures/seeded_c
 
 ### A2. Every gallery preview passes its own style
 ```bash
-for f in gallery/*.html; do
+for f in skills/design-director/gallery/*.html; do
   s=$(basename "$f" .html | tr '_' '-')
   [ "$s" = "baseline" ] && continue   # baseline is a deliberately generic demo, not a style
   python3 skills/design-audit/audit_code.py "$s" "$f" | python3 -c "import json,sys; r=json.load(sys.stdin); print(r['status'], '$f')"
@@ -41,7 +41,7 @@ done
 
 ### A3. Cross-style audit discriminates
 ```bash
-python3 skills/design-audit/audit_code.py quiet-luxury gallery/neo_brutalism.html
+python3 skills/design-audit/audit_code.py quiet-luxury skills/design-director/gallery/neo_brutalism.html
 ```
 **Expected:** `FAILED: Severe Contract Breach` (≥4 critical — hard offset shadows, chunky borders, loud palette).
 
@@ -103,7 +103,7 @@ Use the design-director skill: analyze my PRD and recommend a visual direction.
 ```
 **Expected behavior:**
 - Skips the interview (context is rich) — SKILL.md Phase 2 gate.
-- Presents 2–3 directions, each with an in-chat micro-spec (display font, canvas hex, accent hex, radius rule), a link to `gallery/<style>.html`, and an honest trade-off.
+- Presents 2–3 directions, each with an in-chat micro-spec (display font, canvas hex, accent hex, radius rule), a link to `skills/design-director/gallery/<style>.html` (or `gallery/<style>.html` inside the skill), and an honest trade-off.
 - Recommendations should be in the quiet-luxury / art-deco / swiss-editorial neighborhood (matches the deterministic engine, C1).
 - Must NOT propose generic defaults (`Inter` + `rounded-lg` + `bg-blue-600`).
 
@@ -125,7 +125,7 @@ More like Linear. And add a frosted-glass surface with snappy motion.
 ```text
 Confirmed — generate the design contract.
 ```
-**Expected:** a `DESIGN_CONTRACT.md` appears in the project root containing: target style + token variables (CSS vars / Tailwind mapping), active modifiers with audit whitelists, component geometry rules, and a `NEVER`-style anti-pattern section. The agent should have loaded **only** the one chosen `styles/<style_id>.md` file (token economy rule).
+**Expected:** a `DESIGN_CONTRACT.md` appears in the project root containing: target style + token variables (CSS vars / Tailwind mapping), active modifiers with audit whitelists, component geometry rules, and a `NEVER`-style anti-pattern section. The agent should have loaded **only** the one chosen `styles/<style_id>.md` file from the skill directory (token economy rule).
 
 ### B5. Full loop: director → build → audit
 After B4, in the same project:
@@ -212,5 +212,5 @@ additionally needs a Chromium download — skip it in network-restricted sandbox
    always returns a brief, falling back to neutral `Web Application` — that fallback is the
    deterministic-pipeline behavior, not the conversational one.
 4. **Corporate Memphis signals are hand-duplicated** between `audit_code.py` and
-   `styles/reference-anti-patterns.md` (see NOTE comment in the source) — keep them in sync
+   `skills/design-director/styles/reference-anti-patterns.md` (see NOTE comment in the source) — keep them in sync
    if you edit either.
