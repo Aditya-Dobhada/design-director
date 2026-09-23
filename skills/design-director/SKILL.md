@@ -9,7 +9,7 @@ Establishes an intentional visual language before code is generated, preventing 
 
 ## Token Economy Rules
 1. **Never load all styles at once.** The 27 style guides live in `styles/<style_id>.md` inside this skill. Read **only the single chosen style file** when generating the contract.
-2. **Load `reference-library.yaml` only for named-brand refinements** (e.g. "more like Stripe"): it costs ~10k tokens, so never load it for anything else.
+2. **Load `reference-library.json` only for named-brand refinements** (e.g. "more like Stripe"): it costs ~10k tokens, so never load it for anything else.
 3. **Keep contracts project-scoped.** Write `DESIGN_CONTRACT.md` to the project root; never mutate global config.
 4. **Link gallery previews, never read them.** Reference `gallery/<style_id>.html` via markdown links only — reading one costs 1.7–6.5k tokens.
 
@@ -35,17 +35,17 @@ Select the 2–3 strongest fits from the 27 foundational styles. For each candid
    - **Inline SVG Strip:** `<svg width="100%" height="34" viewBox="0 0 380 34" fill="none">` with 4 palette swatches (Canvas, Surface, Primary Accent, Secondary Accent), a radius-sample outline (`rx="0"`, `rx="6"`, or `rx="12"`), and display font text.
    - **Swatch & Token Summary:**
      `[⬛ #canvas] [⬛ #surface] [🟨 #accent1] [🟨 #accent2] | Radius: <rule> | Font: **<Display Font>**`
-     - Display & Body Fonts, Canvas & Surface hexes, Accent hexes, Radius Rule, and Recommended Modifiers (from `styles/modifiers.yaml`).
+     - Display & Body Fonts, Canvas & Surface hexes, Accent hexes, Radius Rule, and Recommended Modifiers (from `styles/modifiers.json`).
 2. **Portable Preview Link:**
    Provide a project-relative markdown link to the foundation gallery file, e.g. `[<style_id>.html](skills/design-director/gallery/<style_id>.html)` or `[<style_id>.html](.agents/skills/design-director/gallery/<style_id>.html)`.
    **CRITICAL:** Never output hardcoded absolute `file:///` URLs.
 3. **Honest Trade-offs:** The specific operational limitation or aesthetic risk of the style.
 
 #### Foundation Style Taxonomy
-See `styles/domain-style-defaults.yaml` (inside this skill) for the 27-foundation style taxonomy, visual signatures, and domain defaults. Live previews are in `gallery/<style_id>.html`.
+See `styles/domain-style-defaults.json` (inside this skill) for the 27-foundation style taxonomy, visual signatures, and domain defaults. Live previews are in `gallery/<style_id>.html`.
 
 ### Phase 4: Critique, Refinements & Modifiers
-When the user requests refinements or surface treatments, apply orthogonal modifiers from `styles/modifiers.yaml`:
+When the user requests refinements or surface treatments, apply orthogonal modifiers from `styles/modifiers.json`:
 - **Surface Modifiers:** `frosted-glass`, `subtle-grain`, `crt-scanlines`, `fine-paper`, `chrome-specular`.
 - **Motion Profiles:** `micro-snappy` (120ms), `fluid-spring` (350ms), `inert` (0ms).
 - **Brand Influences:** Map requests like "more like Linear" or "more like Stripe" as influence vectors (e.g. shift to `dark-minimal` with `micro-snappy` motion and `frosted-glass` surfaces).

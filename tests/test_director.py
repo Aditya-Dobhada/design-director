@@ -311,27 +311,27 @@ class TestDesignDirector(unittest.TestCase):
             self.assertTrue(len(r["tradeoffs"]) >= 1)
             self.assertTrue(len(r["reasoning"]) >= 15)
 
-    def test_density_modifiers_in_yaml(self):
-        """Verifies all 5 density modifier levels are present in modifiers.yaml."""
+    def test_density_modifiers_in_json(self):
+        """Verifies all 5 density modifier levels are present in modifiers.json."""
         from director_engine import load_modifiers
         mods = load_modifiers()
-        self.assertIn("density", mods, "density dimension missing from modifiers.yaml")
+        self.assertIn("density", mods, "density dimension missing from modifiers.json")
         density_ids = [d["id"] for d in mods["density"]]
         for expected in ["ultra-dense", "dense", "balanced", "spacious", "ultra-spacious"]:
-            self.assertIn(expected, density_ids, f"Density level '{expected}' missing from modifiers.yaml")
+            self.assertIn(expected, density_ids, f"Density level '{expected}' missing from modifiers.json")
         # Verify each has required tokens
         for d in mods["density"]:
             self.assertIn("tokens", d, f"density/{d['id']} missing tokens block")
             self.assertIn("--density-row-height", d["tokens"]["css"],
                           f"density/{d['id']} missing --density-row-height token")
 
-    def test_bento_grid_modifier_in_yaml(self):
+    def test_bento_grid_modifier_in_json(self):
         """Verifies bento-grid is present in the layout modifier dimension."""
         from director_engine import load_modifiers
         mods = load_modifiers()
-        self.assertIn("layout", mods, "layout dimension missing from modifiers.yaml")
+        self.assertIn("layout", mods, "layout dimension missing from modifiers.json")
         layout_ids = [m["id"] for m in mods["layout"]]
-        self.assertIn("bento-grid", layout_ids, "bento-grid modifier missing from modifiers.yaml")
+        self.assertIn("bento-grid", layout_ids, "bento-grid modifier missing from modifiers.json")
         # Verify it has guidelines but NOT radius/color/shadow tokens (composition only)
         bento = next(m for m in mods["layout"] if m["id"] == "bento-grid")
         self.assertIn("guidelines", bento, "bento-grid missing guidelines block")
@@ -405,24 +405,24 @@ class TestDesignDirector(unittest.TestCase):
         res_dorg = refine_spec(base_spec, "digital organic biomorphic blob style")
         self.assertIn("digital-organic", res_dorg["updated_spec"]["layers"]["surfaces"])
 
-    def test_domain_style_defaults_yaml(self):
-        """Verifies domain-style-defaults.yaml exists and maps key domains to valid style IDs."""
-        import yaml
-        domain_defaults_path = ROOT_DIR / "skills" / "design-director" / "styles" / "domain-style-defaults.yaml"
-        self.assertTrue(domain_defaults_path.exists(), "domain-style-defaults.yaml missing")
+    def test_domain_style_defaults_json(self):
+        """Verifies domain-style-defaults.json exists and maps key domains to valid style IDs."""
+        import json
+        domain_defaults_path = ROOT_DIR / "skills" / "design-director" / "styles" / "domain-style-defaults.json"
+        self.assertTrue(domain_defaults_path.exists(), "domain-style-defaults.json missing")
         with open(domain_defaults_path, "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f)
+            data = json.load(f)
         self.assertIn("domain_style_defaults", data)
         domains = data["domain_style_defaults"]
         # Must cover key domains
         for key in ["fintech", "healthcare", "legal", "government", "edtech", "devops", "analytics"]:
-            self.assertIn(key, domains, f"Domain '{key}' missing from domain-style-defaults.yaml")
+            self.assertIn(key, domains, f"Domain '{key}' missing from domain-style-defaults.json")
         # All referenced style_ids must be in SUPPORTED_STYLES
         for domain_key, domain_data in domains.items():
             for entry in domain_data.get("recommended_styles", []):
                 sid = entry["style_id"]
                 self.assertIn(sid, SUPPORTED_STYLES,
-                              f"domain-style-defaults.yaml references unknown style_id '{sid}' in domain '{domain_key}'")
+                              f"domain-style-defaults.json references unknown style_id '{sid}' in domain '{domain_key}'")
 
     def test_new_styles_refinement(self):
         """Tests refinement prompts targeting the expanded style families."""
@@ -484,7 +484,7 @@ class TestDesignDirector(unittest.TestCase):
         self.assertGreater(res_tabular["diff_report"]["layers_changed_count"], 0)
 
     def test_domain_style_defaults_wired_recommendations(self):
-        """Verifies domain-style-defaults.yaml wires directly into recommend_styles()."""
+        """Verifies domain-style-defaults.json wires directly into recommend_styles()."""
         # AI Product query
         brief_ai = extract_design_brief("LLM interface for developers")
         recs_ai = recommend_styles(brief_ai)
@@ -716,49 +716,49 @@ class TestTokenEconomyRegressions(unittest.TestCase):
         self.assertEqual(proc.returncode, 2)
         self.assertIn("does not exist", proc.stderr)
 
-    def test_missing_yaml_raises_with_path(self):
-        """F3: missing required YAML raises FileNotFoundError naming the file."""
+    def test_missing_json_raises_with_path(self):
+        """F3: missing required JSON raises FileNotFoundError naming the file."""
         import tempfile
-        from director_engine import _load_yaml_file
+        from director_engine import _load_json_file
         with tempfile.TemporaryDirectory() as tmp:
-            missing = str(Path(tmp) / "modifiers.yaml")
+            missing = str(Path(tmp) / "modifiers.json")
             with self.assertRaises(FileNotFoundError) as ctx:
-                _load_yaml_file(Path(missing), "modifiers")
+                _load_json_file(Path(missing), "modifiers")
             self.assertIn(missing, str(ctx.exception))
 
-    def test_empty_yaml_raises_with_path(self):
-        """F5: empty YAML raises ValueError naming the file (not AttributeError)."""
+    def test_empty_json_raises_with_path(self):
+        """F5: empty JSON raises ValueError naming the file (not AttributeError)."""
         import tempfile
-        from director_engine import _load_yaml_file
+        from director_engine import _load_json_file
         with tempfile.TemporaryDirectory() as tmp:
-            empty = Path(tmp) / "modifiers.yaml"
+            empty = Path(tmp) / "modifiers.json"
             empty.write_text("")
             with self.assertRaises(ValueError) as ctx:
-                _load_yaml_file(empty, "modifiers")
+                _load_json_file(empty, "modifiers")
             self.assertIn(str(empty), str(ctx.exception))
             self.assertIn("empty", str(ctx.exception))
 
-    def test_malformed_yaml_raises_with_path(self):
-        """F5: malformed YAML raises ValueError naming the file (not pathless ParserError)."""
+    def test_malformed_json_raises_with_path(self):
+        """F5: malformed JSON raises ValueError naming the file (not pathless ParserError)."""
         import tempfile
-        from director_engine import _load_yaml_file
+        from director_engine import _load_json_file
         with tempfile.TemporaryDirectory() as tmp:
-            bad = Path(tmp) / "modifiers.yaml"
-            bad.write_text("modifiers:\n  surface: [unclosed\n    bad indent: : :\n")
+            bad = Path(tmp) / "modifiers.json"
+            bad.write_text("{\"modifiers\": {\"surface\": [unclosed")
             with self.assertRaises(ValueError) as ctx:
-                _load_yaml_file(bad, "modifiers")
+                _load_json_file(bad, "modifiers")
             self.assertIn(str(bad), str(ctx.exception))
 
-    def test_yaml_failures_not_cached(self):
-        """F15: a failed YAML load must not poison later loads (no stale {})."""
+    def test_json_failures_not_cached(self):
+        """F15: a failed JSON load must not poison later loads (no stale {})."""
         import tempfile
-        from director_engine import _load_yaml_file
+        from director_engine import _load_json_file
         with tempfile.TemporaryDirectory() as tmp:
-            p = Path(tmp) / "mods.yaml"
+            p = Path(tmp) / "mods.json"
             with self.assertRaises(FileNotFoundError):
-                _load_yaml_file(p, "modifiers")
-            p.write_text("modifiers:\n  surface: []\n")
-            self.assertEqual(_load_yaml_file(p, "modifiers"), {"surface": []})
+                _load_json_file(p, "modifiers")
+            p.write_text("{\"modifiers\": {\"surface\": []}}")
+            self.assertEqual(_load_json_file(p, "modifiers"), {"surface": []})
 
     def test_director_entrypoint_exits_2(self):
         """F4: executing the engine directly prints usage to stderr, exits 2."""
@@ -803,7 +803,7 @@ class TestTokenEconomyRegressions(unittest.TestCase):
 
     def test_layer_values_resolve_to_real_files(self):
         """F12: every emitted .md layer value must exist (no dangling paths)."""
-        import yaml
+        import json
         from director_engine import (
             SUPPORTED_STYLES,
             create_design_spec,
@@ -822,8 +822,8 @@ class TestTokenEconomyRegressions(unittest.TestCase):
                         (skill_dir / val).exists(),
                         f"dangling layer path: {layer}={val}",
                     )
-        refs = yaml.safe_load(
-            (skill_dir / "reference-library.yaml").read_text(encoding="utf-8")
+        refs = json.loads(
+            (skill_dir / "reference-library.json").read_text(encoding="utf-8")
         )["references"]
         for ref in refs:
             for layer, val in ref.get("mapped_style_layers", {}).items():
@@ -836,12 +836,12 @@ class TestTokenEconomyRegressions(unittest.TestCase):
         self.assertGreater(checked, 100)
 
     def test_style_signatures_match_engine(self):
-        """F10: domain YAML style_signatures must mirror STYLE_METADATA micro_spec."""
-        import yaml
+        """F10: domain JSON style_signatures must mirror STYLE_METADATA micro_spec."""
+        import json
         from director_engine import STYLE_METADATA
-        data = yaml.safe_load(
+        data = json.loads(
             (ROOT_DIR / "skills" / "design-director" / "styles"
-             / "domain-style-defaults.yaml").read_text(encoding="utf-8")
+             / "domain-style-defaults.json").read_text(encoding="utf-8")
         )
         sigs = data["style_signatures"]
         self.assertEqual(set(sigs), set(STYLE_METADATA))

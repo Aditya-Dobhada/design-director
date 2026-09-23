@@ -26,7 +26,7 @@ PRD / README / Codebase Context
    [Skill 1: design-director]
    ├── Context Analysis
    ├── Diagnostic Interview Gate (max 3 questions if context is thin)
-   ├── Domain-Style Lookup (skills/design-director/styles/domain-style-defaults.yaml)
+   ├── Domain-Style Lookup (skills/design-director/styles/domain-style-defaults.json)
    ├── Curated Style Recommendations (2–3 candidates with gallery links)
    └── Contract Handoff (DESIGN_CONTRACT.md generation)
                │
@@ -82,7 +82,7 @@ Each foundation style is delivered as a consolidated, self-contained specificati
 
 ---
 
-## 3.1 Modifiers Architecture (`skills/design-director/styles/modifiers.yaml`)
+## 3.1 Modifiers Architecture (`skills/design-director/styles/modifiers.json`)
 
 Rather than multiplying styles combinatorially, six orthogonal modifier dimensions compose cleanly over any foundation:
 
@@ -101,7 +101,7 @@ Rather than multiplying styles combinatorially, six orthogonal modifier dimensio
 
 ---
 
-## 3.3 Domain-Style Defaults (`skills/design-director/styles/domain-style-defaults.yaml`)
+## 3.3 Domain-Style Defaults (`skills/design-director/styles/domain-style-defaults.json`)
 
 A lookup table mapping common product domains (fintech, healthcare, legal, government, edtech, devops, ecommerce, real estate, hospitality, AI products, biotech, creative tools, media, social, analytics) to 2–3 recommended foundation-style IDs. Consumed by the diagnostic interview logic (§4.1) when a domain is detected or stated. This is a routing table, not a list of new foundation styles, and domain names do not appear in the §3 taxonomy table.
 
@@ -112,7 +112,7 @@ A lookup table mapping common product domains (fintech, healthcare, legal, gover
 ### 4.1 Context Analysis & Diagnostic Interview
 - Inspects project files (`README.md`, `PRD.md`, `package.json`, source code).
 - Detects product domain, audience, and workflow density.
-- Consults `skills/design-director/styles/domain-style-defaults.yaml` for domain-aware candidate shortlisting.
+- Consults `skills/design-director/styles/domain-style-defaults.json` for domain-aware candidate shortlisting.
 - **Interview Gate:** If the domain or density is ambiguous, asks up to 3 targeted questions before guessing.
 
 ### 4.2 Recommendation & Visual Previews
@@ -151,10 +151,10 @@ design-director/
 │   ├── design-director/
 │   │   ├── SKILL.md            # Conversational director skill (<1.2k tokens)
 │   │   ├── director_engine.py  # Programmatic engine (for deterministic pipelines)
-│   │   ├── reference-library.yaml # 26 reference brand influences mapped to foundations
+│   │   ├── reference-library.json # 26 reference brand influences mapped to foundations
 │   │   ├── styles/             # 27 consolidated style packs + modifiers + references
-│   │   │   ├── modifiers.yaml  # Surface, imagery, typography, motion, density, and layout dimensions
-│   │   │   ├── domain-style-defaults.yaml  # Domain → style ID lookup table (consumed by §4.1)
+│   │   │   ├── modifiers.json  # Surface, imagery, typography, motion, density, and layout dimensions
+│   │   │   ├── domain-style-defaults.json  # Domain → style ID lookup table (consumed by §4.1)
 │   │   │   ├── reference-anti-patterns.md  # Corporate Memphis / Alegria anti-pattern reference
 │   │   │   ├── minimal-modern.md
 │   │   │   ├── dark-minimal.md
@@ -204,6 +204,6 @@ design-director/
 
 ## 6. Verification & Quality Standards
 
-- **Unit Testing:** All tests passing via `npm run test:unit` (validating brief extraction, 27-foundation specs, modifier contracts including density/bento-grid, multi-defensible routing, layer-scoped refinements, domain-style-defaults YAML integrity, and 7 new style packs completeness).
+- **Unit Testing:** All tests passing via `npm run test:unit` (validating brief extraction, 27-foundation specs, modifier contracts including density/bento-grid, multi-defensible routing, layer-scoped refinements, domain-style-defaults JSON integrity, and 7 new style packs completeness).
 - **Pipeline Integration Testing:** All tests passing via `npm run test:e2e:pipeline` (statically auditing all 27 gallery HTML fixtures with 0 critical violations).
 - **Browser DOM Audit:** Headless Chromium testing via Playwright asserting computed CSS values (`borderRadius === 0px`, `boxShadow === none`, font loading, and contrast luminance).

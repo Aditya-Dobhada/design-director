@@ -14,23 +14,14 @@ import re
 from pathlib import Path
 from typing import Any
 
-try:
-    import yaml
-except ImportError:
-    raise ImportError(
-        "PyYAML is not installed. Please install required dependencies with:\n"
-        "    pip install -r requirements.txt\n"
-        "(or: pip install pyyaml)"
-    ) from None
-
-REFERENCE_LIBRARY_PATH = Path(__file__).parent / "reference-library.yaml"
+REFERENCE_LIBRARY_PATH = Path(__file__).parent / "reference-library.json"
 _LOCAL_STYLES = Path(__file__).resolve().parent / "styles"
 STYLES_DIR = _LOCAL_STYLES if _LOCAL_STYLES.exists() else Path(__file__).resolve().parent.parent.parent / "styles"
-MODIFIERS_PATH = STYLES_DIR / "modifiers.yaml"
-DOMAIN_DEFAULTS_PATH = STYLES_DIR / "domain-style-defaults.yaml"
+MODIFIERS_PATH = STYLES_DIR / "modifiers.json"
+DOMAIN_DEFAULTS_PATH = STYLES_DIR / "domain-style-defaults.json"
 
-def _load_yaml_file(path: Path, top_key: str) -> Any:
-    """Loads a required YAML data file, failing loudly with the file path.
+def _load_json_file(path: Path, top_key: str) -> Any:
+    """Loads a required JSON data file, failing loudly with the file path.
 
     Missing files raise FileNotFoundError (never a silent empty fallback);
     empty/malformed/wrong-schema files raise ValueError naming the file.
@@ -44,14 +35,22 @@ def _load_yaml_file(path: Path, top_key: str) -> Any:
         )
     try:
         with open(path, "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f)
-    except yaml.YAMLError as e:
-        raise ValueError(f"Failed to parse YAML file: {path}: {e}") from e
+            content = f.read()
+    except OSError as e:
+        raise ValueError(f"Failed to read file: {path}: {e}") from e
+    if not content.strip():
+        raise ValueError(f"JSON file is empty: {path}")
+    try:
+        data = json.loads(content)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Failed to parse JSON file: {path}: {e}") from e
     if data is None:
-        raise ValueError(f"YAML file is empty: {path}")
+        raise ValueError(f"JSON file is empty: {path}")
     if not isinstance(data, dict) or top_key not in data or data[top_key] is None:
-        raise ValueError(f"YAML file {path} is missing required top-level key '{top_key}'")
+        raise ValueError(f"JSON file {path} is missing required top-level key '{top_key}'")
     return data[top_key]
+
+_load_yaml_file = _load_json_file  # Backwards-compatibility alias
 
 _MODIFIERS_CACHE: dict[str, Any] | None = None
 
@@ -59,7 +58,7 @@ def load_modifiers() -> dict[str, Any]:
     global _MODIFIERS_CACHE
     if _MODIFIERS_CACHE is not None:
         return _MODIFIERS_CACHE
-    _MODIFIERS_CACHE = _load_yaml_file(MODIFIERS_PATH, "modifiers")
+    _MODIFIERS_CACHE = _load_json_file(MODIFIERS_PATH, "modifiers")
     return _MODIFIERS_CACHE
 
 _REFERENCE_LIBRARY_CACHE: list[dict[str, Any]] | None = None
@@ -68,7 +67,7 @@ def load_reference_library() -> list[dict[str, Any]]:
     global _REFERENCE_LIBRARY_CACHE
     if _REFERENCE_LIBRARY_CACHE is not None:
         return _REFERENCE_LIBRARY_CACHE
-    _REFERENCE_LIBRARY_CACHE = _load_yaml_file(REFERENCE_LIBRARY_PATH, "references")
+    _REFERENCE_LIBRARY_CACHE = _load_json_file(REFERENCE_LIBRARY_PATH, "references")
     return _REFERENCE_LIBRARY_CACHE
 
 def find_reference(query: str) -> dict[str, Any] | None:
@@ -298,7 +297,7 @@ def load_domain_style_defaults() -> dict[str, Any]:
     global _DOMAIN_DEFAULTS_CACHE
     if _DOMAIN_DEFAULTS_CACHE is not None:
         return _DOMAIN_DEFAULTS_CACHE
-    _DOMAIN_DEFAULTS_CACHE = _load_yaml_file(DOMAIN_DEFAULTS_PATH, "domain_style_defaults")
+    _DOMAIN_DEFAULTS_CACHE = _load_json_file(DOMAIN_DEFAULTS_PATH, "domain_style_defaults")
     return _DOMAIN_DEFAULTS_CACHE
 
 STYLE_METADATA: dict[str, dict[str, Any]] = {
@@ -796,7 +795,7 @@ def get_style_base(style_id: str) -> dict[str, str]:
     }
 
 def detect_domain_from_brief(brief: dict[str, Any]) -> str | None:
-    """Matches a design brief to a domain key in domain-style-defaults.yaml."""
+    """Matches a design brief to a domain key in domain-style-defaults.json."""
     p_type = brief.get("product_type", "")
     raw_ctx = (brief.get("raw_context", "") or "").lower()
     full = f"{p_type} {raw_ctx}".lower()
@@ -833,7 +832,7 @@ def detect_domain_from_brief(brief: dict[str, Any]) -> str | None:
 def recommend_styles(brief: dict[str, Any]) -> list[dict[str, Any]]:
     """
     Given a Design Brief, recommends 2-4 candidate directions.
-    Consults domain-style-defaults.yaml first, then falls back to neutral SaaS defaults.
+    Consults domain-style-defaults.json first, then falls back to neutral SaaS defaults.
     Qualitative fit ratings only: Strong fit / Good fit / Possible / Poor fit.
     Every recommendation must include at least one honest tradeoff/risk.
     """

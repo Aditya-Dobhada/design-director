@@ -5,7 +5,7 @@ Small, copy-pasteable tests you can run yourself. Section A/C/D are deterministi
 conversational SKILL.md inside an AI coding agent (Claude Code, Cursor, Copilot),
 so outputs vary in wording but must match the described behavior.
 
-**Setup (once):** Python 3.10+ and `pip install pyyaml` (or `pip install -r requirements.txt`).
+**Setup (once):** Python 3.10+ (standard library only — zero pip dependencies required).
 All commands run from the repo root.
 
 ---
@@ -192,8 +192,7 @@ EOF
 ## D. Repository test suites
 
 ```bash
-pip install -r requirements.txt
-npm run test:unit          # 24 tests: briefs, specs, contracts, routing, audit precision/recall, regressions
+npm run test:unit          # 39 tests: briefs, specs, contracts, routing, audit precision/recall, regressions
 npm run test:e2e:pipeline  # 37 tests: unseen PRDs end-to-end + gallery audits
 npm run test:e2e:browser   # Playwright computed-style DOM audit (needs: npx playwright install chromium)
 ```
