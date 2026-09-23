@@ -291,6 +291,10 @@ class DesignAuditor:
                             "message": f"Frosted glass / backdrop-blur detected in '{self.target_style}' without declaring 'frosted-glass' modifier."
                         })
 
+        # NOTE: These detection signals are duplicated by hand from
+        # styles/reference-anti-patterns.md (Corporate Memphis section).
+        # If you add/change a signal here, update that file too, and vice versa —
+        # they are not wired together programmatically.
         # 7. Corporate Memphis / Alegria Drift Detection (cross-cutting, all styles)
         # Accumulate signal hits per file; severity emitted in _check_corporate_memphis_drift()
         self._memphis_signals.setdefault(str(file_path), [])
