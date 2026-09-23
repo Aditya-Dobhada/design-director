@@ -39,31 +39,14 @@ PRD / README / Product Context
 
 ## Install
 
-### Claude Code
+### Skills CLI
 
 ```bash
-# Personal — clone once, symlink the skills:
-git clone https://github.com/Aditya-Dobhada/design-director.git ~/design-director
-ln -s ~/design-director/skills/design-director ~/.claude/skills/design-director
-ln -s ~/design-director/skills/design-audit   ~/.claude/skills/design-audit
-
-# Per-project (committed to version control):
-cp -r skills/design-director skills/design-audit <your-project>/.claude/skills/
+# Add to your project:
+npx skills add Aditya-Dobhada/design-director
 ```
 
-Invoke with `@design-director` or describe the task. Run audits with `python3 skills/design-audit/audit_code.py …`.
 
-### Cursor / Codex CLI / GitHub Copilot
-
-Copy the skill folders to the agent's skill root the same way. GitHub Copilot supports `.github/skills/` since Dec 2025.
-
-### Antigravity (Gemini CLI)
-
-```bash
-git clone https://github.com/Aditya-Dobhada/design-director.git ~/design-director
-ln -s ~/design-director/skills/design-director ~/.gemini/config/skills/design-director
-ln -s ~/design-director/skills/design-audit   ~/.gemini/config/skills/design-audit
-```
 
 ### Requirements
 
@@ -74,9 +57,9 @@ Python 3.10+ (standard library only — zero pip dependencies for both `director
 ## Usage
 
 ```text
-@design-director
+/design-director
 
-@design-director Analyze my PRD.md and recommend a visual direction.
+/design-director Analyze my PRD.md and recommend a visual direction.
 ```
 
 The agent will:
@@ -88,19 +71,21 @@ The agent will:
 
 After code is generated:
 
-```bash
-python3 skills/design-audit/audit_code.py quiet-luxury ./src
-python3 skills/design-audit/audit_code.py swiss-editorial ./index.html
-python3 skills/design-audit/audit_code.py dark-minimal ./src --modifiers frosted-glass,subtle-grain
-```
+### 2. Audit the implementation
 
-Unknown style IDs are rejected with exit code 2 — a typo can never silently pass an audit.
+After the coding agent generates code, verify it against the contract:
+
+```text
+/design-audit
+
+/design-audit Check ./src against DESIGN_CONTRACT.md
+```
 
 ---
 
 ## Style Gallery (27 Foundations)
 
-Live HTML previews are in [`skills/design-director/gallery/`](skills/design-director/gallery/).
+HTML previews are in [`skills/design-director/gallery/`](skills/design-director/gallery/). Open them in your browser to see the styles.
 
 | Family | Style ID | Visual Signature | Gallery |
 |---|---|---|---|
@@ -148,25 +133,6 @@ Six orthogonal dimensions that compose on top of any foundation:
 Full modifier specs: [`skills/design-director/styles/modifiers.json`](skills/design-director/styles/modifiers.json).
 
 ---
-
-## Running Tests
-
-```bash
-# Unit tests (brief extraction, contract generation, routing, audit regressions)
-npm run test:unit
-
-# Pipeline e2e tests (unseen PRDs + gallery audits)
-npm run test:e2e:pipeline
-
-# Browser DOM computed-style audit (requires Playwright + Chromium)
-npx playwright install --with-deps chromium
-npm run test:e2e:browser
-```
-
-76 tests, all deterministic. CI runs on every push via `.github/workflows/ci.yml`.
-
----
-
 ## License
 
 [MIT](LICENSE) © 2026 Aditya Dobhada.
