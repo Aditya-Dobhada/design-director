@@ -14,7 +14,14 @@ import re
 from pathlib import Path
 from typing import Any
 
-import yaml
+try:
+    import yaml
+except ImportError:
+    raise ImportError(
+        "PyYAML is not installed. Please install required dependencies with:\n"
+        "    pip install -r requirements.txt\n"
+        "(or: pip install pyyaml)"
+    ) from None
 
 REFERENCE_LIBRARY_PATH = Path(__file__).parent / "reference-library.yaml"
 _LOCAL_STYLES = Path(__file__).resolve().parent / "styles"
@@ -22,45 +29,19 @@ STYLES_DIR = _LOCAL_STYLES if _LOCAL_STYLES.exists() else Path(__file__).resolve
 MODIFIERS_PATH = STYLES_DIR / "modifiers.yaml"
 DOMAIN_DEFAULTS_PATH = STYLES_DIR / "domain-style-defaults.yaml"
 
-SUPPORTED_STYLES = [
-    "swiss-editorial",
-    "neo-brutalism",
-    "y2k-frutiger-aero",
-    "quiet-luxury",
-    "cyberpunk",
-    "retro-americana",
-    "memphis-postmodern",
-    "space-age-optimism",
-    "japanese-wabi-sabi",
-    "bauhaus",
-    "organic-natural",
-    "maximalist-dopamine",
-    # 8 Modern / Utility Foundations
-    "minimal-modern",
-    "dark-minimal",
-    "terminal-cli",
-    "web-brutalism",
-    "art-deco",
-    "mid-century-modern",
-    "vaporwave",
-    "high-fashion-editorial",
-    # 3 Tactile Foundations (new family)
-    "glassmorphism",
-    "neumorphism",
-    "claymorphism",
-    # 4 Additional Foundations (Utility + Futuristic + Organic)
-    "data-native",
-    "command-center",
-    "aurora-gradient",
-    "digital-organic",
-]
+_MODIFIERS_CACHE: dict[str, Any] | None = None
 
 def load_modifiers() -> dict[str, Any]:
+    global _MODIFIERS_CACHE
+    if _MODIFIERS_CACHE is not None:
+        return _MODIFIERS_CACHE
     if not MODIFIERS_PATH.exists():
-        return {}
+        _MODIFIERS_CACHE = {}
+        return _MODIFIERS_CACHE
     with open(MODIFIERS_PATH, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
-        return data.get("modifiers", {})
+        _MODIFIERS_CACHE = data.get("modifiers", {})
+        return _MODIFIERS_CACHE
 
 _REFERENCE_LIBRARY_CACHE: list[dict[str, Any]] | None = None
 
@@ -297,17 +278,25 @@ def extract_design_brief(context_text: str) -> dict[str, Any]:
         }
     }
 
+_DOMAIN_DEFAULTS_CACHE: dict[str, Any] | None = None
+
 def load_domain_style_defaults() -> dict[str, Any]:
+    global _DOMAIN_DEFAULTS_CACHE
+    if _DOMAIN_DEFAULTS_CACHE is not None:
+        return _DOMAIN_DEFAULTS_CACHE
     if not DOMAIN_DEFAULTS_PATH.exists():
-        return {}
+        _DOMAIN_DEFAULTS_CACHE = {}
+        return _DOMAIN_DEFAULTS_CACHE
     with open(DOMAIN_DEFAULTS_PATH, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
-        return data.get("domain_style_defaults", {})
+        _DOMAIN_DEFAULTS_CACHE = data.get("domain_style_defaults", {})
+        return _DOMAIN_DEFAULTS_CACHE
 
 STYLE_METADATA: dict[str, dict[str, Any]] = {
     "art-deco": {
         "default_reasoning": "Geometric symmetry, caviar black canvas, and burnished gold hairlines communicate formal luxury, heritage pedigree, and architectural permanence.",
         "name": "Art Deco",
+        "imagery": "stepped-geometric-and-gold-foil",
         "tradeoffs": [
             "High visual ornamentation and strict symmetry may feel too ornate for purely utilitarian data tables."
         ],
@@ -324,6 +313,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "aurora-gradient": {
         "default_reasoning": "Soft atmospheric multi-color gradients over obsidian canvas create an ethereal, calm, futuristic AI environment.",
         "name": "Aurora Gradient",
+        "imagery": "atmospheric-gradient-abstract",
         "tradeoffs": [
             "Atmospheric gradient overlays require dedicated dark canvas to maintain sufficient text legibility."
         ],
@@ -340,6 +330,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "bauhaus": {
         "default_reasoning": "Form strictly follows function: 8px constructivist grid and functional geometric typography mirror modernist architectural heritage.",
         "name": "Bauhaus",
+        "imagery": "constructivist-circle-square-triangle",
         "tradeoffs": [
             "Primary color blocks can feel austere or unyielding for softer lifestyle contexts."
         ],
@@ -356,6 +347,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "claymorphism": {
         "default_reasoning": "Voluminous rounded clay geometry (20-32px), layered inner highlights, and friendly pastel fills communicate approachable, tactile warmth.",
         "name": "Claymorphism",
+        "imagery": "pastel-3d-clay-render-stickers",
         "tradeoffs": [
             "Voluminous 20-32px rounded clay geometry and pastel fills consume high padding and reduce screen density."
         ],
@@ -372,6 +364,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "command-center": {
         "default_reasoning": "Near-black multi-panel operational grid with strict semantic status indicators (healthy/warning/critical) built for incident response.",
         "name": "Command Center",
+        "imagery": "status-panel-network-topology",
         "tradeoffs": [
             "High information density and multi-panel ops layout can overwhelm casual or non-technical operators."
         ],
@@ -388,6 +381,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "cyberpunk": {
         "default_reasoning": "Obsidian canvas, monospace telemetry, and neon HUD brackets provide an immersive, high-voltage environment ideal for real-time monitoring streams.",
         "name": "Cyberpunk",
+        "imagery": "wireframe-hud-schematics",
         "tradeoffs": [
             "High sensory intensity is unsuitable for calm documentation or administrative configuration flows."
         ],
@@ -404,6 +398,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "dark-minimal": {
         "default_reasoning": "Obsidian canvas (#09090B), hairline translucent borders, 6-8px micro-radii, and a single electric accent create a calm, focused, high-density environment ideal for modern developer tools, AI command surfaces, and telemetry.",
         "name": "Dark Minimal",
+        "imagery": "monochrome-isometric-schematics",
         "tradeoffs": [
             "Low-sensory dark canvas requires disciplined contrast checking in bright daylight environments.",
             "Requires strict micro-typography hierarchy to prevent dense data from blurring together."
@@ -421,6 +416,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "data-native": {
         "default_reasoning": "Ultra-dense monospace numerical hierarchy, 32px compact table rows, and disciplined status dots maximize information density for deep analytics.",
         "name": "Data-Native",
+        "imagery": "monospace-ascii-telemetry-charts",
         "tradeoffs": [
             "Ultra-dense monospace numerical hierarchy leaves minimal room for expressive brand personality."
         ],
@@ -437,6 +433,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "digital-organic": {
         "default_reasoning": "Living biomorphic blob geometry, natural gradient fills, and humanist typography bridge organic living systems with modern digital precision.",
         "name": "Digital Organic",
+        "imagery": "organic-blob-biomorphic-illustration",
         "tradeoffs": [
             "Asymmetric organic blob containers and earthy palettes require disciplined asset art-direction."
         ],
@@ -453,6 +450,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "glassmorphism": {
         "default_reasoning": "Translucent frosted glass panels over dark canvas with specular 1px hairlines provide OS-native depth cues.",
         "name": "Glassmorphism",
+        "imagery": "translucent-layered-depth-renders",
         "tradeoffs": [
             "Multi-layer backdrop blur and translucent panels can cause GPU performance overhead on lower-end devices."
         ],
@@ -469,6 +467,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "high-fashion-editorial": {
         "default_reasoning": "Monumental Bodoni display headlines, micro-grotesque metadata, razor-thin hairlines, and asymmetric runway grids bring high-drama couture sophistication.",
         "name": "High Fashion Editorial",
+        "imagery": "monumental-couture-photography",
         "tradeoffs": [
             "Severe typographic scale contrast requires strict editorial discipline and short, punchy copy.",
             "Zero drop shadows and knife-edge corners demand immaculate layout composition."
@@ -486,6 +485,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "japanese-wabi-sabi": {
         "default_reasoning": "Handmade ceramic warmth, ink wash textures, and profound empty space reflect environmental humility and artisanal mindfulness.",
         "name": "Japanese Wabi-Sabi",
+        "imagery": "shodō-ink-wash-botanical-ceramic",
         "tradeoffs": [
             "Asymmetric unhurried layouts require disciplined content curation."
         ],
@@ -502,6 +502,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "maximalist-dopamine": {
         "default_reasoning": "Sticker-bomb badges, candy neon explosions, and chaotic typography shifts create hyper-sensory joy for youth culture, streetwear, and drops.",
         "name": "Maximalist Dopamine",
+        "imagery": "sticker-bomb-net-art-collages",
         "tradeoffs": [
             "Visual density and colliding hues can cause fatigue during prolonged administrative tasks."
         ],
@@ -518,6 +519,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "memphis-postmodern": {
         "default_reasoning": "Ettore Sottsass pattern collisions (polka dots, diagonal hatch, squiggles) celebrate creative freedom and intentional kitsch.",
         "name": "Memphis Postmodern",
+        "imagery": "geometric-squiggle-polka-patterns",
         "tradeoffs": [
             "Ornamental pattern fills require careful layering to avoid competing with actual creator products."
         ],
@@ -534,6 +536,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "mid-century-modern": {
         "default_reasoning": "Warm architectural parchment, atomic pod curves (16-24px), terracotta and olive palette, and modernist geometric typography celebrate organic materials and structural clarity.",
         "name": "Mid-Century Modern",
+        "imagery": "architectural-photography-and-fiberglass-pods",
         "tradeoffs": [
             "Warm color blocks and organic radii reduce raw tabular line density.",
             "Requires high-quality photography and intentional spatial balance."
@@ -551,6 +554,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "minimal-modern": {
         "default_reasoning": "Clean neutral zinc canvas, 6-8px micro-radii, crisp 1px borders, and disciplined typography (Geist/Inter) elevate standard SaaS workflows with modern restraint and high whitespace clarity.",
         "name": "Minimal Modern",
+        "imagery": "clean-product-ui-screenshots",
         "tradeoffs": [
             "Subtle aesthetic requires disciplined typographic hierarchy to avoid feeling generic if content is sparse."
         ],
@@ -567,6 +571,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "neo-brutalism": {
         "default_reasoning": "Chunky solid black outlines, hard offset shadows, and saturated color pops communicate authentic grassroots energy, anti-corporate rebellion, and tactile physicality.",
         "name": "Neo-Brutalism",
+        "imagery": "bold-graphic-stickers-linework",
         "tradeoffs": [
             "High visual volume can overwhelm subtle product imagery or art if colors compete directly."
         ],
@@ -583,6 +588,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "neumorphism": {
         "default_reasoning": "Canvas-matched monochromatic surfaces with dual light/dark soft extruded shadows create tactile physical controls without hard borders.",
         "name": "Neumorphism",
+        "imagery": "monochromatic-soft-extrusion-renders",
         "tradeoffs": [
             "Low contrast between extruded surface shapes and canvas requires strict accessibility verification."
         ],
@@ -599,6 +605,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "organic-natural": {
         "default_reasoning": "Earth and botanical pigment palette (clay, moss, sap), river-stone pod containers, and living-system geometry authentically connect users to nature and regenerative craft.",
         "name": "Organic Natural",
+        "imagery": "botanical-specimen-fine-linework",
         "tradeoffs": [
             "Organic rounded geometry consumes more padding and reduces raw data density.",
             "Requires careful contrast calibration to ensure accessible contrast on linen backgrounds."
@@ -616,6 +623,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "quiet-luxury": {
         "default_reasoning": "Understated alabaster palette, immaculate serif typography, and generous whitespace convey deep institutional trust, bespoke advisory craft, and financial gravitas without screaming.",
         "name": "Quiet Luxury",
+        "imagery": "architectural-still-life-monochrome",
         "tradeoffs": [
             "Generous whitespace reduces immediate above-the-fold information density.",
             "Zero border-radius and pale stone dividers require rigorous content discipline to prevent looking sparse or unstyled on smaller screens."
@@ -633,6 +641,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "retro-americana": {
         "default_reasoning": "Evokes National Parks heritage, WPA conservation posters, and rustic outdoorsmanship.",
         "name": "Retro Americana",
+        "imagery": "screenprint-woodblock-halftone",
         "tradeoffs": [
             "Heavy ink borders and slab serifs lean nostalgic rather than contemporary biophilic."
         ],
@@ -649,6 +658,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "space-age-optimism": {
         "default_reasoning": "Warm optical white canvas, molded pod curves (24-40px), and single Mission Orange accent celebrate discovery and aerospace optimism.",
         "name": "Space Age Optimism",
+        "imagery": "molded-fiberglass-moiré-vector",
         "tradeoffs": [
             "Generous 24-40px pod container radii reduce maximum tabular information density."
         ],
@@ -665,6 +675,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "swiss-editorial": {
         "default_reasoning": "Rigorous asymmetric grid, razor-sharp hairlines, and high-contrast typography give financial data objective clarity and architectural prestige.",
         "name": "Swiss / Editorial",
+        "imagery": "conceptual-duotone-linework",
         "tradeoffs": [
             "Stark monochrome palette can feel overly sterile or clinical if not softened with an intentional warm accent.",
             "Demands high typographic discipline in tabular layouts."
@@ -682,6 +693,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "terminal-cli": {
         "default_reasoning": "100% monospace typography, amber/emerald phosphors on black, ASCII box-drawing borders, and zero-blur elevation deliver authentic Unix command-line utility and keyboard-first speed.",
         "name": "Terminal CLI",
+        "imagery": "ascii-diagrams-and-telemetry",
         "tradeoffs": [
             "Complete absence of proportional typography or rounded corners can feel stark or intimidating to non-technical users."
         ],
@@ -698,6 +710,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "vaporwave": {
         "default_reasoning": "Pastel sunset gradients, Windows 95 dialog chrome, and classical Roman statues celebrate retro-digital net art and nostalgia.",
         "name": "Vaporwave",
+        "imagery": "classical-marble-and-pastel-synth-grid",
         "tradeoffs": [
             "Heavy retro-digital styling is polarizing for conventional commercial storefronts."
         ],
@@ -714,6 +727,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "web-brutalism": {
         "default_reasoning": "Raw browser-default HTML, Courier typography, blue underlined links, and 0px radius strip all decorative distraction.",
         "name": "Web Brutalism",
+        "imagery": "raw-html-tables-and-document-charts",
         "tradeoffs": [
             "Raw default browser styling and unstyled controls can feel unpolished or harsh for conventional consumer apps."
         ],
@@ -730,6 +744,7 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
     "y2k-frutiger-aero": {
         "default_reasoning": "Glossy aqua-to-lime specular glassmorphism, pill containers, and vibrant optimism evoke late-90s/early-2000s consumer software.",
         "name": "Y2K / Frutiger Aero",
+        "imagery": "optimistic-3d-gloss-renders",
         "tradeoffs": [
             "High glossy complexity and skeuomorphic gradients require custom asset rendering and careful contrast calibration."
         ],
@@ -744,6 +759,24 @@ STYLE_METADATA: dict[str, dict[str, Any]] = {
         },
     },
 }
+
+SUPPORTED_STYLES: list[str] = list(STYLE_METADATA.keys())
+
+def get_style_base(style_id: str) -> dict[str, str]:
+    """Resolves the canonical base spec layers for any supported style."""
+    sid = style_id if style_id in STYLE_METADATA else "swiss-editorial"
+    meta = STYLE_METADATA[sid]
+    return {
+        "layout": f"{sid}/layout.md",
+        "typography": f"{sid}/typography.md",
+        "surfaces": f"{sid}/tokens.md",
+        "color": f"{sid}/tokens.md",
+        "motion": f"{sid}/motion.md",
+        "imagery": meta.get("imagery", "conceptual-duotone-linework"),
+        "components": f"{sid}/components.md",
+    }
+
+style_bases: dict[str, dict[str, str]] = {sid: get_style_base(sid) for sid in STYLE_METADATA}
 
 def detect_domain_from_brief(brief: dict[str, Any]) -> str | None:
     """Matches a design brief to a domain key in domain-style-defaults.yaml."""
@@ -873,258 +906,7 @@ def create_design_spec(style_id: str, custom_layers: dict[str, str] | None = Non
     Creates a layered Design Spec where every layer resolves to a single source of truth.
     No ambiguous percentage blending.
     """
-    # Base layer mappings per canonical style
-    style_bases = {
-        "swiss-editorial": {
-            "layout": "swiss-editorial/layout.md",
-            "typography": "swiss-editorial/typography.md",
-            "surfaces": "swiss-editorial/tokens.md",
-            "color": "swiss-editorial/tokens.md",
-            "motion": "swiss-editorial/motion.md",
-            "imagery": "conceptual-duotone-linework",
-            "components": "swiss-editorial/components.md"
-        },
-        "neo-brutalism": {
-            "layout": "neo-brutalism/layout.md",
-            "typography": "neo-brutalism/typography.md",
-            "surfaces": "neo-brutalism/tokens.md",
-            "color": "neo-brutalism/tokens.md",
-            "motion": "neo-brutalism/motion.md",
-            "imagery": "bold-graphic-stickers-linework",
-            "components": "neo-brutalism/components.md"
-        },
-        "quiet-luxury": {
-            "layout": "quiet-luxury/layout.md",
-            "typography": "quiet-luxury/typography.md",
-            "surfaces": "quiet-luxury/tokens.md",
-            "color": "quiet-luxury/tokens.md",
-            "motion": "quiet-luxury/motion.md",
-            "imagery": "architectural-still-life-monochrome",
-            "components": "quiet-luxury/components.md"
-        },
-        "y2k-frutiger-aero": {
-            "layout": "y2k-frutiger-aero/layout.md",
-            "typography": "y2k-frutiger-aero/typography.md",
-            "surfaces": "y2k-frutiger-aero/tokens.md",
-            "color": "y2k-frutiger-aero/tokens.md",
-            "motion": "y2k-frutiger-aero/motion.md",
-            "imagery": "optimistic-3d-gloss-renders",
-            "components": "y2k-frutiger-aero/components.md"
-        },
-        "cyberpunk": {
-            "layout": "cyberpunk/layout.md",
-            "typography": "cyberpunk/typography.md",
-            "surfaces": "cyberpunk/tokens.md",
-            "color": "cyberpunk/tokens.md",
-            "motion": "cyberpunk/motion.md",
-            "imagery": "wireframe-hud-schematics",
-            "components": "cyberpunk/components.md"
-        },
-        "retro-americana": {
-            "layout": "retro-americana/layout.md",
-            "typography": "retro-americana/typography.md",
-            "surfaces": "retro-americana/tokens.md",
-            "color": "retro-americana/tokens.md",
-            "motion": "retro-americana/motion.md",
-            "imagery": "screenprint-woodblock-halftone",
-            "components": "retro-americana/components.md"
-        },
-        "memphis-postmodern": {
-            "layout": "memphis-postmodern/layout.md",
-            "typography": "memphis-postmodern/typography.md",
-            "surfaces": "memphis-postmodern/tokens.md",
-            "color": "memphis-postmodern/tokens.md",
-            "motion": "memphis-postmodern/motion.md",
-            "imagery": "geometric-squiggle-polka-patterns",
-            "components": "memphis-postmodern/components.md"
-        },
-        "space-age-optimism": {
-            "layout": "space-age-optimism/layout.md",
-            "typography": "space-age-optimism/typography.md",
-            "surfaces": "space-age-optimism/tokens.md",
-            "color": "space-age-optimism/tokens.md",
-            "motion": "space-age-optimism/motion.md",
-            "imagery": "molded-fiberglass-moiré-vector",
-            "components": "space-age-optimism/components.md"
-        },
-        "japanese-wabi-sabi": {
-            "layout": "japanese-wabi-sabi/layout.md",
-            "typography": "japanese-wabi-sabi/typography.md",
-            "surfaces": "japanese-wabi-sabi/tokens.md",
-            "color": "japanese-wabi-sabi/tokens.md",
-            "motion": "japanese-wabi-sabi/motion.md",
-            "imagery": "shodō-ink-wash-botanical-ceramic",
-            "components": "japanese-wabi-sabi/components.md"
-        },
-        "bauhaus": {
-            "layout": "bauhaus/layout.md",
-            "typography": "bauhaus/typography.md",
-            "surfaces": "bauhaus/tokens.md",
-            "color": "bauhaus/tokens.md",
-            "motion": "bauhaus/motion.md",
-            "imagery": "constructivist-circle-square-triangle",
-            "components": "bauhaus/components.md"
-        },
-        "organic-natural": {
-            "layout": "organic-natural/layout.md",
-            "typography": "organic-natural/typography.md",
-            "surfaces": "organic-natural/tokens.md",
-            "color": "organic-natural/tokens.md",
-            "motion": "organic-natural/motion.md",
-            "imagery": "botanical-specimen-fine-linework",
-            "components": "organic-natural/components.md"
-        },
-        "maximalist-dopamine": {
-            "layout": "maximalist-dopamine/layout.md",
-            "typography": "maximalist-dopamine/typography.md",
-            "surfaces": "maximalist-dopamine/tokens.md",
-            "color": "maximalist-dopamine/tokens.md",
-            "motion": "maximalist-dopamine/motion.md",
-            "imagery": "sticker-bomb-net-art-collages",
-            "components": "maximalist-dopamine/components.md"
-        },
-        "minimal-modern": {
-            "layout": "minimal-modern/layout.md",
-            "typography": "minimal-modern/typography.md",
-            "surfaces": "minimal-modern/tokens.md",
-            "color": "minimal-modern/tokens.md",
-            "motion": "minimal-modern/motion.md",
-            "imagery": "clean-product-ui-screenshots",
-            "components": "minimal-modern/components.md"
-        },
-        "dark-minimal": {
-            "layout": "dark-minimal/layout.md",
-            "typography": "dark-minimal/typography.md",
-            "surfaces": "dark-minimal/tokens.md",
-            "color": "dark-minimal/tokens.md",
-            "motion": "dark-minimal/motion.md",
-            "imagery": "monochrome-isometric-schematics",
-            "components": "dark-minimal/components.md"
-        },
-        "terminal-cli": {
-            "layout": "terminal-cli/layout.md",
-            "typography": "terminal-cli/typography.md",
-            "surfaces": "terminal-cli/tokens.md",
-            "color": "terminal-cli/tokens.md",
-            "motion": "terminal-cli/motion.md",
-            "imagery": "ascii-diagrams-and-telemetry",
-            "components": "terminal-cli/components.md"
-        },
-        "web-brutalism": {
-            "layout": "web-brutalism/layout.md",
-            "typography": "web-brutalism/typography.md",
-            "surfaces": "web-brutalism/tokens.md",
-            "color": "web-brutalism/tokens.md",
-            "motion": "web-brutalism/motion.md",
-            "imagery": "raw-html-tables-and-document-charts",
-            "components": "web-brutalism/components.md"
-        },
-        "art-deco": {
-            "layout": "art-deco/layout.md",
-            "typography": "art-deco/typography.md",
-            "surfaces": "art-deco/tokens.md",
-            "color": "art-deco/tokens.md",
-            "motion": "art-deco/motion.md",
-            "imagery": "stepped-geometric-and-gold-foil",
-            "components": "art-deco/components.md"
-        },
-        "mid-century-modern": {
-            "layout": "mid-century-modern/layout.md",
-            "typography": "mid-century-modern/typography.md",
-            "surfaces": "mid-century-modern/tokens.md",
-            "color": "mid-century-modern/tokens.md",
-            "motion": "mid-century-modern/motion.md",
-            "imagery": "architectural-photography-and-fiberglass-pods",
-            "components": "mid-century-modern/components.md"
-        },
-        "vaporwave": {
-            "layout": "vaporwave/layout.md",
-            "typography": "vaporwave/typography.md",
-            "surfaces": "vaporwave/tokens.md",
-            "color": "vaporwave/tokens.md",
-            "motion": "vaporwave/motion.md",
-            "imagery": "classical-marble-and-pastel-synth-grid",
-            "components": "vaporwave/components.md"
-        },
-        "high-fashion-editorial": {
-            "layout": "high-fashion-editorial/layout.md",
-            "typography": "high-fashion-editorial/typography.md",
-            "surfaces": "high-fashion-editorial/tokens.md",
-            "color": "high-fashion-editorial/tokens.md",
-            "motion": "high-fashion-editorial/motion.md",
-            "imagery": "monumental-couture-photography",
-            "components": "high-fashion-editorial/components.md"
-        },
-        # ── Tactile Family ────────────────────────────────────────────────────
-        "glassmorphism": {
-            "layout": "glassmorphism/layout.md",
-            "typography": "glassmorphism/typography.md",
-            "surfaces": "glassmorphism/tokens.md",
-            "color": "glassmorphism/tokens.md",
-            "motion": "glassmorphism/motion.md",
-            "imagery": "translucent-layered-depth-renders",
-            "components": "glassmorphism/components.md"
-        },
-        "neumorphism": {
-            "layout": "neumorphism/layout.md",
-            "typography": "neumorphism/typography.md",
-            "surfaces": "neumorphism/tokens.md",
-            "color": "neumorphism/tokens.md",
-            "motion": "neumorphism/motion.md",
-            "imagery": "monochromatic-soft-extrusion-renders",
-            "components": "neumorphism/components.md"
-        },
-        "claymorphism": {
-            "layout": "claymorphism/layout.md",
-            "typography": "claymorphism/typography.md",
-            "surfaces": "claymorphism/tokens.md",
-            "color": "claymorphism/tokens.md",
-            "motion": "claymorphism/motion.md",
-            "imagery": "pastel-3d-clay-render-stickers",
-            "components": "claymorphism/components.md"
-        },
-        # ── Utility Family additions ──────────────────────────────────────────
-        "data-native": {
-            "layout": "data-native/layout.md",
-            "typography": "data-native/typography.md",
-            "surfaces": "data-native/tokens.md",
-            "color": "data-native/tokens.md",
-            "motion": "data-native/motion.md",
-            "imagery": "monospace-ascii-telemetry-charts",
-            "components": "data-native/components.md"
-        },
-        "command-center": {
-            "layout": "command-center/layout.md",
-            "typography": "command-center/typography.md",
-            "surfaces": "command-center/tokens.md",
-            "color": "command-center/tokens.md",
-            "motion": "command-center/motion.md",
-            "imagery": "status-panel-network-topology",
-            "components": "command-center/components.md"
-        },
-        # ── Futuristic Family additions ───────────────────────────────────────
-        "aurora-gradient": {
-            "layout": "aurora-gradient/layout.md",
-            "typography": "aurora-gradient/typography.md",
-            "surfaces": "aurora-gradient/tokens.md",
-            "color": "aurora-gradient/tokens.md",
-            "motion": "aurora-gradient/motion.md",
-            "imagery": "atmospheric-gradient-abstract",
-            "components": "aurora-gradient/components.md"
-        },
-        # ── Organic Family additions ──────────────────────────────────────────
-        "digital-organic": {
-            "layout": "digital-organic/layout.md",
-            "typography": "digital-organic/typography.md",
-            "surfaces": "digital-organic/tokens.md",
-            "color": "digital-organic/tokens.md",
-            "motion": "digital-organic/motion.md",
-            "imagery": "organic-blob-biomorphic-illustration",
-            "components": "digital-organic/components.md"
-        }
-    }
-
-    base = style_bases.get(style_id, style_bases["swiss-editorial"]).copy()
+    base = get_style_base(style_id).copy()
     
     # Layer overrides if custom composition is specified
     if custom_layers:

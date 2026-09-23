@@ -7,15 +7,7 @@ description: Implementation rules for Cyberpunk style. Obsidian black canvases, 
 
 A tactical, high-voltage visual system derived from military telemetry, hacker consoles, dystopian HUDs, and neon-lit megacities. Built for dense data displays, power users, and immersive technical workflows.
 
-## Core Principles
-
-1. **Canvas:** Body background `#080A0E` (obsidian). Card surfaces `#0F1117`. Never any `bg-white`, `bg-gray-50`, or light canvas — this is 100% dark mode.
-2. **Color:** Single neon accent: `#39FF14` (acid green), `#00F5FF` (electric cyan), or `#FF0090` (magenta). Accent used for borders, active states, and glow only — never as a fill background. Secondary text: `#A0A8B0`. Never warm hues (amber, orange) except error states.
-3. **Typography:** `font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace` for all data readouts, metrics, and terminal text. UI labels: `IBM Plex Mono` or `Space Mono`. Proportional sans only for body prose. Never Helvetica or Inter.
-4. **Borders:** `1px solid rgba(57,255,20,0.25)` (accent-translucent) on card edges. HUD brackets: CSS `::before`/`::after` corner marks, 8px long, 1px thick, accent color. No solid black borders.
-5. **Glow:** Accent glow: `box-shadow: 0 0 8px rgba(57,255,20,0.4), 0 0 24px rgba(57,255,20,0.15)` on focused/active interactive elements. Never on static text or decorative elements.
-
-## Mandatory Anti-Patterns (Explicit Negative Constraints)
+## Mandatory Anti-Patterns
 
 - **NEVER** use light mode or white background panels. Light themes are strictly forbidden in Cyberpunk.
 - **NEVER** use rounded pill buttons or soft bubble curves (`rounded-full`, `rounded-xl`). Corners must be sharp (`0px`) or chamfered/angled (`clip-path`).
@@ -26,10 +18,6 @@ A tactical, high-voltage visual system derived from military telemetry, hacker c
 - **NEVER** leave large swathes of uncalibrated whitespace without structural telemetry framing or grid lines.
 
 ---
-
-## Cyberpunk — Design Tokens
-
-Exact tokens for CSS variables and Tailwind configuration.
 
 ## Color Tokens
 
@@ -83,68 +71,15 @@ Exact tokens for CSS variables and Tailwind configuration.
 }
 ```
 
-## Tailwind Config Mapping
-
-```js
-module.exports = {
-  theme: {
-    extend: {
-      borderRadius: {
-        DEFAULT: '0px',
-        none: '0px',
-        sm: '0px',
-        md: '0px',
-        lg: '0px',
-        full: '0px',
-      },
-      colors: {
-        cyber: {
-          void: '#060709',
-          bg: '#0B0D13',
-          surface: '#12151E',
-          border: '#1E2536',
-          cyan: '#00F0FF',
-          amber: '#FFB800',
-          magenta: '#FF0055',
-          green: '#00FF66',
-          phosphor: '#E8F4F8',
-          dim: '#62728C',
-        }
-      },
-      boxShadow: {
-        'neon-cyan': '0 0 10px rgba(0, 240, 255, 0.4)',
-        'neon-amber': '0 0 10px rgba(255, 184, 0, 0.4)',
-        'neon-magenta': '0 0 10px rgba(255, 0, 85, 0.4)',
-      }
-    }
-  }
-}
-```
-
 ---
 
-## Cyberpunk — Typography
+## Typography
 
-## Type System Principles
+### Recommended Font Stacks
+- **Monospace / Telemetry Core:** `JetBrains Mono`, `Share Tech Mono`, `Space Mono`, or `Fira Code`
+- **Technical Display Headings:** `Rajdhani`, `Michroma`, `Orbitron`, or `Chakra Petch`
 
-Cyberpunk typography feels like flight telemetry, hacker terminals, or tactical weapons HUDs. It heavily leverages technical monospaces, sharp display sans, uppercase metadata markers, and bracketed telemetry tags.
-
-## Recommended Font Stacks
-
-### Monospace / Telemetry Core
-- `JetBrains Mono`
-- `Share Tech Mono`
-- `Space Mono`
-- `Fira Code`
-- `VT323` (for retro-arcade digital readouts)
-
-### Technical Display Headings
-- `Rajdhani` (Condensed, angular geometric sans)
-- `Michroma`
-- `Orbitron`
-- `Chakra Petch`
-
-## Scale & Metrics
+### Scale & Metrics
 
 | Level | Size | Weight | Tracking | Line Height | Case |
 |---|---|---|---|---|---|
@@ -156,131 +91,76 @@ Cyberpunk typography feels like flight telemetry, hacker terminals, or tactical 
 | **Data / Ticker** | 12px - 13px | 500 Medium | +0.08em | 1.35 | Monospace UPPER |
 | **Status Prefix** | 11px - 12px | 700 Bold | +0.10em | 1.20 | `[PREFIX: VALUE]` |
 
-## Typographic Rules
-
-1. **System Tag Annotations:** Frame key headings with bracketed coordinates or hexadecimal hashes (e.g. `// SEC_01 :: CORE_MATRIX`, `[STATUS: NOMINAL]`).
+### Typographic Rules
+1. **System Tag Annotations:** Frame key headings with bracketed coordinates or hexadecimal hashes (`// SEC_01 :: CORE_MATRIX`, `[STATUS: NOMINAL]`).
 2. **Tabular Numerals Everywhere:** Always use monospaced figures for timestamps, coordinates, metrics, and price tickers.
-3. **Phosphor Glow Highlights:** Vital alerts can use subtle neon text shadows (`text-shadow: 0 0 8px rgba(0, 240, 255, 0.6)`).
-
-## Anti-Patterns (Fonts to Avoid)
-- **Serifs** (`Garamond`, `Georgia`): Destroys the futuristic hacker atmosphere.
-- **Friendly / Organic Sans** (`Nunito`, `Comic`, `Comfortaa`): Completely inappropriate.
-- **Low-contrast gray text on dark gray**: Phosphor text must be readable and luminous.
+3. **Phosphor Glow Highlights:** Critical alerts can use subtle neon text shadows (`text-shadow: 0 0 8px rgba(0, 240, 255, 0.6)`).
+4. **Banned Fonts:** Serifs (`Garamond`, `Georgia`), friendly rounded sans (`Nunito`, `Comfortaa`), and low-contrast dim text on dark backgrounds.
 
 ---
 
-## Cyberpunk — Layout & Spatial Composition
-
-## Grid & Composition Rules
+## Layout & Spatial Composition
 
 1. **Tactical Modular Grid:**
    - Multi-panel interface with visible division lines and technical framing.
    - High information density: dashboards, telemetry strips, and terminal outputs.
 2. **HUD Registration Framing:**
-   - Cards and screen corners feature registration brackets:
-     ```
-     ┌────────────────────────┐
-     │ [SYS: ACTIVE]          │
-     └────────────────────────┘
-     ```
-   - Rendered using CSS pseudo-elements (`::before` / `::after`) with 2px borders on corners.
+   - Cards and screen corners feature registration brackets using CSS `::before` / `::after` with 2px borders on corners.
 3. **Corner Chamfers & Diagonal Cuts:**
-   - Panels and cards cut at 45-degree angles on top-right or bottom-left corners.
+   - Panels and cards cut at 45-degree angles on corners using CSS polygon clip-paths.
 4. **Scanlines & Grid Overlay:**
-   - Subtle background repeating linear gradient simulating CRT scanlines or radar grids:
-     ```css
-     background-image: linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-                       linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-     background-size: 24px 24px;
-     ```
-
-## Layout Anti-Patterns
-- **Light Theme Interfaces:** Any white canvas is a critical violation.
-- **Centered SaaS Hero Layouts:** Avoid center-aligned generic hero headings with round pill buttons.
-- **Empty Vague Whitespace:** Whitespace without structural grid marks feels like a blank canvas rather than an operational console.
+   ```css
+   background-image: linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                     linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+   background-size: 24px 24px;
+   ```
+5. **Layout Anti-Patterns:**
+   - No light theme interfaces. No centered SaaS hero layouts with soft pill buttons. No uncalibrated empty whitespace lacking structural framing.
 
 ---
 
-## Cyberpunk — Component Rules
+## Component Rules
 
-Concrete specifications for core UI components.
+### 1. Buttons
+- **Primary Neon Cyan Action:**
+  - Border Radius: `0px` or chamfered (`clip-path: polygon(...)`)
+  - Background: `#00F0FF` (Cyan) or `#0B0D13` with neon cyan outline | Border: `1px solid #00F0FF`
+  - Shadow: `box-shadow: 0 0 12px rgba(0, 240, 255, 0.4), inset 0 0 6px rgba(0, 240, 255, 0.2)`
+  - Text: `#060709` (if cyan bg) or `#00F0FF` (if dark bg), uppercase, tracking +0.08em, weight 700 | Padding: 10px 22px
+  - Hover: Glow expands (`0 0 20px rgba(0, 240, 255, 0.7)`), text flickers or shifts to solid white
+  - Active: Instant down press, border flashes hazard yellow (`#FFB800`)
+- **Tactical Hazard Button:**
+  - Border: `1px solid #FFB800` | Background: `rgba(255, 184, 0, 0.1)` | Text: `#FFB800` | Glow: `0 0 10px rgba(255, 184, 0, 0.3)`
 
-## 1. Buttons
+### 2. Cards & Telemetry Panels
+- Border Radius: `0px` (`rounded-none`) | Background: Deep Carbon `#12151E` | Border: `1px solid #1E2536`
+- Top Header Bar: Solid `#1A1F2C` header strip with active neon indicator dot and title in `JetBrains Mono`
+- Corner Brackets: Corner accents in `#00F0FF` or `#3F4B5E` | Padding: 20px to 28px
 
-### Primary Neon Cyan Action
-- **Border Radius:** `0px` or chamfered (`clip-path: polygon(...)`).
-- **Background:** `#00F0FF` (Cyan) or `#0B0D13` with neon cyan outline.
-- **Border:** `1px solid #00F0FF`.
-- **Shadow:** `box-shadow: 0 0 12px rgba(0, 240, 255, 0.4), inset 0 0 6px rgba(0, 240, 255, 0.2)`.
-- **Text:** `#060709` (if cyan bg) or `#00F0FF` (if dark bg), uppercase, tracking +0.08em, weight 700.
-- **Padding:** 10px 22px.
-- **Hover State:** Glow expands (`0 0 20px rgba(0, 240, 255, 0.7)`), text flickers or shifts to solid white.
-- **Active State:** Instant down press, border flashes hazard yellow (`#FFB800`).
+### 3. Inputs & Terminal Prompts
+- Border Radius: `0px` | Background: `#08090C` | Border: `1px solid #1E2536` | Text: `#00F0FF` or `#E8F4F8`, monospaced
+- Prefix: `> ` or `USR@TERMINAL:~$ ` in `#FFB800`
+- Focus: `border-color: #00F0FF; box-shadow: 0 0 10px rgba(0, 240, 255, 0.4); outline: none;`
 
-### Tactical Hazard Button
-- **Border:** `1px solid #FFB800`.
-- **Background:** `rgba(255, 184, 0, 0.1)`.
-- **Text:** `#FFB800`.
-- **Glow:** `0 0 10px rgba(255, 184, 0, 0.3)`.
-
-## 2. Cards & Telemetry Panels
-
-- **Border Radius:** `0px` (`rounded-none`).
-- **Background:** Deep Carbon `#12151E`.
-- **Border:** `1px solid #1E2536`.
-- **Top Header Bar:** Solid `#1A1F2C` header strip with active neon indicator dot and title in `JetBrains Mono`.
-- **Corner Brackets:** Corner accents in `#00F0FF` or `#3F4B5E`.
-- **Padding:** 20px to 28px.
-
-## 3. Inputs & Terminal Prompts
-
-- **Border Radius:** `0px`.
-- **Background:** `#08090C`.
-- **Border:** `1px solid #1E2536`.
-- **Text:** `#00F0FF` or `#E8F4F8`, monospaced.
-- **Prefix:** `> ` or `USR@TERMINAL:~$ ` in `#FFB800`.
-- **Focus State:** `border-color: #00F0FF; box-shadow: 0 0 10px rgba(0, 240, 255, 0.4); outline: none;`
-
-## 4. Status Badges & HUD Markers
-
-- **Shape:** Chamfered or sharp rectangle.
-- **Border:** `1px solid #00F0FF` or `#00FF66`.
-- **Background:** `rgba(0, 240, 255, 0.1)`.
-- **Prefix Dot:** `6px x 6px` glowing square with `animation: pulse 1.5s infinite`.
-- **Text:** 11px uppercase monospace, `[ONLINE]`, `[ARMED]`, `[DISCONNECTED]`.
+### 4. Status Badges & HUD Markers
+- Shape: Chamfered or sharp rectangle | Border: `1px solid #00F0FF` or `#00FF66` | Background: `rgba(0, 240, 255, 0.1)`
+- Prefix Dot: `6px x 6px` glowing square with pulse animation | Text: 11px uppercase monospace (`[ONLINE]`, `[ARMED]`)
 
 ---
 
-## Cyberpunk — Motion & Transitions
-
-## Motion Philosophy
-
-Motion is digitized, instantaneous, glitched, or precision-timed. Think of radar sweeps, flickering cathode-ray tubes, telemetry feeds, and lightning-fast terminal response times. Cheerful bounces are forbidden.
-
-## Timing & Easing Curves
+## Motion & Transitions
 
 ```css
 :root {
   --duration-cyber-glitch: 60ms;
   --duration-cyber-snap: 100ms;
   --duration-cyber-telemetry: 180ms;
-
   --ease-cyber-instant: steps(3, end);
   --ease-cyber-snap: cubic-bezier(0, 0, 0.2, 1);
 }
 ```
 
-## Transition Specifications
-
-1. **Button Hover & Activation:**
-   - Duration: `80ms`
-   - Timing: `linear`
-   - Property: `box-shadow, border-color, background-color`
-2. **Scanline / Pulse Loop:**
-   - Subtle neon breathing glow: 2000ms infinite ease-in-out.
-3. **Glitch / CRT Boot:**
-   - Rapid 60ms opacity/transform jitter simulating signal noise on page mount.
-
-## Motion Anti-Patterns
-- **No Playful Springs:** No bouncing curves.
-- **No Languid Sluggish Fades:** Avoid slow 500ms dissolves.
+- **Button Activation:** 80ms, linear, `box-shadow, border-color, background-color`.
+- **Pulse Loop:** Neon breathing glow: 2000ms infinite ease-in-out.
+- **Glitch / CRT Boot:** Rapid 60ms opacity/transform jitter simulating signal noise on page mount.
+- **Motion Anti-Patterns:** No playful bouncing springs, no slow 500ms sluggish dissolves.
