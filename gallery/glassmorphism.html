@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — Glassmorphism</title>
+  <!-- DESIGN CONTRACT: glassmorphism -->
+  <!-- NEVER: opaque card fills, hard offset shadows, 0px radius, 2px+ borders, blur on light bg -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0A0A0F;
+      --glass-low:  rgba(255, 255, 255, 0.06);
+      --glass-mid:  rgba(255, 255, 255, 0.08);
+      --glass-high: rgba(255, 255, 255, 0.12);
+      --glass-nav:  rgba(255, 255, 255, 0.06);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-border-subtle: rgba(255, 255, 255, 0.07);
+      --text:        rgba(255, 255, 255, 0.92);
+      --text-sec:    rgba(255, 255, 255, 0.55);
+      --text-muted:  rgba(255, 255, 255, 0.35);
+      --accent: #7C3AED;
+      --accent-glow: rgba(124, 58, 237, 0.28);
+      --cyan: #06B6D4;
+      --positive: #34D399;
+      --negative: #F87171;
+      --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.45);
+      --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.28);
+      --rim: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --radius-sm: 12px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      /* Layered radial glows — violet top-left, cyan bottom-right */
+      background-image:
+        radial-gradient(ellipse 60% 50% at 15% 10%, rgba(124, 58, 237, 0.14) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 45% at 85% 85%, rgba(6, 182, 212, 0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 35% 30% at 60% 40%, rgba(124, 58, 237, 0.06) 0%, transparent 60%);
+    }
+
+    /* ─── NAV ─────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--glass-nav);
+      border-bottom: 1px solid var(--glass-border-subtle);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      height: 60px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .nav-orb {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+      box-shadow: 0 0 16px rgba(124, 58, 237, 0.55);
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+    }
+    .nav-links a {
+      color: var(--text-sec);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      transition: color 0.15s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--text); font-weight: 500; }
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .btn {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      height: 34px;
+      padding: 0 16px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      border: none;
+      outline: none;
+      text-decoration: none;
+    }
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--glass-border);
+      color: var(--text-sec);
+    }
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--text);
+    }
+    .btn-primary {
+      background: rgba(124, 58, 237, 0.80);
+      border: 1px solid rgba(124, 58, 237, 0.55);
+      color: #fff;
+      backdrop-filter: blur(8px);
+    }
+    .btn-primary:hover {
+      background: rgba(124, 58, 237, 0.95);
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.35);
+    }
+
+    /* ─── MAIN LAYOUT ─────────────────────────────────── */
+    main {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 48px 32px 64px;
+    }
+    .page-header {
+      margin-bottom: 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .page-header p {
+      color: var(--text-sec);
+      font-size: 14px;
+      font-weight: 400;
+      margin-top: 6px;
+    }
+    .badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(52, 211, 153, 0.12);
+      border: 1px solid rgba(52, 211, 153, 0.28);
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #34D399;
+    }
+    .badge-live::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #34D399;
+      border-radius: 50%;
+      box-shadow: 0 0 6px rgba(52, 211, 153, 0.7);
+    }
+
+    /* ─── GLASS PANEL (shared base) ──────────────────── */
+    .glass-panel {
+      background: var(--glass-mid);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-md), var(--rim);
+    }
+
+    /* ─── METRICS GRID ────────────────────────────────── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .metric-card {
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .metric-card::after {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--accent-glow);
+      filter: blur(32px);
+      pointer-events: none;
+    }
+    .metric-card:nth-child(2)::after {
+      background: rgba(6, 182, 212, 0.15);
+    }
+    .metric-card:nth-child(3)::after {
+      background: rgba(167, 139, 250, 0.12);
+    }
+    .metric-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(124, 58, 237, 0.18);
+      border: 1px solid rgba(124, 58, 237, 0.30);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+    .metric-card:nth-child(2) .metric-icon {
+      background: rgba(6, 182, 212, 0.15);
+      border-color: rgba(6, 182, 212, 0.28);
+    }
+    .metric-card:nth-child(3) .metric-icon {
+      background: rgba(167, 139, 250, 0.15);
+      border-color: rgba(167, 139, 250, 0.28);
+    }
+    .metric-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 8px;
+    }
+    .metric-value {
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: var(--text);
+      margin-bottom: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+    .metric-delta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--positive);
+    }
+    .metric-delta.neg { color: var(--negative); }
+    .metric-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ─── ALLOCATION BAR ──────────────────────────────── */
+    .alloc-section {
+      margin-bottom: 24px;
+    }
+    .alloc-bar-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .alloc-card {
+      padding: 20px 24px;
+    }
+    .alloc-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .alloc-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .alloc-label {
+      font-size: 12px;
+      color: var(--text-sec);
+      width: 130px;
+      flex-shrink: 0;
+    }
+    .alloc-track {
+      flex: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .alloc-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+    .fill-violet { background: linear-gradient(90deg, #7C3AED, #A78BFA); }
+    .fill-cyan   { background: linear-gradient(90deg, #06B6D4, #67E8F9); }
+    .fill-emerald{ background: linear-gradient(90deg, #059669, #34D399); }
+    .fill-amber  { background: linear-gradient(90deg, #D97706, #FCD34D); }
+    .alloc-pct {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-sec);
+      width: 34px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .risk-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .risk-item:last-child { border-bottom: none; }
+    .risk-name { font-size: 12px; color: var(--text-sec); }
+    .risk-val  { font-size: 12px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+    .risk-val.good  { color: var(--positive); }
+    .risk-val.warn  { color: #FBBF24; }
+
+    /* ─── DATA TABLE ──────────────────────────────────── */
+    .table-section {
+      margin-bottom: 24px;
+    }
+    .card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--glass-border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead tr {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    th {
+      padding: 12px 24px;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: left;
+      border-bottom: 1px solid var(--glass-border-subtle);
+    }
+    th:last-child, td:last-child { text-align: right; }
+    td {
+      padding: 15px 24px;
+      font-size: 13px;
+      color: var(--text);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: rgba(255, 255, 255, 0.025); }
+    .asset-name {
+      font-weight: 500;
+      color: var(--text);
+      display: block;
+    }
+    .asset-type {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: block;
+    }
+    .td-num {
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .badge-active  { background: rgba(52,211,153,0.14); border: 1px solid rgba(52,211,153,0.28); color: #34D399; }
+    .badge-rebal   { background: rgba(251,191,36,0.14); border: 1px solid rgba(251,191,36,0.28); color: #FBBF24; }
+    .badge-watch   { background: rgba(248,113,113,0.14); border: 1px solid rgba(248,113,113,0.28); color: #F87171; }
+    .delta-pos { color: var(--positive); font-size: 12px; font-weight: 500; }
+    .delta-neg { color: var(--negative); font-size: 12px; font-weight: 500; }
+
+    /* ─── FOOTER ──────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--glass-border-subtle);
+      padding: 24px 32px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+    }
+    footer span {
+      color: rgba(167, 139, 250, 0.60);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-brand">
+      <div class="nav-orb"></div>
+      Aurelia
+    </div>
+    <div class="nav-links">
+      <a href="#" class="active">Overview</a>
+      <a href="#">Portfolio</a>
+      <a href="#">Treasury</a>
+      <a href="#">Analytics</a>
+      <a href="#">Reports</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost">Export</button>
+      <button class="btn btn-primary">+ New Position</button>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div>
+        <h1>Asset Overview</h1>
+        <p>Institutional liquidity, risk metrics, and active allocations — Q3 2026</p>
+      </div>
+      <div class="badge-live">Live Data</div>
+    </div>
+
+    <!-- METRICS GRID -->
+    <div class="metrics-grid">
+      <div class="glass-panel metric-card">
+        <div class="metric-icon">◈</div>
+        <div class="metric-label">Total Portfolio Value</div>
+        <div class="metric-value">$84,210,400</div>
+        <div class="metric-delta">▲ +4.2%</div>
+        <div class="metric-sub">vs. previous 30 days</div>
+      </div>
+      <div class="glass-panel metric-card">
+        <div class="metric-icon">◉</div>
+        <div class="metric-label">Operating Liquidity</div>
+        <div class="metric-value">$19,450,000</div>
+        <div class="metric-delta">▲ +1.8%</div>
+        <div class="metric-sub">T-Bill yield, rolling 90d</div>
+      </div>
+      <div class="glass-panel metric-card">
+        <div class="metric-icon">◎</div>
+        <div class="metric-label">Sharpe Ratio</div>
+        <div class="metric-value">2.84</div>
+        <div class="metric-delta">▲ +0.12</div>
+        <div class="metric-sub">99.8% risk envelope</div>
+      </div>
+    </div>
+
+    <!-- ALLOCATION + RISK -->
+    <div class="alloc-bar-wrap alloc-section">
+      <div class="glass-panel alloc-card">
+        <div class="alloc-title">Allocation Breakdown</div>
+        <div class="alloc-row">
+          <div class="alloc-label">Private Debt</div>
+          <div class="alloc-track"><div class="alloc-fill fill-violet" style="width:28%"></div></div>
+          <div class="alloc-pct">28%</div>
+        </div>
+        <div class="alloc-row">
+          <div class="alloc-label">Fixed Income</div>
+          <div class="alloc-track"><div class="alloc-fill fill-cyan" style="width:33%"></div></div>
+          <div class="alloc-pct">33%</div>
+        </div>
+        <div class="alloc-row">
+          <div class="alloc-label">Direct Equity</div>
+          <div class="alloc-track"><div class="alloc-fill fill-emerald" style="width:22%"></div></div>
+          <div class="alloc-pct">22%</div>
+        </div>
+        <div class="alloc-row">
+          <div class="alloc-label">Liquid Equity</div>
+          <div class="alloc-track"><div class="alloc-fill fill-amber" style="width:17%"></div></div>
+          <div class="alloc-pct">17%</div>
+        </div>
+      </div>
+      <div class="glass-panel alloc-card">
+        <div class="alloc-title">Risk Metrics</div>
+        <div class="risk-item"><span class="risk-name">Portfolio Beta</span><span class="risk-val good">0.72</span></div>
+        <div class="risk-item"><span class="risk-name">Value at Risk (95%)</span><span class="risk-val warn">$1,240,000</span></div>
+        <div class="risk-item"><span class="risk-name">Max Drawdown (YTD)</span><span class="risk-val warn">-3.8%</span></div>
+        <div class="risk-item"><span class="risk-name">Information Ratio</span><span class="risk-val good">1.94</span></div>
+        <div class="risk-item"><span class="risk-name">Sortino Ratio</span><span class="risk-val good">3.21</span></div>
+        <div class="risk-item"><span class="risk-name">Tracking Error</span><span class="risk-val">2.14%</span></div>
+      </div>
+    </div>
+
+    <!-- DATA TABLE -->
+    <div class="glass-panel table-section">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Active Strategic Positions</div>
+          <div class="card-subtitle">4 positions · Last rebalanced Sep 18, 2026</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" style="height:30px;font-size:12px;">Filter</button>
+          <button class="btn btn-ghost" style="height:30px;font-size:12px;">Export CSV</button>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Asset / Strategy</th>
+            <th>Type</th>
+            <th>Allocation</th>
+            <th>Current Valuation</th>
+            <th>30d Change</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="asset-name">Zurich High-Yield Real Estate</span>
+              <span class="asset-type">CHF-denominated private debt tranche</span>
+            </td>
+            <td style="color:var(--text-sec);">Private Debt</td>
+            <td class="td-num">28.4%</td>
+            <td class="td-num">$23,915,750</td>
+            <td class="td-num delta-pos">+2.1%</td>
+            <td style="text-align:right;"><span class="badge badge-active">Active</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="asset-name">Nordic Clean Infrastructure Fund</span>
+              <span class="asset-type">EUR direct equity, Series B co-invest</span>
+            </td>
+            <td style="color:var(--text-sec);">Direct Equity</td>
+            <td class="td-num">22.1%</td>
+            <td class="td-num">$18,610,500</td>
+            <td class="td-num delta-pos">+5.8%</td>
+            <td style="text-align:right;"><span class="badge badge-active">Active</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="asset-name">Global Semiconductor Index</span>
+              <span class="asset-type">USD liquid equity ETF basket</span>
+            </td>
+            <td style="color:var(--text-sec);">Liquid Equity</td>
+            <td class="td-num">16.5%</td>
+            <td class="td-num">$13,894,700</td>
+            <td class="td-num delta-neg">-1.3%</td>
+            <td style="text-align:right;"><span class="badge badge-rebal">Rebalancing</span></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="asset-name">Sovereign Green Bonds (EU)</span>
+              <span class="asset-type">EUR/USD laddered fixed income 2028–2034</span>
+            </td>
+            <td style="color:var(--text-sec);">Fixed Income</td>
+            <td class="td-num">33.0%</td>
+            <td class="td-num">$27,789,450</td>
+            <td class="td-num delta-pos">+0.6%</td>
+            <td style="text-align:right;"><span class="badge badge-active">Active</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <footer>
+    Aurelia Asset Management &mdash; Gallery Preview &nbsp;|&nbsp;
+    <span>Glassmorphism</span> &nbsp;·&nbsp;
+    Contract: dark canvas, blur(20px) panels, 1px rgba borders, 14px radius, diffuse shadows
+  </footer>
+
+</body>
+</html>

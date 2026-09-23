@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — Data Native</title>
+  <!-- DESIGN CONTRACT: data-native -->
+  <!-- NEVER: decorative fills, area gradients, pill badges, radius > 4px, heavy shadows, multi-color accents -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0D1117;
+      --surface: #161B22;
+      --surface-hover: #1C2128;
+      --surface-active: #21262D;
+      --border: #1E2533;
+      --border-panel: #21262D;
+      --border-hover: #30363D;
+      --text: #E6EDF3;
+      --text-sec: #8B949E;
+      --text-muted: #484F58;
+      --accent: #3B82F6;
+      --accent-hover: #2563EB;
+      --positive: #22C55E;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+      --radius-sm: 4px;
+      --radius-xs: 2px;
+      --radius-dot: 9999px;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* ─── NAV ─────────────────────────────────────────── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-panel);
+      height: 44px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .nav-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-sec);
+      background: var(--bg);
+      padding: 1px 6px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+    }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+    }
+    .nav-links a {
+      color: var(--text-sec);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 8px;
+      border-radius: var(--radius-xs);
+      transition: color 0.1s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active {
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      border: 1px solid var(--border-panel);
+      background: transparent;
+      color: var(--text);
+      transition: background 0.1s ease;
+    }
+    .btn:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-hover);
+    }
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #FFFFFF;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    /* ─── MAIN ────────────────────────────────────────── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 20px 48px;
+    }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+    .toolbar-title h1 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .toolbar-title p {
+      font-size: 11px;
+      color: var(--text-sec);
+      margin-top: 2px;
+    }
+    .meta-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-sec);
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ─── STATUS DOTS ─────────────────────────────────── */
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-dot);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .dot-healthy  { background: var(--positive); }
+    .dot-warning  { background: var(--warning); }
+    .dot-critical { background: var(--negative); }
+    .dot-inactive { background: var(--text-muted); }
+
+    /* ─── METRIC PANELS ───────────────────────────────── */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .metric-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+    }
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+    .metric-key {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-sec);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      margin: 4px 0 2px;
+    }
+    .metric-sub {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+    .delta-up { color: var(--positive); }
+    .delta-down { color: var(--negative); }
+    .sub-note { color: var(--text-muted); }
+
+    /* ─── DATA TABLE ──────────────────────────────────── */
+    .table-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .table-header-bar {
+      height: 36px;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--border-panel);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+    }
+    .table-header-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .table-count {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-sec);
+      font-weight: 400;
+    }
+    .table-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .filter-input {
+      background: var(--bg);
+      border: 1px solid var(--border-panel);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      height: 24px;
+      padding: 0 8px;
+      outline: none;
+    }
+    .filter-input:focus { border-color: var(--accent); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th {
+      height: 32px;
+      padding: 0 12px;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-sec);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border-panel);
+      user-select: none;
+      white-space: nowrap;
+    }
+    th.th-num, td.td-num {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    th.th-center, td.td-center {
+      text-align: center;
+    }
+    td {
+      height: 32px;
+      padding: 0 12px;
+      font-size: 11px;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tr:hover td {
+      background: var(--surface-hover);
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .cell-symbol {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text);
+    }
+    .cell-desc {
+      color: var(--text-sec);
+      font-size: 11px;
+      margin-left: 6px;
+    }
+    .mono-val {
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    /* ─── SUMMARY GRID ────────────────────────────────── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 12px;
+    }
+    .summary-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+    }
+    .summary-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-sec);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+    .tabular-row {
+      display: flex;
+      justify-content: space-between;
+      height: 26px;
+      align-items: center;
+      border-bottom: 1px solid rgba(30, 37, 51, 0.5);
+      font-size: 11px;
+    }
+    .tabular-row:last-child { border-bottom: none; }
+    .tab-key { color: var(--text-sec); }
+    .tab-val {
+      font-family: var(--font-mono);
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 32px;
+      padding: 16px 20px;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+    }
+    footer span { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-brand">
+      <span>Aurelia Telemetry</span>
+      <span class="nav-tag">v4.1.2</span>
+    </div>
+    <div class="nav-links">
+      <a href="#" class="active">Ledger</a>
+      <a href="#">Allocations</a>
+      <a href="#">Risk Engine</a>
+      <a href="#">Audit Log</a>
+      <a href="#">Endpoints</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn">Export TSV</button>
+      <button class="btn btn-primary">+ New Tranche</button>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <div class="toolbar-title">
+        <h1>Institutional Asset Ledger</h1>
+        <p>Real-time valuation, margin thresholds, and liquidity telemetry</p>
+      </div>
+      <div class="meta-bar">
+        <div class="meta-item">
+          <span class="status-dot dot-healthy"></span>
+          <span>Feed: Live (12ms)</span>
+        </div>
+        <div class="meta-item">
+          <span>Block: 19842104</span>
+        </div>
+        <div class="meta-item">
+          <span>UTC: 2026-09-23 05:42:10</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="metrics-row">
+      <div class="metric-panel">
+        <div class="metric-header">
+          <span class="metric-key">NAV Total</span>
+          <span class="status-dot dot-healthy"></span>
+        </div>
+        <div class="metric-val">$84,210,400.00</div>
+        <div class="metric-sub">
+          <span class="delta-up">+4.21%</span>
+          <span class="sub-note">30d trailing</span>
+        </div>
+      </div>
+      <div class="metric-panel">
+        <div class="metric-header">
+          <span class="metric-key">Liquid Buffer</span>
+          <span class="status-dot dot-healthy"></span>
+        </div>
+        <div class="metric-val">$19,450,000.00</div>
+        <div class="metric-sub">
+          <span class="delta-up">+1.80%</span>
+          <span class="sub-note">T-Bill repo rate</span>
+        </div>
+      </div>
+      <div class="metric-panel">
+        <div class="metric-header">
+          <span class="metric-key">Daily VaR (99%)</span>
+          <span class="status-dot dot-warning"></span>
+        </div>
+        <div class="metric-val">$1,240,820.00</div>
+        <div class="metric-sub">
+          <span class="delta-down">+0.04%</span>
+          <span class="sub-note">1.47% envelope</span>
+        </div>
+      </div>
+      <div class="metric-panel">
+        <div class="metric-header">
+          <span class="metric-key">Sharpe (Annualized)</span>
+          <span class="status-dot dot-healthy"></span>
+        </div>
+        <div class="metric-val">2.842</div>
+        <div class="metric-sub">
+          <span class="delta-up">+0.12</span>
+          <span class="sub-note">Rf = 4.25%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA TABLE -->
+    <div class="table-container">
+      <div class="table-header-bar">
+        <div class="table-header-title">
+          <span>Position Registry</span>
+          <span class="table-count">[8 entries]</span>
+        </div>
+        <div class="table-controls">
+          <input type="text" class="filter-input" placeholder="Filter ticker / class..." />
+          <button class="btn" style="height:24px;font-size:10px;">Columns</button>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="th-center" style="width:36px;">St</th>
+            <th>Asset / Strategy</th>
+            <th>Class</th>
+            <th class="th-num">Allocation</th>
+            <th class="th-num">Valuation (USD)</th>
+            <th class="th-num">Unit Cost</th>
+            <th class="th-num">Market Price</th>
+            <th class="th-num">30d Delta</th>
+            <th class="th-num">Yield</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-center"><span class="status-dot dot-healthy" title="Active"></span></td>
+            <td><span class="cell-symbol">ZUR-HYD-01</span><span class="cell-desc">Zurich High-Yield Real Estate Tranche A</span></td>
+            <td style="color:var(--text-sec);">Private Debt</td>
+            <td class="td-num">28.40%</td>
+            <td class="td-num">23,915,750.00</td>
+            <td class="td-num">98.20</td>
+            <td class="td-num">100.35</td>
+            <td class="td-num delta-up">+2.14%</td>
+            <td class="td-num">7.85%</td>
+          </tr>
+          <tr>
+            <td class="td-center"><span class="status-dot dot-healthy" title="Active"></span></td>
+            <td><span class="cell-symbol">SGV-GRN-34</span><span class="cell-desc">Sovereign Green Bonds EU 2028-2034</span></td>
+            <td style="color:var(--text-sec);">Fixed Income</td>
+            <td class="td-num">33.00%</td>
+            <td class="td-num">27,789,450.00</td>
+            <td class="td-num">99.10</td>
+            <td class="td-num">99.70</td>
+            <td class="td-num delta-up">+0.60%</td>
+            <td class="td-num">3.42%</td>
+          </tr>
+          <tr>
+            <td class="td-center"><span class="status-dot dot-healthy" title="Active"></span></td>
+            <td><span class="cell-symbol">NDC-CLN-EQ</span><span class="cell-desc">Nordic Clean Infrastructure Fund Direct</span></td>
+            <td style="color:var(--text-sec);">Direct Equity</td>
+            <td class="td-num">22.10%</td>
+            <td class="td-num">18,610,500.00</td>
+            <td class="td-num">142.50</td>
+            <td class="td-num">150.80</td>
+            <td class="td-num delta-up">+5.82%</td>
+            <td class="td-num">—</td>
+          </tr>
+          <tr>
+            <td class="td-center"><span class="status-dot dot-warning" title="Rebalancing"></span></td>
+            <td><span class="cell-symbol">SOX-LQD-IX</span><span class="cell-desc">Global Semiconductor Liquid ETF Basket</span></td>
+            <td style="color:var(--text-sec);">Liquid Equity</td>
+            <td class="td-num">16.50%</td>
+            <td class="td-num">13,894,700.00</td>
+            <td class="td-num">210.00</td>
+            <td class="td-num">207.25</td>
+            <td class="td-num delta-down">-1.31%</td>
+            <td class="td-num">1.10%</td>
+          </tr>
+          <tr>
+            <td class="td-center"><span class="status-dot dot-healthy" title="Active"></span></td>
+            <td><span class="cell-symbol">UST-BIL-90</span><span class="cell-desc">US Treasury 90-Day Cash Equivalents</span></td>
+            <td style="color:var(--text-sec);">Cash Equiv</td>
+            <td class="td-num">12.20%</td>
+            <td class="td-num">10,273,668.00</td>
+            <td class="td-num">100.00</td>
+            <td class="td-num">100.00</td>
+            <td class="td-num delta-up">+0.43%</td>
+            <td class="td-num">5.28%</td>
+          </tr>
+          <tr>
+            <td class="td-center"><span class="status-dot dot-healthy" title="Active"></span></td>
+            <td><span class="cell-symbol">UK-GIL-30Y</span><span class="cell-desc">UK Gilt Index-Linked Inflation Hedging</span></td>
+            <td style="color:var(--text-sec);">Sovereign Debt</td>
+            <td class="td-num">8.40%</td>
+            <td class="td-num">7,073,673.00</td>
+            <td class="td-num">84.30</td>
+            <td class="td-num">85.10</td>
+            <td class="td-num delta-up">+0.95%</td>
+            <td class="td-num">4.18%</td>
+          </tr>
+          <tr>
+            <td class="td-center"><span class="status-dot dot-critical" title="Threshold Alert"></span></td>
+            <td><span class="cell-symbol">APAC-LOG-D</span><span class="cell-desc">Tokyo Logistics Hub Private Debt Tier II</span></td>
+            <td style="color:var(--text-sec);">Sub Debt</td>
+            <td class="td-num">4.10%</td>
+            <td class="td-num">3,452,626.00</td>
+            <td class="td-num">95.00</td>
+            <td class="td-num">91.80</td>
+            <td class="td-num delta-down">-3.37%</td>
+            <td class="td-num">8.90%</td>
+          </tr>
+          <tr>
+            <td class="td-center"><span class="status-dot dot-inactive" title="Matured"></span></td>
+            <td><span class="cell-symbol">FRA-BND-26</span><span class="cell-desc">OAT France Maturing September 2026</span></td>
+            <td style="color:var(--text-sec);">Fixed Income</td>
+            <td class="td-num">0.00%</td>
+            <td class="td-num">0.00</td>
+            <td class="td-num">100.00</td>
+            <td class="td-num">100.00</td>
+            <td class="td-num" style="color:var(--text-muted);">0.00%</td>
+            <td class="td-num">2.80%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SUMMARY GRID -->
+    <div class="summary-grid">
+      <div class="summary-panel">
+        <div class="summary-title">Portfolio Exposure Telemetry</div>
+        <div class="tabular-row">
+          <span class="tab-key">Weighted Average Maturity</span>
+          <span class="tab-val">4.82 yrs</span>
+        </div>
+        <div class="tabular-row">
+          <span class="tab-key">Portfolio Duration</span>
+          <span class="tab-val">3.41</span>
+        </div>
+        <div class="tabular-row">
+          <span class="tab-key">Currency Exposure (USD / EUR / CHF / JPY)</span>
+          <span class="tab-val">54% / 28% / 12% / 6%</span>
+        </div>
+        <div class="tabular-row">
+          <span class="tab-key">Average Credit Rating</span>
+          <span class="tab-val">AA- / Aa3</span>
+        </div>
+      </div>
+      <div class="summary-panel">
+        <div class="summary-title">Telemetry Health</div>
+        <div class="tabular-row">
+          <span class="tab-key">Feed Ingestion Rate</span>
+          <span class="tab-val">8,420 msgs/s</span>
+        </div>
+        <div class="tabular-row">
+          <span class="tab-key">Pricing Engine Latency</span>
+          <span class="tab-val">1.4 ms</span>
+        </div>
+        <div class="tabular-row">
+          <span class="tab-key">Dropped Ticks</span>
+          <span class="tab-val">0 (0.00%)</span>
+        </div>
+        <div class="tabular-row">
+          <span class="tab-key">Reconciliation Delta</span>
+          <span class="tab-val">$0.00</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div>Aurelia Platform &mdash; Style: <span>Data Native</span> (JetBrains Mono tabular, 32px rows, 4px max radius, dark #0D1117)</div>
+    <div>System Status: All systems operational &bull; Hash: d41d8cd98f00b204e9800998ecf8427e</div>
+  </footer>
+
+</body>
+</html>

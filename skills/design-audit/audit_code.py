@@ -4,28 +4,31 @@ Scans frontend source code against a target Design Spec and reports violations
 across layout, typography, surfaces (borders, radius, shadows), color, and motion.
 """
 
-import sys
+import json
 import os
 import re
-import json
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Any
+
 
 class DesignAuditor:
-    def __init__(self, target_style: str, modifiers: Optional[List[str]] = None):
+    def __init__(self, target_style: str, modifiers: list[str] | None = None):
         self.target_style = target_style.lower()
         self.modifiers = [m.lower() for m in (modifiers or [])]
-        self.violations: List[Dict[str, Any]] = []
+        self.violations: list[dict[str, Any]] = []
+        self._memphis_signals: dict[str, list] = {}  # per-file Corporate Memphis signal accumulator
 
     def audit_file(self, file_path: Path):
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-        except Exception as e:
+        except Exception:
             return
 
         for idx, line in enumerate(lines, 1):
             self._check_line(file_path, idx, line)
+        # Post-file: evaluate accumulated Corporate Memphis signals
+        self._check_corporate_memphis_drift(file_path)
 
     def _check_line(self, file_path: Path, line_no: int, line: str):
         # Skip pure comment lines (HTML <!-- ... --> or CSS /* / //) to avoid
@@ -275,18 +278,68 @@ class DesignAuditor:
         # 6. Surface Modifier Auditing
         if "backdrop-blur" in line or "backdrop-filter" in line:
             if self.target_style != "y2k-frutiger-aero" and "frosted-glass" not in self.modifiers:
-                if self.target_style in ["terminal-cli", "web-brutalism", "bauhaus", "swiss-editorial", "retro-americana"]:
-                    self.violations.append({
-                        "file": str(file_path),
-                        "line": line_no,
-                        "layer": "surfaces",
-                        "severity": "CRITICAL",
-                        "type": "unauthorized_modifier",
-                        "offending_code": line.strip(),
-                        "message": f"Frosted glass / backdrop-blur detected in '{self.target_style}' without declaring 'frosted-glass' modifier."
-                    })
+                # Glassmorphism foundation legitimately uses backdrop-blur — skip flagging it
+                if self.target_style not in ["glassmorphism"]:
+                    if self.target_style in ["terminal-cli", "web-brutalism", "bauhaus", "swiss-editorial", "retro-americana"]:
+                        self.violations.append({
+                            "file": str(file_path),
+                            "line": line_no,
+                            "layer": "surfaces",
+                            "severity": "CRITICAL",
+                            "type": "unauthorized_modifier",
+                            "offending_code": line.strip(),
+                            "message": f"Frosted glass / backdrop-blur detected in '{self.target_style}' without declaring 'frosted-glass' modifier."
+                        })
 
-    def run_audit(self, target_dir: Path) -> Dict[str, Any]:
+        # 7. Corporate Memphis / Alegria Drift Detection (cross-cutting, all styles)
+        # Accumulate signal hits per file; severity emitted in _check_corporate_memphis_drift()
+        self._memphis_signals.setdefault(str(file_path), [])
+        if re.search(r'\b(bg-purple-500|bg-indigo-500|text-purple-600|#6366F1|#8B5CF6)\b', line):
+            self._memphis_signals[str(file_path)].append(("purple_accent", line_no))
+        if any(k in line for k in ["card", "panel", "container", "section"]):
+            if re.search(r'\b(rounded-2xl|rounded-3xl)\b', line):
+                self._memphis_signals[str(file_path)].append(("bubbly_container", line_no))
+        if re.search(r'(?<![\\w-])(shadow-(?:md|lg|xl|2xl))(?![\\w-])', line):
+            self._memphis_signals[str(file_path)].append(("ambient_shadow", line_no))
+        if re.search(r'(<!--\s*illustration|blob|organic.shape|bg-blob)', line, re.IGNORECASE):
+            self._memphis_signals[str(file_path)].append(("illustration_placeholder", line_no))
+
+    def _check_corporate_memphis_drift(self, file_path: Path):
+        """Emit violations if Corporate Memphis signal threshold is reached for a file."""
+        signals = self._memphis_signals.get(str(file_path), [])
+        signal_types = set(s[0] for s in signals)
+        count = len(signal_types)
+        if count >= 3:
+            self.violations.append({
+                "file": str(file_path),
+                "line": 0,
+                "layer": "color",
+                "severity": "CRITICAL",
+                "type": "corporate_memphis_drift",
+                "offending_code": ", ".join(signal_types),
+                "message": (
+                    f"Corporate Memphis / Alegria anti-pattern detected ({count} signals: "
+                    f"{', '.join(sorted(signal_types))}). "
+                    "This is the AI-generated SaaS default, not an intentional visual direction. "
+                    "Apply a foundation style contract via @design-director."
+                )
+            })
+        elif count == 2:
+            self.violations.append({
+                "file": str(file_path),
+                "line": 0,
+                "layer": "color",
+                "severity": "WARNING",
+                "type": "corporate_memphis_drift",
+                "offending_code": ", ".join(signal_types),
+                "message": (
+                    f"Possible Corporate Memphis drift ({count} signals: "
+                    f"{', '.join(sorted(signal_types))}). "
+                    "Verify the chosen foundation style is intentionally applied."
+                )
+            })
+
+    def run_audit(self, target_dir: Path) -> dict[str, Any]:
         valid_extensions = [".html", ".jsx", ".tsx", ".vue", ".svelte", ".css"]
         files_scanned = 0
         
@@ -306,7 +359,7 @@ class DesignAuditor:
         warning_count = sum(1 for v in self.violations if v["severity"] == "WARNING")
 
         # Layer breakdown
-        layer_summary: Dict[str, int] = {}
+        layer_summary: dict[str, int] = {}
         for v in self.violations:
             l = v["layer"]
             layer_summary[l] = layer_summary.get(l, 0) + 1

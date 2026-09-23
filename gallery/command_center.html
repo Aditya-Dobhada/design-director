@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia — Command Center</title>
+  <!-- DESIGN CONTRACT: command-center -->
+  <!-- NEVER: gradient backgrounds, radius > 4px, soft drop-shadows, excessive whitespace, non-semantic status colors -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0B0D11;
+      --surface: #0F1219;
+      --surface-raised: #141922;
+      --surface-hover: #1A2030;
+      --border: #1E2533;
+      --border-strong: #2D3748;
+      --border-subtle: #141922;
+      --text: #E2E8F0;
+      --text-sec: #94A3B8;
+      --text-muted: #475569;
+      --healthy: #22C55E;
+      --healthy-bg: rgba(34, 197, 94, 0.10);
+      --healthy-border: rgba(34, 197, 94, 0.25);
+      --warning: #F59E0B;
+      --warning-bg: rgba(245, 158, 11, 0.10);
+      --warning-border: rgba(245, 158, 11, 0.25);
+      --critical: #EF4444;
+      --critical-bg: rgba(239, 68, 68, 0.10);
+      --critical-border: rgba(239, 68, 68, 0.25);
+      --info: #3B82F6;
+      --info-bg: rgba(59, 130, 246, 0.10);
+      --info-border: rgba(59, 130, 246, 0.25);
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-sm: 4px;
+      --radius-xs: 2px;
+      --radius-dot: 9999px;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── APP HEADER ──────────────────────────────────── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      height: 40px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .zone-indicator {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: var(--radius-xs);
+      color: var(--text-sec);
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .clock {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-sec);
+    }
+
+    /* ─── STATUS PILLS ────────────────────────────────── */
+    .status-pill {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .pill-healthy {
+      background: var(--healthy-bg);
+      color: var(--healthy);
+      border: 1px solid var(--healthy-border);
+    }
+    .pill-warning {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid var(--warning-border);
+    }
+    .pill-critical {
+      background: var(--critical-bg);
+      color: var(--critical);
+      border: 1px solid var(--critical-border);
+    }
+    .pill-info {
+      background: var(--info-bg);
+      color: var(--info);
+      border: 1px solid var(--info-border);
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-dot);
+      display: inline-block;
+    }
+    .dot-healthy { background: var(--healthy); }
+    .dot-warning { background: var(--warning); }
+    .dot-critical { background: var(--critical); }
+
+    /* ─── SYSTEM STATUS BAR ───────────────────────────── */
+    .status-strip {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+    .strip-items {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .strip-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-sec);
+    }
+    .strip-item strong {
+      color: var(--text);
+      font-family: var(--font-mono);
+    }
+
+    /* ─── MAIN MULTI-PANEL GRID ───────────────────────── */
+    .command-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr 340px;
+      flex: 1;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ─── PANEL BASE ──────────────────────────────────── */
+    .panel {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    .panel:last-child {
+      border-right: none;
+    }
+    .panel-header {
+      height: 32px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-raised);
+    }
+    .panel-title {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-sec);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .panel-body {
+      padding: 12px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    /* ─── LEFT PANEL: INFRASTRUCTURE & METRICS ────────── */
+    .service-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 8px;
+      border-bottom: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+    }
+    .service-row:hover { background: var(--surface-hover); }
+    .service-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .service-name {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .service-meta {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .kpi-tile {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+    .kpi-label {
+      font-size: 10px;
+      color: var(--text-sec);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+    .kpi-num {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .kpi-foot {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-sec);
+      margin-top: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ─── CENTER PANEL: ASSET EXECUTION & REGISTRY ────── */
+    .order-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface-raised);
+      color: var(--text);
+    }
+    .btn:hover { background: var(--surface-hover); }
+    .btn-primary {
+      background: var(--info);
+      border-color: var(--info);
+      color: #fff;
+    }
+    .btn-critical {
+      background: var(--critical);
+      border-color: var(--critical);
+      color: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th {
+      height: 28px;
+      padding: 0 8px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-raised);
+    }
+    th.num, td.num {
+      text-align: right;
+      font-family: var(--font-mono);
+    }
+    td {
+      height: 32px;
+      padding: 0 8px;
+      font-size: 11px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    tr:hover td { background: var(--surface-hover); }
+    .ticker {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ─── RIGHT PANEL: REAL-TIME AUDIT LOG ────────────── */
+    .log-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      line-height: 18px;
+    }
+    .log-line {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      padding: 3px 6px;
+      border-radius: var(--radius-xs);
+    }
+    .log-line:hover { background: var(--surface-hover); }
+    .log-ts { color: var(--text-muted); flex-shrink: 0; }
+    .log-lvl { font-weight: 600; flex-shrink: 0; }
+    .lvl-info { color: var(--info); }
+    .lvl-warn { color: var(--warning); }
+    .lvl-crit { color: var(--critical); }
+    .lvl-ok   { color: var(--healthy); }
+    .log-msg { color: var(--text); word-break: break-all; }
+
+    /* ─── INCIDENT BANNER ─────────────────────────────── */
+    .incident-panel {
+      border: 1px solid var(--warning-border);
+      background: var(--warning-bg);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .incident-text {
+      font-size: 11px;
+      color: var(--warning);
+      font-weight: 500;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────── */
+    footer {
+      background: var(--surface);
+      height: 28px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+    footer span { color: var(--healthy); }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <div class="brand">
+        <span>AURELIA OPS</span>
+        <span class="zone-indicator">ZONE: PROD-EU-WEST</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="status-pill pill-healthy">
+        <span class="dot dot-healthy"></span> CLUSTER OK
+      </span>
+      <span class="status-pill pill-warning">
+        <span class="dot dot-warning"></span> 1 WARNING
+      </span>
+      <div class="clock">2026-09-23 05:43:08 UTC</div>
+    </div>
+  </header>
+
+  <!-- STATUS STRIP -->
+  <div class="status-strip">
+    <div class="strip-items">
+      <div class="strip-item">Total AUM: <strong>$84,210,400</strong></div>
+      <div class="strip-item">Active Nodes: <strong>32/32</strong></div>
+      <div class="strip-item">Throughput: <strong>14.2k ops/s</strong></div>
+      <div class="strip-item">Settlement Pipeline: <span class="status-pill pill-healthy">HEALTHY</span></div>
+    </div>
+    <div class="strip-items">
+      <div class="strip-item">Latency: <strong>1.8ms</strong></div>
+      <div class="strip-item">Circuit Breaker: <span class="status-pill pill-healthy">ARMED</span></div>
+    </div>
+  </div>
+
+  <!-- MULTI-PANEL GRID -->
+  <div class="command-grid">
+
+    <!-- PANEL 1: INFRASTRUCTURE & POSITION HEALTH -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Infrastructure Health</div>
+        <span class="status-pill pill-healthy">99.98% UPTIME</span>
+      </div>
+      <div class="panel-body">
+        <div class="kpi-tile">
+          <div class="kpi-label">Valuation Engine Latency</div>
+          <div class="kpi-num">1.42 ms</div>
+          <div class="kpi-foot">
+            <span>P99: 4.10 ms</span>
+            <span style="color:var(--healthy);">NOMINAL</span>
+          </div>
+        </div>
+
+        <div class="kpi-tile">
+          <div class="kpi-label">Order Routing Pipeline</div>
+          <div class="kpi-num">8,420 /sec</div>
+          <div class="kpi-foot">
+            <span>Capacity: 45k/s</span>
+            <span style="color:var(--healthy);">LOAD: 18.7%</span>
+          </div>
+        </div>
+
+        <div style="font-size:10px;text-transform:uppercase;color:var(--text-sec);font-weight:600;margin:12px 0 6px;">
+          Active Core Services
+        </div>
+
+        <div class="service-row">
+          <div class="service-info">
+            <span class="service-name">ledger-core-eu</span>
+            <span class="service-meta">v4.1.2 &bull; 8 pods</span>
+          </div>
+          <span class="status-pill pill-healthy">HEALTHY</span>
+        </div>
+
+        <div class="service-row">
+          <div class="service-info">
+            <span class="service-name">pricing-feed-bloomberg</span>
+            <span class="service-meta">FIX protocol &bull; active</span>
+          </div>
+          <span class="status-pill pill-healthy">STREAMING</span>
+        </div>
+
+        <div class="service-row">
+          <div class="service-info">
+            <span class="service-name">var-risk-simulator</span>
+            <span class="service-meta">Monte Carlo (100k paths)</span>
+          </div>
+          <span class="status-pill pill-warning">HIGH CPU</span>
+        </div>
+
+        <div class="service-row">
+          <div class="service-info">
+            <span class="service-name">compliance-sentinel</span>
+            <span class="service-meta">MiFID II &bull; rules active</span>
+          </div>
+          <span class="status-pill pill-healthy">COMPLIANT</span>
+        </div>
+
+        <div class="service-row">
+          <div class="service-info">
+            <span class="service-name">custody-bridge-swift</span>
+            <span class="service-meta">ISO 20022 gateway</span>
+          </div>
+          <span class="status-pill pill-healthy">ACK OK</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: STRATEGIC ASSET LEDGER (CENTER) -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Asset Portfolio & Execution</div>
+        <div style="display:flex;gap:6px;">
+          <span class="status-pill pill-info">4 ACTIVE STRATEGIES</span>
+        </div>
+      </div>
+      <div class="panel-body">
+
+        <div class="incident-panel">
+          <span class="incident-text">⚠️ Warning: Global Semiconductor Index threshold alert &mdash; rebalancing trigger reached.</span>
+          <button class="btn" style="height:22px;font-size:10px;">Review</button>
+        </div>
+
+        <div class="order-bar">
+          <button class="btn btn-primary">+ Execute Rebalance</button>
+          <button class="btn">Emergency Halt</button>
+          <button class="btn">Generate Snapshot</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Asset / Tranche</th>
+              <th>Class</th>
+              <th class="num">Alloc</th>
+              <th class="num">Valuation (USD)</th>
+              <th class="num">Threshold</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="status-pill pill-healthy">ACTIVE</span></td>
+              <td><span class="ticker">ZUR-HYD-01</span><br><span style="color:var(--text-sec);font-size:10px;">Zurich High-Yield Private Debt</span></td>
+              <td style="color:var(--text-sec);">Debt</td>
+              <td class="num">28.4%</td>
+              <td class="num">$23,915,750</td>
+              <td class="num" style="color:var(--healthy);">+2.1% OK</td>
+              <td><button class="btn" style="height:22px;font-size:10px;">Inspect</button></td>
+            </tr>
+            <tr>
+              <td><span class="status-pill pill-healthy">ACTIVE</span></td>
+              <td><span class="ticker">SGV-GRN-34</span><br><span style="color:var(--text-sec);font-size:10px;">EU Sovereign Green Bonds</span></td>
+              <td style="color:var(--text-sec);">Fixed</td>
+              <td class="num">33.0%</td>
+              <td class="num">$27,789,450</td>
+              <td class="num" style="color:var(--healthy);">+0.6% OK</td>
+              <td><button class="btn" style="height:22px;font-size:10px;">Inspect</button></td>
+            </tr>
+            <tr>
+              <td><span class="status-pill pill-healthy">ACTIVE</span></td>
+              <td><span class="ticker">NDC-CLN-EQ</span><br><span style="color:var(--text-sec);font-size:10px;">Nordic Clean Infrastructure</span></td>
+              <td style="color:var(--text-sec);">Equity</td>
+              <td class="num">22.1%</td>
+              <td class="num">$18,610,500</td>
+              <td class="num" style="color:var(--healthy);">+5.8% OK</td>
+              <td><button class="btn" style="height:22px;font-size:10px;">Inspect</button></td>
+            </tr>
+            <tr>
+              <td><span class="status-pill pill-warning">REBAL</span></td>
+              <td><span class="ticker">SOX-LQD-IX</span><br><span style="color:var(--text-sec);font-size:10px;">Global Semiconductor Index</span></td>
+              <td style="color:var(--text-sec);">Liquid</td>
+              <td class="num">16.5%</td>
+              <td class="num">$13,894,700</td>
+              <td class="num" style="color:var(--warning);">-1.3% TRIG</td>
+              <td><button class="btn btn-primary" style="height:22px;font-size:10px;">Rebalance</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL 3: TELEMETRY & AUDIT STREAM -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Audit Log Stream</div>
+        <span class="status-pill pill-healthy">LIVE</span>
+      </div>
+      <div class="panel-body">
+        <div class="log-stream">
+          <div class="log-line">
+            <span class="log-ts">05:43:01</span>
+            <span class="log-lvl lvl-ok">[OK]</span>
+            <span class="log-msg">NAV settlement tick validated. $84.21M.</span>
+          </div>
+          <div class="log-line">
+            <span class="log-ts">05:42:55</span>
+            <span class="log-lvl lvl-info">[INFO]</span>
+            <span class="log-msg">SWIFT MT541 ack received from Euroclear.</span>
+          </div>
+          <div class="log-line">
+            <span class="log-ts">05:42:30</span>
+            <span class="log-lvl lvl-warn">[WARN]</span>
+            <span class="log-msg">SOX-LQD-IX allocation drift delta > 1.25%.</span>
+          </div>
+          <div class="log-line">
+            <span class="log-ts">05:41:40</span>
+            <span class="log-lvl lvl-ok">[OK]</span>
+            <span class="log-msg">Heartbeat response from BATS Chi-X: 0.8ms.</span>
+          </div>
+          <div class="log-line">
+            <span class="log-ts">05:40:12</span>
+            <span class="log-lvl lvl-ok">[OK]</span>
+            <span class="log-msg">Monte Carlo iteration completed: VaR $1.24M.</span>
+          </div>
+          <div class="log-line">
+            <span class="log-ts">05:39:45</span>
+            <span class="log-lvl lvl-info">[INFO]</span>
+            <span class="log-msg">Custody certificate rotation scheduled: 24h.</span>
+          </div>
+          <div class="log-line">
+            <span class="log-ts">05:38:00</span>
+            <span class="log-lvl lvl-ok">[OK]</span>
+            <span class="log-msg">MiFID II audit log snapshot exported to S3.</span>
+          </div>
+          <div class="log-line">
+            <span class="log-ts">05:36:20</span>
+            <span class="log-lvl lvl-info">[INFO]</span>
+            <span class="log-msg">T-Bill repo rate rollover processed +1.80%.</span>
+          </div>
+          <div class="log-line">
+            <span class="log-ts">05:35:10</span>
+            <span class="log-lvl lvl-ok">[OK]</span>
+            <span class="log-msg">Zero deviation detected against contract.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>Aurelia Platform &mdash; Style: <span>Command Center</span> (Multi-panel grid, semantic pills, near-black #0B0D11, 4px max radius)</div>
+    <div>Telemetry Uptime: 99.992% &bull; Session: 5246-CC-PROD</div>
+  </footer>
+
+</body>
+</html>

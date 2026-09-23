@@ -1,6 +1,20 @@
 version: 1
 description: "Orthogonal Modifiers and Motion specifications for Design Director"
 
+# ─── Modifier Dimensions ──────────────────────────────────────────────────────
+# Five independent axes that compose over any foundation style without altering
+# its color, typography, or visual signature.
+#
+# 1. surface   — Texture and translucency overlays on panel/card surfaces.
+# 2. imagery   — Art-direction treatment applied to all product photography and illustration.
+# 3. typography — Accent typeface substitutions for specific UI roles (metrics, headings, annotations).
+# 4. motion    — Global transition timing and easing character.
+# 5. density   — Spacing scale, information-per-viewport, and interactive control sizing.
+#               Controls how compact or airy the overall layout feels: from ultra-dense
+#               terminal-style row packing to ultra-spacious editorial breathing room.
+# 6. layout    — Composition-only structural modifiers that change how panels and content
+#               are arranged without affecting color, type, or radius rules.
+
 modifiers:
   # ─── Surface Modifiers ───────────────────────────────────────────────────────
   surface:
@@ -155,3 +169,90 @@ modifiers:
         easing: "linear"
         css:
           --transition-none: "0ms"
+
+  # ─── Density Modifiers ───────────────────────────────────────────────────────
+  # Controls spacing scale, information-per-viewport, and interactive control sizing.
+  # Orthogonal to all other dimensions — compose freely over any foundation.
+  density:
+    - id: ultra-dense
+      name: Ultra-Dense
+      description: "Maximum information-per-viewport: 28–32px row heights, 4–8px gaps, 11px labels. Calibrated for terminal emulators, financial grids, and real-time telemetry streams."
+      tokens:
+        css:
+          --density-row-height: "28px"
+          --density-gap: "4px"
+          --density-padding-cell: "4px 8px"
+          --density-font-size-label: "11px"
+          --density-font-size-body: "12px"
+          --density-control-height: "24px"
+
+    - id: dense
+      name: Dense
+      description: "High information density: 36px row heights, 8–12px gaps, 12px labels. Suitable for data-heavy dashboards, admin consoles, and developer tooling."
+      tokens:
+        css:
+          --density-row-height: "36px"
+          --density-gap: "8px"
+          --density-padding-cell: "6px 12px"
+          --density-font-size-label: "12px"
+          --density-font-size-body: "13px"
+          --density-control-height: "28px"
+
+    - id: balanced
+      name: Balanced
+      description: "Standard SaaS density: 44px row heights, 16px gaps, 13–14px body. Comfortable for mixed-content products with both data and prose."
+      tokens:
+        css:
+          --density-row-height: "44px"
+          --density-gap: "16px"
+          --density-padding-cell: "12px 16px"
+          --density-font-size-label: "13px"
+          --density-font-size-body: "14px"
+          --density-control-height: "36px"
+
+    - id: spacious
+      name: Spacious
+      description: "Generous editorial breathing room: 56px+ row heights, 24–32px gaps, 15–16px body. For luxury, editorial, wealth, and contemplative consumer experiences."
+      tokens:
+        css:
+          --density-row-height: "56px"
+          --density-gap: "24px"
+          --density-padding-cell: "16px 24px"
+          --density-font-size-label: "14px"
+          --density-font-size-body: "15px"
+          --density-control-height: "44px"
+
+    - id: ultra-spacious
+      name: Ultra-Spacious
+      description: "Maximum whitespace: 72px+ row heights, 48px+ section gaps, 16–18px body. Reserved for hero marketing pages, brand narratives, and full-bleed editorial layouts."
+      tokens:
+        css:
+          --density-row-height: "72px"
+          --density-gap: "48px"
+          --density-padding-cell: "24px 32px"
+          --density-font-size-label: "15px"
+          --density-font-size-body: "17px"
+          --density-control-height: "52px"
+
+  # ─── Layout Modifiers ────────────────────────────────────────────────────────
+  # Composition-only structural modifiers. These affect how panels and content are
+  # arranged without altering color, typography, radius, or surface rules.
+  layout:
+    - id: bento-grid
+      name: Bento Grid
+      description: "Masonry-style irregular card grid with heterogeneous cell sizes (spanning 1–3 columns and 1–2 rows). No independent color/type/radius logic — purely compositional. Pairs with any foundation style."
+      guidelines:
+        grid_template: "repeat(4, 1fr)"
+        cell_spans:
+          - "1x1 (standard metric tile)"
+          - "2x1 (wide chart card)"
+          - "1x2 (tall spotlight card)"
+          - "2x2 (hero feature panel)"
+        gap: "16px (dense) to 24px (spacious)"
+        note: "Do NOT define color, border-radius, or shadow rules here — inherit from the active foundation style."
+      audit_whitelist:
+        css_properties:
+          - "grid-column: span 2"
+          - "grid-row: span 2"
+          - "grid-template-columns"
+          - "grid-template-areas"

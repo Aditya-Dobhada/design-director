@@ -1,0 +1,221 @@
+version: 1
+description: >
+  Domain-to-style mapping lookup table for the design-director diagnostic interview (§4.1).
+  When a product domain is detected or stated, the interview logic consults this file to
+  shortlist 2–3 foundation-style candidates before presenting them to the user.
+
+  THIS IS A LOOKUP TABLE — not a list of new foundation styles.
+  These domain names do NOT appear in the foundation taxonomy (§3 of PRD.md).
+  Adding them here keeps the Visual Signature axis and the Ideal Domain axis cleanly separated.
+
+# ─── How It Is Used ───────────────────────────────────────────────────────────
+# 1. extract_design_brief() identifies the product_type (domain).
+# 2. recommend_styles() checks this file for 2–3 candidate style IDs.
+# 3. Those candidates are presented with honest tradeoffs from the main engine.
+# 4. The user can override at any time ("more like Linear" / "warmer tones").
+
+domain_style_defaults:
+
+  # ── Financial Products ───────────────────────────────────────────────────────
+  fintech:
+    label: "FinTech / Payments / Neo-Banking"
+    recommended_styles:
+      - style_id: minimal-modern
+        rationale: "Clean SaaS-grade neutrality. Works for consumer fintech that needs trust without stuffiness."
+      - style_id: dark-minimal
+        rationale: "Premium dark-mode trading/investment dashboards (Robinhood, Linear aesthetic)."
+      - style_id: data-native
+        rationale: "For dense portfolio analytics, transaction tables, or real-time market data views."
+
+  wealth_management:
+    label: "Wealth Management / Private Banking / Family Office"
+    recommended_styles:
+      - style_id: quiet-luxury
+        rationale: "Understated alabaster, Cormorant Garamond, zero radius — institutional gravitas without ornamentation."
+      - style_id: art-deco
+        rationale: "Heritage prestige with gold hairlines and stepped geometry for high-net-worth advisory."
+      - style_id: swiss-editorial
+        rationale: "Disciplined typographic grid for data-heavy private banking with editorial authority."
+
+  # ── Healthcare & Life Sciences ────────────────────────────────────────────────
+  healthcare:
+    label: "Healthcare / Clinical / EHR"
+    recommended_styles:
+      - style_id: minimal-modern
+        rationale: "Highest legibility, neutral zinc palette, crisp 1px borders — no sensory noise in clinical contexts."
+      - style_id: data-native
+        rationale: "Dense patient records, vitals tables, and diagnostic results in compact monospace."
+      - style_id: swiss-editorial
+        rationale: "Rigorous typographic hierarchy for documentation-heavy clinical workflows."
+
+  digital_health:
+    label: "Digital Health / Wellness / Consumer Health Apps"
+    recommended_styles:
+      - style_id: organic-natural
+        rationale: "Earth tones and river-stone geometry communicate health, nature, and calm for wellness apps."
+      - style_id: digital-organic
+        rationale: "Organic blobs with technological typography — ideal for AI health assistants and biotech."
+      - style_id: claymorphism
+        rationale: "Approachable pastel clay elements for consumer wellness and meditation apps."
+
+  # ── Legal & Compliance ────────────────────────────────────────────────────────
+  legal:
+    label: "Legal / Law Firm / Contract Management"
+    recommended_styles:
+      - style_id: swiss-editorial
+        rationale: "Strict typographic hierarchy, 0px radius, and hairline borders project institutional authority."
+      - style_id: quiet-luxury
+        rationale: "Understated editorial serif conveys bespoke advisory and counsel prestige."
+      - style_id: minimal-modern
+        rationale: "Clear, high-contrast, WCAG-compliant for document-heavy legal review tools."
+
+  # ── Government & Civic ───────────────────────────────────────────────────────
+  government:
+    label: "Government / Civic / Public Services"
+    recommended_styles:
+      - style_id: minimal-modern
+        rationale: "Highest accessibility, universal legibility, zero aesthetic pretension — appropriate for public-serving tools."
+      - style_id: swiss-editorial
+        rationale: "Rigorous grid and typographic discipline for official documentation portals."
+      - style_id: bauhaus
+        rationale: "Functionalist Constructivist system for modernized civic design with no decorative overhead."
+
+  # ── Education ────────────────────────────────────────────────────────────────
+  edtech:
+    label: "EdTech / K-12 / Higher Education / LMS"
+    recommended_styles:
+      - style_id: space-age-optimism
+        rationale: "Optimistic warm whites, capsule pods, and NASA-orange accents celebrate learning and discovery."
+      - style_id: minimal-modern
+        rationale: "Clean, accessible, WCAG-compliant for institutional LMS and teacher dashboards."
+      - style_id: claymorphism
+        rationale: "Pastel clay elements for K-8 consumer edtech and gamified learning apps."
+
+  # ── Developer Tools & Infrastructure ─────────────────────────────────────────
+  devops:
+    label: "DevOps / Infrastructure / SRE / Security Operations"
+    recommended_styles:
+      - style_id: command-center
+        rationale: "Multi-panel ops layout with semantic status indicators — built for incident response and runbooks."
+      - style_id: dark-minimal
+        rationale: "Obsidian canvas and hairline borders for modern developer tooling (Linear/Vercel aesthetic)."
+      - style_id: terminal-cli
+        rationale: "Full monospace amber/green phosphor for CLI-first infrastructure and network monitoring tools."
+
+  developer_tools:
+    label: "Developer Tools / APIs / SDKs / CLI"
+    recommended_styles:
+      - style_id: dark-minimal
+        rationale: "Obsidian canvas, micro-typography, and electric accent — the contemporary developer tool aesthetic."
+      - style_id: terminal-cli
+        rationale: "Authentic monospace CLI aesthetic for developer-first command-line tools and TUI apps."
+      - style_id: data-native
+        rationale: "Dense tabular views for API explorers, log analysis, and metrics dashboards."
+
+  # ── E-Commerce & Retail ───────────────────────────────────────────────────────
+  ecommerce:
+    label: "E-Commerce / Retail / Marketplace"
+    recommended_styles:
+      - style_id: minimal-modern
+        rationale: "Clean product-first layouts with high whitespace for contemporary DTC brands."
+      - style_id: organic-natural
+        rationale: "Earth tones and river-stone pods for sustainable brands, botanicals, and craft goods."
+      - style_id: neo-brutalism
+        rationale: "Bold ink borders and offset shadows for independent creator stores and streetwear drops."
+
+  luxury_retail:
+    label: "Luxury Retail / High-End Fashion / Premium DTC"
+    recommended_styles:
+      - style_id: quiet-luxury
+        rationale: "Alabaster canvas and Cormorant Garamond for premium fashion, jewelry, and bespoke goods."
+      - style_id: high-fashion-editorial
+        rationale: "Runway broadsheet aesthetic for avant-garde fashion and editorial luxury brands."
+      - style_id: art-deco
+        rationale: "Obsidian and gold for heritage prestige luxury with architectural formality."
+
+  # ── Real Estate & Property ───────────────────────────────────────────────────
+  real_estate:
+    label: "Real Estate / PropTech / Property Listing"
+    recommended_styles:
+      - style_id: minimal-modern
+        rationale: "High-whitespace product listing cards with restrained type and clear CTAs."
+      - style_id: mid-century-modern
+        rationale: "Warm architectural palette for high-end residential real estate with aspirational lifestyle feel."
+      - style_id: quiet-luxury
+        rationale: "For ultra-premium residential advisory and private real estate funds."
+
+  # ── Hospitality & Travel ──────────────────────────────────────────────────────
+  hospitality:
+    label: "Hospitality / Hotels / Travel / Restaurants"
+    recommended_styles:
+      - style_id: quiet-luxury
+        rationale: "Understated elegance for boutique hotels, private clubs, and fine dining reservations."
+      - style_id: art-deco
+        rationale: "Formal glamour for heritage hotel brands and classic travel experiences."
+      - style_id: organic-natural
+        rationale: "For eco-lodges, wellness retreats, and nature-immersed hospitality experiences."
+
+  # ── AI Products ───────────────────────────────────────────────────────────────
+  ai_product:
+    label: "AI Products / LLM Interfaces / AI Assistants"
+    recommended_styles:
+      - style_id: aurora-gradient
+        rationale: "Soft atmospheric multi-color gradients communicate AI intelligence without cyberpunk aggression."
+      - style_id: dark-minimal
+        rationale: "Obsidian canvas with single violet accent — the modern AI tool aesthetic (Perplexity, Claude)."
+      - style_id: digital-organic
+        rationale: "Organic blobs with technological typography for AI wellness, biotech, and creative AI tools."
+
+  # ── Biotech & Life Sciences ───────────────────────────────────────────────────
+  biotech:
+    label: "Biotech / Life Sciences / Genomics"
+    recommended_styles:
+      - style_id: digital-organic
+        rationale: "Organic blobs with natural gradients bridge biological systems with technological precision."
+      - style_id: data-native
+        rationale: "Dense sequence tables, genomic grid views, and assay result panels in compact monospace."
+      - style_id: minimal-modern
+        rationale: "Clean SaaS shell for research tools requiring maximum legibility and focus."
+
+  # ── Media & Creative Tools ────────────────────────────────────────────────────
+  creative_tools:
+    label: "Creative Tools / Design Software / DAWs"
+    recommended_styles:
+      - style_id: glassmorphism
+        rationale: "Translucent floating panels over canvas — the native OS creative tool aesthetic (Figma, DaVinci Resolve)."
+      - style_id: dark-minimal
+        rationale: "Dark canvas with focused single accent for creative environments needing full canvas visibility."
+      - style_id: aurora-gradient
+        rationale: "Atmospheric gradient interfaces for AI creative tools and generative design platforms."
+
+  media_publishing:
+    label: "Media / Publishing / Editorial / News"
+    recommended_styles:
+      - style_id: swiss-editorial
+        rationale: "Rigorous typographic grid and asymmetric layout — the canonical editorial broadsheet system."
+      - style_id: high-fashion-editorial
+        rationale: "Stark runway monochrome for fashion/culture media, magazines, and art publications."
+      - style_id: memphis-postmodern
+        rationale: "Pattern-filled editorial pages for culture, design, and experimental digital publications."
+
+  # ── Consumer Social & Community ───────────────────────────────────────────────
+  social:
+    label: "Social / Community / Consumer Mobile"
+    recommended_styles:
+      - style_id: claymorphism
+        rationale: "Approachable pastel clay for consumer-first social apps, especially mobile-native."
+      - style_id: maximalist-dopamine
+        rationale: "Candy neon collisions for youth culture, streetwear, and drops-focused communities."
+      - style_id: neo-brutalism
+        rationale: "Tactile grassroots energy for independent creator communities and zine-culture platforms."
+
+  # ── Analytics & Data Platforms ────────────────────────────────────────────────
+  analytics:
+    label: "Analytics / Business Intelligence / Telemetry"
+    recommended_styles:
+      - style_id: data-native
+        rationale: "Maximum information density: monospace numerics, compact tables, restrained chroma."
+      - style_id: command-center
+        rationale: "Multi-panel real-time dashboard with semantic status indicators for ops-facing analytics."
+      - style_id: dark-minimal
+        rationale: "Premium dark analytics (Grafana, Datadog aesthetic) with focused single accent."

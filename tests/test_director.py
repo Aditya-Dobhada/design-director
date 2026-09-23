@@ -12,7 +12,6 @@ Validates all acceptance criteria from the PRD:
 """
 
 import sys
-import os
 import unittest
 from pathlib import Path
 
@@ -21,17 +20,17 @@ sys.path.insert(0, str(ROOT_DIR))
 sys.path.insert(0, str(ROOT_DIR / "skills" / "design-director"))
 sys.path.insert(0, str(ROOT_DIR / "skills" / "design-audit"))
 
-from director_engine import (
-    extract_design_brief,
-    recommend_styles,
-    create_design_spec,
-    refine_spec,
-    generate_implementation_contract,
-    load_reference_library,
-    find_reference,
-    SUPPORTED_STYLES
-)
 from audit_code import DesignAuditor
+from director_engine import (
+    SUPPORTED_STYLES,
+    create_design_spec,
+    extract_design_brief,
+    find_reference,
+    generate_implementation_contract,
+    recommend_styles,
+    refine_spec,
+)
+
 
 class TestDesignDirector(unittest.TestCase):
 
@@ -151,7 +150,7 @@ class TestDesignDirector(unittest.TestCase):
         self.assertTrue(diff["layers_changed_count"] >= 1)
 
     def test_style_packs_completeness_and_anti_patterns(self):
-        """Criterion 6.6: All 12 style packs contain complete tokens, typography, and negative constraints."""
+        """Criterion 6.6: All 27 style packs contain complete tokens, typography, and negative constraints."""
         styles_dir = ROOT_DIR / "styles"
 
         for style in SUPPORTED_STYLES:
@@ -222,15 +221,20 @@ class TestDesignDirector(unittest.TestCase):
         self.assertIn("radius_violation", bau_violation_types)
         self.assertIn("shadow_violation", bau_violation_types)
 
-    def test_all_twenty_styles_taxonomy(self):
-        """Verifies all 20 styles in the taxonomy can generate valid specs and contracts."""
-        self.assertEqual(len(SUPPORTED_STYLES), 20)
+    def test_all_27_styles_taxonomy(self):
+        """Verifies all 27 styles in the expanded taxonomy can generate valid specs and contracts."""
+        self.assertEqual(len(SUPPORTED_STYLES), 27)
         expected_styles = {
+            # Original 20
             "swiss-editorial", "neo-brutalism", "y2k-frutiger-aero", "quiet-luxury",
             "cyberpunk", "retro-americana", "memphis-postmodern", "space-age-optimism",
             "japanese-wabi-sabi", "bauhaus", "organic-natural", "maximalist-dopamine",
             "minimal-modern", "dark-minimal", "terminal-cli", "web-brutalism",
-            "art-deco", "mid-century-modern", "vaporwave", "high-fashion-editorial"
+            "art-deco", "mid-century-modern", "vaporwave", "high-fashion-editorial",
+            # 3 new Tactile foundations
+            "glassmorphism", "neumorphism", "claymorphism",
+            # 4 new additional foundations
+            "data-native", "command-center", "aurora-gradient", "digital-organic",
         }
         self.assertEqual(set(SUPPORTED_STYLES), expected_styles)
 
@@ -267,13 +271,126 @@ class TestDesignDirector(unittest.TestCase):
 
         self.assertTrue(len(recs) >= 2, "Expected at least 2 recommendations for ambiguous PRD")
         rec_ids = [r["id"] for r in recs]
-        
+
         # Verify valid qualitative ratings and honest tradeoffs
         valid_ratings = {"Strong fit", "Good fit", "Possible"}
         for r in recs:
             self.assertIn(r["fit_rating"], valid_ratings)
             self.assertTrue(len(r["tradeoffs"]) >= 1)
             self.assertTrue(len(r["reasoning"]) >= 15)
+
+    def test_density_modifiers_in_yaml(self):
+        """Verifies all 5 density modifier levels are present in modifiers.yaml."""
+        from director_engine import load_modifiers
+        mods = load_modifiers()
+        self.assertIn("density", mods, "density dimension missing from modifiers.yaml")
+        density_ids = [d["id"] for d in mods["density"]]
+        for expected in ["ultra-dense", "dense", "balanced", "spacious", "ultra-spacious"]:
+            self.assertIn(expected, density_ids, f"Density level '{expected}' missing from modifiers.yaml")
+        # Verify each has required tokens
+        for d in mods["density"]:
+            self.assertIn("tokens", d, f"density/{d['id']} missing tokens block")
+            self.assertIn("--density-row-height", d["tokens"]["css"],
+                          f"density/{d['id']} missing --density-row-height token")
+
+    def test_bento_grid_modifier_in_yaml(self):
+        """Verifies bento-grid is present in the layout modifier dimension."""
+        from director_engine import load_modifiers
+        mods = load_modifiers()
+        self.assertIn("layout", mods, "layout dimension missing from modifiers.yaml")
+        layout_ids = [m["id"] for m in mods["layout"]]
+        self.assertIn("bento-grid", layout_ids, "bento-grid modifier missing from modifiers.yaml")
+        # Verify it has guidelines but NOT radius/color/shadow tokens (composition only)
+        bento = next(m for m in mods["layout"] if m["id"] == "bento-grid")
+        self.assertIn("guidelines", bento, "bento-grid missing guidelines block")
+        self.assertNotIn("tokens", bento, "bento-grid should NOT define design tokens (composition-only)")
+
+    def test_new_7_styles_packs_completeness(self):
+        """Criterion 6.6 extended: All 7 new style packs contain complete tokens and NEVER constraints."""
+        styles_dir = ROOT_DIR / "styles"
+        new_styles = [
+            "glassmorphism", "neumorphism", "claymorphism",
+            "data-native", "command-center", "aurora-gradient", "digital-organic",
+        ]
+        for style in new_styles:
+            style_file = styles_dir / f"{style}.md"
+            self.assertTrue(style_file.exists(), f"New style pack missing: {style}.md")
+            content = style_file.read_text(encoding="utf-8")
+            self.assertTrue(len(content) > 500, f"{style}.md is unexpectedly short")
+            self.assertIn("Mandatory Anti-Patterns", content, f"Missing Anti-Patterns in {style}.md")
+            self.assertIn("NEVER", content, f"Missing NEVER constraint in {style}.md")
+            self.assertIn("Color Tokens", content, f"Missing Color Tokens in {style}.md")
+            self.assertTrue(
+                "Radius Tokens" in content or "Border Radius" in content,
+                f"Missing Border Radius tokens in {style}.md"
+            )
+
+    def test_new_7_styles_gallery_previews(self):
+        """Verifies all 7 new gallery HTML files exist and have a DESIGN CONTRACT comment."""
+        gallery_dir = ROOT_DIR / "gallery"
+        expected_gallery_files = [
+            "glassmorphism.html",
+            "neumorphism.html",
+            "claymorphism.html",
+            "data_native.html",
+            "command_center.html",
+            "aurora_gradient.html",
+            "digital_organic.html",
+        ]
+        for filename in expected_gallery_files:
+            html_path = gallery_dir / filename
+            self.assertTrue(html_path.exists(), f"Gallery preview missing: {filename}")
+            content = html_path.read_text(encoding="utf-8")
+            self.assertIn("DESIGN CONTRACT", content, f"Missing DESIGN CONTRACT comment in {filename}")
+            self.assertGreater(len(content), 1000, f"Gallery file suspiciously short: {filename}")
+
+    def test_new_styles_refinement_extended(self):
+        """Tests refinement prompts for the 7 new styles."""
+        base_spec = create_design_spec("swiss-editorial")
+
+        # Tactile family
+        res_glass = refine_spec(base_spec, "make it glassmorphism frosted panel style")
+        self.assertIn("glassmorphism", res_glass["updated_spec"]["layers"]["surfaces"])
+
+        res_neu = refine_spec(base_spec, "go neumorphic with soft extruded shadows")
+        self.assertIn("neumorphism", res_neu["updated_spec"]["layers"]["surfaces"])
+
+        res_clay = refine_spec(base_spec, "claymorphism pastel 3d clay style")
+        self.assertIn("claymorphism", res_clay["updated_spec"]["layers"]["surfaces"])
+
+        # Utility additions
+        res_data = refine_spec(base_spec, "data-native dense data analytics style")
+        self.assertIn("data-native", res_data["updated_spec"]["layers"]["surfaces"])
+
+        res_cmd = refine_spec(base_spec, "command center multi panel devops layout")
+        self.assertIn("command-center", res_cmd["updated_spec"]["layers"]["surfaces"])
+
+        # Futuristic addition
+        res_aurora = refine_spec(base_spec, "aurora gradient atmospheric AI style")
+        self.assertIn("aurora-gradient", res_aurora["updated_spec"]["layers"]["surfaces"])
+
+        # Organic addition
+        res_dorg = refine_spec(base_spec, "digital organic biomorphic blob style")
+        self.assertIn("digital-organic", res_dorg["updated_spec"]["layers"]["surfaces"])
+
+    def test_domain_style_defaults_yaml(self):
+        """Verifies domain-style-defaults.yaml exists and maps key domains to valid style IDs."""
+        import yaml
+        domain_defaults_path = ROOT_DIR / "styles" / "domain-style-defaults.yaml"
+        self.assertTrue(domain_defaults_path.exists(), "domain-style-defaults.yaml missing")
+        with open(domain_defaults_path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+        self.assertIn("domain_style_defaults", data)
+        domains = data["domain_style_defaults"]
+        # Must cover key domains
+        for key in ["fintech", "healthcare", "legal", "government", "edtech", "devops", "analytics"]:
+            self.assertIn(key, domains, f"Domain '{key}' missing from domain-style-defaults.yaml")
+        # All referenced style_ids must be in SUPPORTED_STYLES
+        for domain_key, domain_data in domains.items():
+            for entry in domain_data.get("recommended_styles", []):
+                sid = entry["style_id"]
+                self.assertIn(sid, SUPPORTED_STYLES,
+                              f"domain-style-defaults.yaml references unknown style_id '{sid}' in domain '{domain_key}'")
 
     def test_new_styles_refinement(self):
         """Tests refinement prompts targeting the expanded style families."""
@@ -322,6 +439,7 @@ class TestDesignDirector(unittest.TestCase):
         # Test mid-century modern refinement
         res_mcm = refine_spec(base_spec, "bring in mid-century modern eames era vibes")
         self.assertIn("mid-century-modern", res_mcm["updated_spec"]["layers"]["surfaces"])
+
 
 if __name__ == "__main__":
     unittest.main()

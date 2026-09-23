@@ -9,13 +9,12 @@ Handles:
 - Implementation handoff contract generation
 """
 
-import sys
-import os
-import re
 import json
-import yaml
+import re
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Any
+
+import yaml
 
 REFERENCE_LIBRARY_PATH = Path(__file__).parent / "reference-library.yaml"
 STYLES_DIR = Path(__file__).resolve().parent.parent.parent / "styles"
@@ -34,7 +33,7 @@ SUPPORTED_STYLES = [
     "bauhaus",
     "organic-natural",
     "maximalist-dopamine",
-    # 8 New Foundations
+    # 8 Modern / Utility Foundations
     "minimal-modern",
     "dark-minimal",
     "terminal-cli",
@@ -42,24 +41,33 @@ SUPPORTED_STYLES = [
     "art-deco",
     "mid-century-modern",
     "vaporwave",
-    "high-fashion-editorial"
+    "high-fashion-editorial",
+    # 3 Tactile Foundations (new family)
+    "glassmorphism",
+    "neumorphism",
+    "claymorphism",
+    # 4 Additional Foundations (Utility + Futuristic + Organic)
+    "data-native",
+    "command-center",
+    "aurora-gradient",
+    "digital-organic",
 ]
 
-def load_modifiers() -> Dict[str, Any]:
+def load_modifiers() -> dict[str, Any]:
     if not MODIFIERS_PATH.exists():
         return {}
     with open(MODIFIERS_PATH, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
         return data.get("modifiers", {})
 
-def load_reference_library() -> List[Dict[str, Any]]:
+def load_reference_library() -> list[dict[str, Any]]:
     if not REFERENCE_LIBRARY_PATH.exists():
         return []
     with open(REFERENCE_LIBRARY_PATH, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
         return data.get("references", [])
 
-def find_reference(query: str) -> Optional[Dict[str, Any]]:
+def find_reference(query: str) -> dict[str, Any] | None:
     refs = load_reference_library()
     query_norm = query.lower().strip()
     
@@ -77,7 +85,7 @@ def find_reference(query: str) -> Optional[Dict[str, Any]]:
                 return r
     return None
 
-def extract_design_brief(context_text: str) -> Dict[str, Any]:
+def extract_design_brief(context_text: str) -> dict[str, Any]:
     """
     Parses product context (PRD, README, spec) into a structured Design Brief.
     Covers 11 domain buckets. Falls through to a neutral SaaS default only when
@@ -279,7 +287,7 @@ def extract_design_brief(context_text: str) -> Dict[str, Any]:
         }
     }
 
-def recommend_styles(brief: Dict[str, Any]) -> List[Dict[str, Any]]:
+def recommend_styles(brief: dict[str, Any]) -> list[dict[str, Any]]:
     """
     Given a Design Brief, recommends 2-4 candidate directions.
     Qualitative fit ratings only: Strong fit / Good fit / Possible / Poor fit.
@@ -520,7 +528,7 @@ def recommend_styles(brief: Dict[str, Any]) -> List[Dict[str, Any]]:
             r["style_id"] = r["id"]
     return recs
 
-def create_design_spec(style_id: str, custom_layers: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
+def create_design_spec(style_id: str, custom_layers: dict[str, str] | None = None) -> dict[str, Any]:
     """
     Creates a layered Design Spec where every layer resolves to a single source of truth.
     No ambiguous percentage blending.
@@ -706,6 +714,73 @@ def create_design_spec(style_id: str, custom_layers: Optional[Dict[str, str]] = 
             "motion": "high-fashion-editorial/motion.md",
             "imagery": "monumental-couture-photography",
             "components": "high-fashion-editorial/components.md"
+        },
+        # ── Tactile Family ────────────────────────────────────────────────────
+        "glassmorphism": {
+            "layout": "glassmorphism/layout.md",
+            "typography": "glassmorphism/typography.md",
+            "surfaces": "glassmorphism/tokens.md",
+            "color": "glassmorphism/tokens.md",
+            "motion": "glassmorphism/motion.md",
+            "imagery": "translucent-layered-depth-renders",
+            "components": "glassmorphism/components.md"
+        },
+        "neumorphism": {
+            "layout": "neumorphism/layout.md",
+            "typography": "neumorphism/typography.md",
+            "surfaces": "neumorphism/tokens.md",
+            "color": "neumorphism/tokens.md",
+            "motion": "neumorphism/motion.md",
+            "imagery": "monochromatic-soft-extrusion-renders",
+            "components": "neumorphism/components.md"
+        },
+        "claymorphism": {
+            "layout": "claymorphism/layout.md",
+            "typography": "claymorphism/typography.md",
+            "surfaces": "claymorphism/tokens.md",
+            "color": "claymorphism/tokens.md",
+            "motion": "claymorphism/motion.md",
+            "imagery": "pastel-3d-clay-render-stickers",
+            "components": "claymorphism/components.md"
+        },
+        # ── Utility Family additions ──────────────────────────────────────────
+        "data-native": {
+            "layout": "data-native/layout.md",
+            "typography": "data-native/typography.md",
+            "surfaces": "data-native/tokens.md",
+            "color": "data-native/tokens.md",
+            "motion": "data-native/motion.md",
+            "imagery": "monospace-ascii-telemetry-charts",
+            "components": "data-native/components.md"
+        },
+        "command-center": {
+            "layout": "command-center/layout.md",
+            "typography": "command-center/typography.md",
+            "surfaces": "command-center/tokens.md",
+            "color": "command-center/tokens.md",
+            "motion": "command-center/motion.md",
+            "imagery": "status-panel-network-topology",
+            "components": "command-center/components.md"
+        },
+        # ── Futuristic Family additions ───────────────────────────────────────
+        "aurora-gradient": {
+            "layout": "aurora-gradient/layout.md",
+            "typography": "aurora-gradient/typography.md",
+            "surfaces": "aurora-gradient/tokens.md",
+            "color": "aurora-gradient/tokens.md",
+            "motion": "aurora-gradient/motion.md",
+            "imagery": "atmospheric-gradient-abstract",
+            "components": "aurora-gradient/components.md"
+        },
+        # ── Organic Family additions ──────────────────────────────────────────
+        "digital-organic": {
+            "layout": "digital-organic/layout.md",
+            "typography": "digital-organic/typography.md",
+            "surfaces": "digital-organic/tokens.md",
+            "color": "digital-organic/tokens.md",
+            "motion": "digital-organic/motion.md",
+            "imagery": "organic-blob-biomorphic-illustration",
+            "components": "digital-organic/components.md"
         }
     }
 
@@ -735,14 +810,14 @@ def create_design_spec(style_id: str, custom_layers: Optional[Dict[str, str]] = 
     }
     return spec
 
-def _resolve_layers_from_reference(ref: Dict[str, Any], direction: str) -> Dict[str, str]:
+def _resolve_layers_from_reference(ref: dict[str, Any], direction: str) -> dict[str, str]:
     """
     Translates a reference library entry into concrete spec layer overrides.
     direction is either 'more_like' or 'less_like'.
     Reads the reference's mode, borders, motion, typography, and color fields
     to produce actionable file-path overrides.
     """
-    overrides: Dict[str, str] = {}
+    overrides: dict[str, str] = {}
     shift_key = "when_requested_more_like" if direction == "more_like" else "when_requested_less_like"
     shift_rules = ref.get("shift_rules", {}).get(shift_key, {})
     mode = ref.get("mode", "")
@@ -815,7 +890,7 @@ def _resolve_layers_from_reference(ref: Dict[str, Any], direction: str) -> Dict[
     return overrides
 
 
-def refine_spec(current_spec: Dict[str, Any], critique: str) -> Dict[str, Any]:
+def refine_spec(current_spec: dict[str, Any], critique: str) -> dict[str, Any]:
     """
     Applies free-text critique layer-by-layer.
 
@@ -919,7 +994,7 @@ def refine_spec(current_spec: Dict[str, Any], critique: str) -> Dict[str, Any]:
             "color": "Warm incandescent palette: vermilion, neon amber, and deep carbon ink.",
             "typography": "Slab serif display headers and condensed poster typography.",
         })
-    elif any(k in critique_lower for k in ["organic", "natural", "biophilic", "earthy"]):
+    elif "digital" not in critique_lower and any(k in critique_lower for k in ["organic", "natural", "biophilic", "earthy"]):
         _apply_layers(updated_spec, current_spec, changes_made, {
             "surfaces": "organic-natural/tokens.md",
             "color": "organic-natural/tokens.md",
@@ -1018,6 +1093,74 @@ def refine_spec(current_spec: Dict[str, Any], critique: str) -> Dict[str, Any]:
             "color": "Stark high-contrast monochrome (#0A0A0A / #FFFFFF).",
             "typography": "Monumental Bodoni display headlines colliding with micro-grotesque metadata.",
         })
+    elif any(k in critique_lower for k in ["glassmorphism", "frosted panel", "glass panel", "backdrop blur"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "glassmorphism/tokens.md",
+            "color": "glassmorphism/tokens.md",
+            "motion": "glassmorphism/motion.md",
+        }, reasons={
+            "surfaces": "Glassmorphism shift: rgba translucent panels with backdrop-filter blur and 1px specular hairlines.",
+            "color": "Dark obsidian base with electric violet or cyan glass accent layering.",
+            "motion": "Smooth 200ms fluid spring for panel entrance and layering transitions.",
+        })
+    elif any(k in critique_lower for k in ["neumorphism", "neumorphic", "soft extrude", "extruded"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "neumorphism/tokens.md",
+            "color": "neumorphism/tokens.md",
+        }, reasons={
+            "surfaces": "Neumorphism shift: dual soft shadow extrusion (light/dark), no borders, canvas-matched surface color.",
+            "color": "Monochromatic mid-tone canvas with matched UI elements and subdued desaturated accent.",
+        })
+    elif any(k in critique_lower for k in ["claymorphism", "clay", "pastel 3d", "chunky rounded"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "claymorphism/tokens.md",
+            "color": "claymorphism/tokens.md",
+            "typography": "claymorphism/typography.md",
+        }, reasons={
+            "surfaces": "Claymorphism shift: heavy rounding (20–32px), layered clay inner shadow, pastel element fills.",
+            "color": "Warm cream canvas with soft pastel element colors (coral, sky, mint, lemon).",
+            "typography": "Rounded humanist sans (Nunito/Poppins) to reinforce the tactile clay feel.",
+        })
+    elif any(k in critique_lower for k in ["data native", "data-native", "dense data", "tabular analytics"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "data-native/tokens.md",
+            "color": "data-native/tokens.md",
+            "typography": "data-native/typography.md",
+        }, reasons={
+            "surfaces": "Data-Native shift: hairline 1px dividers, zero decorative fills, ultra-compact 32px rows.",
+            "color": "Dark #0D1117 canvas with single blue/green accent for positive delta values only.",
+            "typography": "JetBrains Mono for all numerics; 11–12px Inter labels.",
+        })
+    elif any(k in critique_lower for k in ["command center", "command-center", "multi panel", "ops panel", "devops"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "command-center/tokens.md",
+            "color": "command-center/tokens.md",
+            "layout": "command-center/layout.md",
+        }, reasons={
+            "surfaces": "Command Center shift: near-black panels, 1px structural borders, semantic status indicators.",
+            "color": "Near-black #0B0D11 with red/amber/green semantic status palette.",
+            "layout": "Multi-panel 3–4 column grid with dedicated functional zones.",
+        })
+    elif any(k in critique_lower for k in ["aurora", "aurora gradient", "ai gradient", "atmospheric gradient"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "aurora-gradient/tokens.md",
+            "color": "aurora-gradient/tokens.md",
+            "motion": "aurora-gradient/motion.md",
+        }, reasons={
+            "surfaces": "Aurora Gradient shift: dark #0B0F1A base with soft radial aurora glow overlays.",
+            "color": "Atmospheric violet/pink/cyan gradient palette at restrained opacity; no hard neon.",
+            "motion": "Fluid 300ms spring for gradient panel reveals and aurora shimmer effects.",
+        })
+    elif any(k in critique_lower for k in ["digital organic", "digital-organic", "biomorphic", "blob", "organic tech"]):
+        _apply_layers(updated_spec, current_spec, changes_made, {
+            "surfaces": "digital-organic/tokens.md",
+            "color": "digital-organic/tokens.md",
+            "typography": "digital-organic/typography.md",
+        }, reasons={
+            "surfaces": "Digital Organic shift: CSS blob shapes with asymmetric border-radius and natural gradient fills.",
+            "color": "Warm earthy palette (sage, moss, sand, gold) combined with thin monospace data typography.",
+            "typography": "Bricolage Grotesque/DM Sans for UI, thin monospace for metrics.",
+        })
 
     # ── 3. Generic directional keywords ─────────────────────────────────────
     elif "bank" in critique_lower or "corporate" in critique_lower:
@@ -1083,11 +1226,11 @@ def refine_spec(current_spec: Dict[str, Any], critique: str) -> Dict[str, Any]:
 
 
 def _apply_layers(
-    updated_spec: Dict[str, Any],
-    current_spec: Dict[str, Any],
-    changes_made: List[Dict[str, Any]],
-    layer_map: Dict[str, str],
-    reasons: Dict[str, str]
+    updated_spec: dict[str, Any],
+    current_spec: dict[str, Any],
+    changes_made: list[dict[str, Any]],
+    layer_map: dict[str, str],
+    reasons: dict[str, str]
 ) -> None:
     """Helper: apply layer overrides and record diffs."""
     for layer, new_val in layer_map.items():
@@ -1101,10 +1244,10 @@ def _apply_layers(
         })
 
 def generate_implementation_contract(
-    spec: Dict[str, Any],
+    spec: dict[str, Any],
     product_spec: str,
     tech_stack: str = "Tailwind CSS + React",
-    modifiers: Optional[List[str]] = None
+    modifiers: list[str] | None = None
 ) -> str:
     """
     Assembles the Design Spec + Style Pack rules + active modifiers + tech stack

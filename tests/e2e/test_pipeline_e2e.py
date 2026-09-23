@@ -8,11 +8,9 @@ DESIGN_CONTRACT.md is structurally valid.
 No LLM calls. No API keys required. Safe to run in CI.
 """
 import os
-import sys
-import json
-import subprocess
-import tempfile
 import shutil
+import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -22,11 +20,11 @@ sys.path.insert(0, str(ROOT_DIR))
 sys.path.insert(0, str(ROOT_DIR / "skills" / "design-director"))
 sys.path.insert(0, str(ROOT_DIR / "skills" / "design-audit"))
 
-from director_engine import (  # noqa: E402
-    extract_design_brief,
-    recommend_styles,
+from director_engine import (
     create_design_spec,
+    extract_design_brief,
     generate_implementation_contract,
+    recommend_styles,
 )
 
 GALLERY_DIR = str(ROOT_DIR / "gallery")
@@ -192,8 +190,9 @@ class TestLevel1AuditOnP2Fixtures(unittest.TestCase):
     """Runs the auditor over all 12 gallery HTML preview files and asserts zero critical violations."""
 
     def _audit_file(self, style_id: str, html_filename: str):
-        from audit_code import DesignAuditor
         from pathlib import Path
+
+        from audit_code import DesignAuditor
         clean_name = html_filename.replace("p2_", "")
         html_path = os.path.join(GALLERY_DIR, clean_name)
         if not os.path.exists(html_path):
@@ -268,6 +267,29 @@ class TestLevel1AuditOnP2Fixtures(unittest.TestCase):
 
     def test_high_fashion_editorial_p2(self):
         self._audit_file("high-fashion-editorial", "high_fashion_editorial.html")
+
+    # ── New: Tactile family ────────────────────────────────────────────────────
+    def test_glassmorphism_p2(self):
+        self._audit_file("glassmorphism", "glassmorphism.html")
+
+    def test_neumorphism_p2(self):
+        self._audit_file("neumorphism", "neumorphism.html")
+
+    def test_claymorphism_p2(self):
+        self._audit_file("claymorphism", "claymorphism.html")
+
+    # ── New: Additional foundations ────────────────────────────────────────────
+    def test_data_native_p2(self):
+        self._audit_file("data-native", "data_native.html")
+
+    def test_command_center_p2(self):
+        self._audit_file("command-center", "command_center.html")
+
+    def test_aurora_gradient_p2(self):
+        self._audit_file("aurora-gradient", "aurora_gradient.html")
+
+    def test_digital_organic_p2(self):
+        self._audit_file("digital-organic", "digital_organic.html")
 
 
 if __name__ == "__main__":
